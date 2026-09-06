@@ -69,12 +69,13 @@ jobs:
           echo "RELEASE_TAG=$tag_ref" >> "$GITHUB_ENV"
           npm --version
 
-      # The estate consumer needs these three features, so the released bundle
-      # is the all-estate-features build. Kept in step with ci.yml.
+      # The published bundle deliberately omits `markdown-ontology`: it pulls in
+      # `regex`, which was 68% of the 0.1.0 code section, and neither in-estate
+      # consumer calls `parseMarkdownOntology`. Kept in step with ci.yml.
       - name: Build the bundle
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \
-            --features ngg1,markdown-ontology,interaction
+            --features ngg1,interaction
 
       # npm's trusted-publisher check requires package.json repository.url to
       # match this repository exactly; wasm-pack copies Cargo.toml's

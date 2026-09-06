@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-09-06
+
+### Changed
+
+- **The published npm bundle no longer includes `markdown-ontology`**, and is
+  built with `--features ngg1,interaction`. That feature was the crate's only
+  consumer of a regex engine, and `regex` + `aho-corasick` + `memchr` were 68%
+  of 0.1.0's compiled code — the largest single thing in the download, for a
+  parser neither in-estate consumer calls. The bundle goes from 1,114,091 to
+  **232,052 bytes** (−79.2%); gzip 379,421 to **90,675** (−76.1%), brotli
+  278,639 to **77,823** (−72.1%). Measured against 0.1.0, that is −84.3% raw and
+  −81.2% gzip.
+
+  `parseMarkdownOntology` and `validateOWL2` are therefore absent from the
+  published bundle. Nothing about the crate changed: build with
+  `--features ngg1,markdown-ontology,interaction` to get them back.
+
+- `regex` is now an optional dependency, pulled in only by `markdown-ontology`.
+  The three grammars `ontology::owl2_validator` used to share with it — the
+  RFC 3986 URI scheme, an ASCII PascalCase identifier, and the `AI-0850` term-id
+  format — are hand-rolled ASCII matchers, so a default build links no regex
+  engine at all. Behaviour is unchanged but for one deliberate tightening: the
+  `regex` crate's `\d` is Unicode-aware and had been accepting non-ASCII digits
+  in a term id, which the format never intended.
+
 ## [0.1.1] - 2026-09-06
 
 Additive only: every 0.1.0 name and signature is unchanged.
@@ -63,6 +88,7 @@ Additive only: every 0.1.0 name and signature is unchanged.
   JavaScript surface, plus the zero-copy `NggExplorer` worker binding under the
   `ngg1` feature.
 
-[Unreleased]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/DreamLab-AI/vowl-wasm/releases/tag/v0.1.0

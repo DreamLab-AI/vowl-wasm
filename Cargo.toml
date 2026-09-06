@@ -2,7 +2,7 @@
 
 [package]
 name = "vowl-wasm"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 rust-version = "1.85"
 license = "MIT"
@@ -41,9 +41,11 @@ web-sys = { version = "0.3", features = [
 thiserror = "1.0"
 petgraph = "0.6"
 nalgebra = "0.32"
-# Used by the always-on `ontology::owl2_validator` (IRI/namespace grammar) as
-# well as the feature-gated markdown parser and loader, so it is not gated.
-regex = "1.10"
+# Only the markdown parser and its filesystem loader need a regex engine. The
+# `owl2_validator` grammars it used to share are hand-rolled ASCII matchers, so
+# a default build links no `regex`, `aho-corasick` or `memchr` at all — which
+# was 68% of the 0.1.0 bundle's code section.
+regex = { version = "1.10", optional = true }
 rayon = { version = "1", optional = true }
 
 [dev-dependencies]
@@ -65,8 +67,9 @@ ngg1 = []
 
 # Markdown-fronted ontology pages: the `ontology::markdown_parser` and the
 # filesystem `ontology::loader` built on it, plus the `parseMarkdownOntology`
-# and `validateOWL2` bindings.
-markdown-ontology = []
+# and `validateOWL2` bindings. Pulls in `regex`, which dominates the compiled
+# size — hence its absence from the published npm bundle since 0.1.2.
+markdown-ontology = ["dep:regex"]
 
 # Explorer click/selection plumbing: ray-sphere hit testing (`interaction`) and
 # the `checkNodeClick` binding.

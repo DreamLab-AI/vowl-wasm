@@ -124,7 +124,9 @@
 //! - **`ngg1`** — the NGG1 binary tier format and the
 //!   [`NggExplorer`](bindings::explorer::NggExplorer) binding.
 //! - **`markdown-ontology`** — the markdown ontology parser and the filesystem
-//!   loader built on it.
+//!   loader built on it. The only feature that needs `regex`, which is why it is
+//!   not in the published npm bundle: it was 68% of the compiled code in 0.1.0.
+//!   Build the bundle yourself with the feature on if you need it in a browser.
 //! - **`interaction`** — ray-sphere hit testing for click and selection.
 //! - **`debug-serde`** — the legacy full-graph serde export.
 //! - **`parallel`** — data-parallel ontology loading via rayon. Native only.

@@ -178,7 +178,7 @@ simulation), OWL2 validation, pinning and statistics — is always compiled.
 | Feature | Default | What it adds |
 |---|---|---|
 | `ngg1` | off | NGG1 binary tier format and the `NggExplorer` zero-copy binding |
-| `markdown-ontology` | off | Markdown ontology parser and the filesystem loader built on it |
+| `markdown-ontology` | off | Markdown ontology parser and the filesystem loader built on it. Pulls in `regex` |
 | `interaction` | off | Ray-sphere hit testing for click and selection |
 | `debug-serde` | off | Legacy full-graph serde export, for diagnostics |
 | `parallel` | off | Data-parallel ontology loading via rayon. **Native only** |
@@ -186,9 +186,22 @@ simulation), OWL2 validation, pinning and statistics — is always compiled.
 
 Each feature compiles standalone, and the combinations are checked in CI.
 
-**The published npm bundle is built with `--features ngg1,markdown-ontology,interaction`**,
-because that is what the DreamLab corpus explorer needs. `parallel`, `simd` and
-`debug-serde` stay off in the published bundle; build from source to enable them.
+**The published npm bundle is built with `--features ngg1,interaction`.**
+
+`markdown-ontology` is deliberately *not* in it. It is the only thing that needs
+a regex engine, and `regex` + `aho-corasick` + `memchr` were 68% of the compiled
+code in 0.1.0 — the single largest thing in the download, for a parser neither
+in-estate consumer calls. Leaving it out takes the bundle from 1,477,462 to
+232,052 bytes (90,675 gzipped). If you need `parseMarkdownOntology` or
+`validateOWL2` in the browser, build the bundle yourself with the feature on:
+
+```bash
+wasm-pack build --target web --release --scope dreamlab-ai \
+  --features ngg1,markdown-ontology,interaction
+```
+
+`parallel`, `simd` and `debug-serde` are likewise off in the published bundle;
+build from source to enable them.
 
 ## Building
 
@@ -198,7 +211,7 @@ cargo clippy --all-targets --all-features -- -D warnings
 
 # The published bundle
 wasm-pack build --target web --release --scope dreamlab-ai \
-  --features ngg1,markdown-ontology,interaction
+  --features ngg1,interaction
 ```
 
 `pkg/` is a build artefact and is not committed. CI uploads it as a workflow
@@ -237,8 +250,10 @@ This crate replaces three divergent in-tree copies of `webvowl-wasm`. Migrating:
 
 4. **Feature gates.** `NggExplorer`, the markdown parser and `checkNodeClick`
    were unconditional before and are now behind `ngg1`, `markdown-ontology` and
-   `interaction`. The published bundle enables all three, so a consumer of the
-   npm package sees no change; a consumer building from source must ask for them.
+   `interaction`. The published bundle enables `ngg1` and `interaction`; a
+   consumer building from source must ask for them, and anyone who needs the
+   markdown parser in the browser must build with `markdown-ontology` on
+   (see [Features](#features) for why it is not in the bundle).
 
 5. **Layout defaults changed.** `LayoutConfig::default()` now carries
    general-purpose force constants rather than values tuned for one

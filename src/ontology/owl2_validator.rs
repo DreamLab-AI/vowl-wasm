@@ -8,7 +8,6 @@
 //! - Common antipattern detection
 
 use super::*;
-use regex::Regex;
 use std::collections::HashSet;
 
 /// OWL2 validation result
@@ -153,8 +152,7 @@ impl OWL2Validator {
         let scheme = &iri[..scheme_end];
 
         // Validate scheme (alphanumeric + . + -)
-        let scheme_regex = Regex::new(r"^[a-zA-Z][a-zA-Z0-9+.-]*$").unwrap();
-        if !scheme_regex.is_match(scheme) {
+        if !is_uri_scheme(scheme) {
             return Err(format!("Invalid IRI scheme: {}", scheme));
         }
 
@@ -244,8 +242,7 @@ impl OWL2Validator {
         }
 
         // Check for invalid characters in class name
-        let class_name_regex = Regex::new(r"^[A-Z][a-zA-Z0-9]*$").unwrap();
-        if !class_name_regex.is_match(class_name) {
+        if !is_pascal_case(class_name) {
             return Err(format!(
                 "Class name '{}' contains invalid characters. Use PascalCase (letters and numbers only)",
                 class_name
@@ -311,8 +308,7 @@ impl OWL2Validator {
         }
 
         // Check term-id format
-        let term_id_regex = Regex::new(r"^[A-Z]{2,3}-\d{4}$").unwrap();
-        if !term_id_regex.is_match(&block.term_id) {
+        if !is_term_id(&block.term_id) {
             warnings.push(format!(
                 "Term ID '{}' does not follow standard format (e.g., AI-0850, BC-0001)",
                 block.term_id
@@ -478,8 +474,109 @@ impl Default for OWL2Validator {
     }
 }
 
+/// `^[a-zA-Z][a-zA-Z0-9+.-]*$` — the URI scheme grammar of RFC 3986 §3.1.
+///
+/// Hand-rolled rather than compiled: these three grammars were the crate's only
+/// always-on use of `regex`, and dropping them takes `regex`, `aho-corasick`
+/// and `memchr` out of every build that does not ask for `markdown-ontology` —
+/// most of the published bundle's weight.
+fn is_uri_scheme(scheme: &str) -> bool {
+    let mut chars = scheme.chars();
+    match chars.next() {
+        Some(first) if first.is_ascii_alphabetic() => {}
+        _ => return false,
+    }
+    chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '.' | '-'))
+}
+
+/// `^[A-Z][a-zA-Z0-9]*$` — an ASCII PascalCase identifier.
+fn is_pascal_case(name: &str) -> bool {
+    let mut chars = name.chars();
+    match chars.next() {
+        Some(first) if first.is_ascii_uppercase() => {}
+        _ => return false,
+    }
+    chars.all(|c| c.is_ascii_alphanumeric())
+}
+
+/// `^[A-Z]{2,3}-\d{4}$` — a term id such as `AI-0850` or `BC-0001`.
+///
+/// ASCII-only, deliberately: the `regex` crate's `\d` is Unicode-aware and
+/// would have accepted, say, Arabic-Indic digits in a term id, which was never
+/// the intent of the format.
+fn is_term_id(term_id: &str) -> bool {
+    let Some((prefix, digits)) = term_id.split_once('-') else {
+        return false;
+    };
+    (2..=3).contains(&prefix.len())
+        && prefix.chars().all(|c| c.is_ascii_uppercase())
+        && digits.len() == 4
+        && digits.chars().all(|c| c.is_ascii_digit())
+}
+
 #[cfg(test)]
 mod tests {
+
+    #[test]
+    fn uri_scheme_grammar_matches_rfc3986() {
+        for ok in [
+            "http",
+            "https",
+            "urn",
+            "a",
+            "x+y",
+            "coap.v2",
+            "my-scheme",
+            "h2",
+        ] {
+            assert!(is_uri_scheme(ok), "{ok} should be a valid scheme");
+        }
+        for bad in ["", "1http", "+http", "-x", ".x", "ht tp", "htt#p", "schéma"] {
+            assert!(!is_uri_scheme(bad), "{bad:?} should not be a valid scheme");
+        }
+    }
+
+    #[test]
+    fn pascal_case_is_ascii_only() {
+        for ok in ["A", "Person", "LargeLanguageModel", "Owl2Class", "X9"] {
+            assert!(is_pascal_case(ok), "{ok} should be PascalCase");
+        }
+        // Empty, lowercase lead, separators, and non-ASCII letters are all out —
+        // `[A-Z]` and `[a-zA-Z0-9]` never matched those either.
+        for bad in [
+            "",
+            "person",
+            "_Person",
+            "Person-Name",
+            "Person Name",
+            "Ünicode",
+            "Persön",
+        ] {
+            assert!(!is_pascal_case(bad), "{bad:?} should not be PascalCase");
+        }
+    }
+
+    #[test]
+    fn term_id_grammar_is_two_or_three_letters_and_four_digits() {
+        for ok in ["AI-0850", "BC-0001", "ABC-1234", "ZZ-9999"] {
+            assert!(is_term_id(ok), "{ok} should be a term id");
+        }
+        for bad in [
+            "",
+            "AI0850",    // no separator
+            "A-1234",    // prefix too short
+            "ABCD-1234", // prefix too long
+            "ai-0850",   // lowercase prefix
+            "AI-085",    // too few digits
+            "AI-08500",  // too many digits
+            "AI-08a0",   // non-digit
+            "AI--1234",  // empty prefix segment after the split
+            "AI-08-50",  // extra separator
+            "AI-٠٨٥٠",   // Unicode digits: regex `\d` would have accepted these
+        ] {
+            assert!(!is_term_id(bad), "{bad:?} should not be a term id");
+        }
+    }
     use super::*;
     use std::collections::HashMap;
 

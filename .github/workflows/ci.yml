@@ -115,7 +115,8 @@ jobs:
           - { label: "debug-serde",       flags: "--features debug-serde" }
           - { label: "parallel",          flags: "--features parallel" }
           - { label: "simd",              flags: "--features simd" }
-          - { label: "estate",            flags: "--features ngg1,markdown-ontology,interaction" }
+          - { label: "bundle",            flags: "--features ngg1,interaction" }
+          - { label: "estate-source",     flags: "--features ngg1,markdown-ontology,interaction" }
           - { label: "all",               flags: "--all-features" }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -143,7 +144,7 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           key: wasm32
-      - run: cargo build --target wasm32-unknown-unknown --release --features ngg1,markdown-ontology,interaction
+      - run: cargo build --target wasm32-unknown-unknown --release --features ngg1,interaction
 
   wasm-pack:
     name: wasm-pack bundle
@@ -161,12 +162,13 @@ jobs:
         with:
           version: latest
 
-      # The estate consumer needs these three features, so the published bundle
-      # is the all-estate-features build.
+      # The published bundle deliberately omits `markdown-ontology`: it pulls in
+      # `regex`, which was 68% of the 0.1.0 code section, and neither in-estate
+      # consumer calls `parseMarkdownOntology`. Build from the crate to get it.
       - name: wasm-pack build
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \
-            --features ngg1,markdown-ontology,interaction
+            --features ngg1,interaction
 
       - name: Verify bundle contents
         run: |
