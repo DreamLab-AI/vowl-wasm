@@ -5,9 +5,20 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to (re)publish, e.g. v0.1.0'
+        required: true
+        type: string
 
+# `id-token: write` lets the runner mint an OIDC token that npm exchanges for a
+# short-lived publish credential (npm trusted publishing). No long-lived npm
+# token is stored anywhere: the trusted-publisher entry on npmjs.com for
+# @dreamlab-ai/vowl-wasm names this repository and this workflow file, and
+# provenance attestations are generated automatically.
 permissions:
   contents: write
+  id-token: write
 
 env:
   CARGO_TERM_COLOR: always
@@ -15,14 +26,12 @@ env:
 
 jobs:
   release:
-    name: Build bundle and publish release
+    name: Build bundle, attach release asset, publish to npm
     runs-on: ubuntu-latest
-    env:
-      # Hoisted to the job so the npm step's `if:` can test it — `secrets` is
-      # not readable from a step-level `if` expression.
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
         with:
@@ -37,16 +46,28 @@ jobs:
         with:
           version: latest
 
-      - name: Check the tag matches the crate version
+      # Trusted publishing needs npm >= 11.5.1 on Node >= 22.14; Node 24 ships a
+      # current npm and `registry-url` writes the registry into the runner's
+      # npmrc so the OIDC exchange targets registry.npmjs.org.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Resolve the release tag and check it matches the crate version
         run: |
           set -euo pipefail
+          tag_ref="${{ inputs.tag || github.ref_name }}"
+          tag="${tag_ref#v}"
           crate_version=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
-          tag="${GITHUB_REF_NAME#v}"
-          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$tag" != "$crate_version" ]; then
-            echo "::error::tag v$tag does not match Cargo.toml version $crate_version"
+          if [ "$tag" != "$crate_version" ]; then
+            echo "::error::tag $tag_ref does not match Cargo.toml version $crate_version"
             exit 1
           fi
           echo "VERSION=$crate_version" >> "$GITHUB_ENV"
+          echo "RELEASE_TAG=$tag_ref" >> "$GITHUB_ENV"
+          npm --version
 
       # The estate consumer needs these three features, so the released bundle
       # is the all-estate-features build. Kept in step with ci.yml.
@@ -54,6 +75,18 @@ jobs:
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \
             --features ngg1,markdown-ontology,interaction
+
+      # npm's trusted-publisher check requires package.json repository.url to
+      # match this repository exactly; wasm-pack copies Cargo.toml's
+      # `repository`, which lacks the git+ prefix and .git suffix npm expects.
+      - name: Pin package metadata
+        run: |
+          set -euo pipefail
+          cd pkg
+          npm pkg set repository.type=git \
+            repository.url=git+https://github.com/DreamLab-AI/vowl-wasm.git \
+            publishConfig.access=public
+          node -e 'const p=require("./package.json"); if (p.version!==process.env.VERSION) { console.error("pkg version", p.version, "!=", process.env.VERSION); process.exit(1) }'
 
       - name: Pack the bundle
         id: pack
@@ -68,27 +101,27 @@ jobs:
           echo "tarball=vowl-wasm-${VERSION}-pkg.tgz" >> "$GITHUB_OUTPUT"
 
       - name: Attach the bundle to the release
-        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
+          tag_name: ${{ env.RELEASE_TAG }}
           files: |
             ${{ steps.pack.outputs.tarball }}
             ${{ steps.pack.outputs.tarball }}.sha256
           generate_release_notes: true
 
-      # npm publish is a MANUAL step. No npm token is provisioned for this
-      # repository, so this step is written to skip cleanly rather than fail the
-      # release. To automate it, add an NPM_TOKEN repository secret; until then
-      # publish by hand from the release asset:
-      #
-      #   gh release download v<version> -p '*-pkg.tgz'
-      #   npm publish vowl-wasm-<version>-pkg.tgz --access public
-      - name: Publish to npm (skipped without NPM_TOKEN)
-        if: ${{ github.ref_type == 'tag' && env.NPM_TOKEN != '' }}
+      # OIDC trusted publishing: no token, no OTP. The exact tarball attached to
+      # the GitHub release is what goes to npm, so the two artefacts are
+      # byte-identical. Skips (not fails) when this version is already on the
+      # registry, so a re-run of the workflow for an existing tag is safe.
+      - name: Publish to npm (OIDC trusted publishing)
         run: |
           set -euo pipefail
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          if npm view "@dreamlab-ai/vowl-wasm@${VERSION}" version >/dev/null 2>&1; then
+            echo "@dreamlab-ai/vowl-wasm@${VERSION} is already published; skipping"
+            exit 0
+          fi
           npm publish "${{ steps.pack.outputs.tarball }}" --access public
+          npm view "@dreamlab-ai/vowl-wasm@${VERSION}" version dist.integrity
 
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:

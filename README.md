@@ -167,7 +167,12 @@ wasm-pack build --target web --release --scope dreamlab-ai \
 ```
 
 `pkg/` is a build artefact and is not committed. CI uploads it as a workflow
-artifact, and tagged releases attach it as `vowl-wasm-<version>-pkg.tgz`.
+artifact, and tagged releases attach it as `vowl-wasm-<version>-pkg.tgz` and
+publish that same tarball to npm as `@dreamlab-ai/vowl-wasm` through npm
+trusted publishing (OIDC from `release.yml`; no token is stored anywhere and
+provenance attestations are generated automatically). To republish an existing
+tag, run the Release workflow with the tag as its input; it skips versions the
+registry already has.
 
 MSRV: **1.85**.
 
