@@ -1,9 +1,13 @@
 //! Debug utilities for force-directed layout
 
-use wasm_bindgen::prelude::*;
-
-/// Debug configuration flags
-#[wasm_bindgen]
+/// Diagnostic logging switches for the force simulation.
+///
+/// This is a Rust-side type only. It is deliberately **not** exported to
+/// JavaScript: it is internal diagnostic plumbing, and exporting it would put
+/// snake_case methods and a set of mutable public flags into the frozen
+/// `wasm-bindgen` surface alongside the camelCase API consumers actually use.
+/// Drive it from Rust via
+/// [`ForceSimulation::set_debug_flags`](crate::layout::simulation::ForceSimulation::set_debug_flags).
 #[derive(Debug, Clone)]
 pub struct DebugFlags {
     /// Log force calculations
@@ -24,10 +28,8 @@ pub struct DebugFlags {
     pub log_interval: usize,
 }
 
-#[wasm_bindgen]
 impl DebugFlags {
     /// Create new debug flags with default settings
-    #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self {
             log_forces: false,
