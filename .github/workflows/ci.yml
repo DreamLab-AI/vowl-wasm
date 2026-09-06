@@ -1,0 +1,201 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly advisory refresh (Mondays 06:17 UTC) — cargo-deny checks a live
+    # advisory database, so a green build can go red without a code change.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  RUST_BACKTRACE: 1
+
+jobs:
+  fmt:
+    name: fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+          components: rustfmt
+      - run: cargo fmt --all -- --check
+
+  clippy:
+    name: clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+          components: clippy
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: ${{ matrix.os }}
+      - run: cargo test --all-features --all-targets
+      # `--all-targets` skips doctests; the crate-level example lives in one.
+      - run: cargo test --all-features --doc
+
+  doc:
+    name: doc
+    runs-on: ubuntu-latest
+    env:
+      RUSTDOCFLAGS: "-D warnings -D rustdoc::broken-intra-doc-links"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - run: cargo doc --no-deps --all-features
+
+  deny:
+    name: cargo-deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2
+        with:
+          command: check licenses advisories bans sources
+
+  msrv:
+    name: msrv (1.85)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: "1.85"
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: msrv-1.85
+      - run: cargo check --all-features --all-targets
+
+  features:
+    name: features (${{ matrix.features.label }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every optional feature must compile on its own, not merely in
+        # combination with the others.
+        features:
+          - { label: "none",              flags: "--no-default-features" }
+          - { label: "ngg1",              flags: "--features ngg1" }
+          - { label: "markdown-ontology", flags: "--features markdown-ontology" }
+          - { label: "interaction",       flags: "--features interaction" }
+          - { label: "debug-serde",       flags: "--features debug-serde" }
+          - { label: "parallel",          flags: "--features parallel" }
+          - { label: "simd",              flags: "--features simd" }
+          - { label: "estate",            flags: "--features ngg1,markdown-ontology,interaction" }
+          - { label: "all",               flags: "--all-features" }
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: features-${{ matrix.features.label }}
+      # -D warnings here, not just in the clippy job: an import or item that is
+      # unused in one feature configuration is invisible to an --all-features run.
+      - run: cargo check --all-targets ${{ matrix.features.flags }}
+        env:
+          RUSTFLAGS: "-D warnings"
+
+  wasm32:
+    name: wasm32 build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: wasm32
+      - run: cargo build --target wasm32-unknown-unknown --release --features ngg1,markdown-ontology,interaction
+
+  wasm-pack:
+    name: wasm-pack bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: wasm-pack
+      - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
+        with:
+          version: latest
+
+      # The estate consumer needs these three features, so the published bundle
+      # is the all-estate-features build.
+      - name: wasm-pack build
+        run: |
+          wasm-pack build --target web --release --scope dreamlab-ai \
+            --features ngg1,markdown-ontology,interaction
+
+      - name: Verify bundle contents
+        run: |
+          set -euo pipefail
+          for f in vowl_wasm.js vowl_wasm.d.ts vowl_wasm_bg.wasm package.json; do
+            test -f "pkg/$f" || { echo "::error::pkg/$f missing"; exit 1; }
+          done
+
+          name=$(node -p "require('./pkg/package.json').name")
+          version=$(node -p "require('./pkg/package.json').version")
+          crate_version=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
+
+          test "$name" = "@dreamlab-ai/vowl-wasm" \
+            || { echo "::error::package name is '$name'"; exit 1; }
+          test "$version" = "$crate_version" \
+            || { echo "::error::pkg version '$version' != crate version '$crate_version'"; exit 1; }
+
+          # The zero-copy worker path is the reason this bundle exists; if these
+          # exports vanish, the explorer breaks at runtime rather than at build.
+          for sym in NggExplorer positionsPtr positionsLen loadCsr getMetadata; do
+            grep -q "$sym" pkg/vowl_wasm.d.ts \
+              || { echo "::error::export $sym missing from the bundle"; exit 1; }
+          done
+
+          echo "bundle ok: $name@$version"
+          ls -la pkg/
+
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: vowl-wasm-pkg
+          path: pkg/
+          if-no-files-found: error

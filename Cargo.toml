@@ -1,0 +1,143 @@
+[workspace]
+
+[package]
+name = "vowl-wasm"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/DreamLab-AI/vowl-wasm"
+description = "VOWL ontology visualisation engine in Rust/WASM: OWL parsing, force-directed layout (Barnes-Hut, SIMD), and rendering data for web explorers. A clean-room reimplementation of the WebVOWL visual notation."
+readme = "README.md"
+keywords = ["ontology", "owl", "wasm", "visualisation", "graph"]
+categories = [
+    "wasm",
+    "visualization",
+    "science",
+    "web-programming",
+    "data-structures",
+]
+exclude = ["/.github", "/deny.toml", "/examples/*.html"]
+
+[lib]
+name = "vowl_wasm"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde-wasm-bindgen = "0.6"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+    "console",
+    "Document",
+    "Element",
+    "HtmlElement",
+    "Window",
+    "CanvasRenderingContext2d",
+    "HtmlCanvasElement",
+] }
+thiserror = "1.0"
+petgraph = "0.6"
+nalgebra = "0.32"
+# Used by the always-on `ontology::owl2_validator` (IRI/namespace grammar) as
+# well as the feature-gated markdown parser and loader, so it is not gated.
+regex = "1.10"
+rayon = { version = "1", optional = true }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+mockall = "0.12"
+pretty_assertions = "1.4"
+criterion = "0.5"
+
+[features]
+# Nothing optional is on by default. The general-purpose engine — OWL/JSON
+# parsing, the graph model, force layout (quadtree + CSR), OWL2 validation,
+# pinning and statistics — is always compiled.
+default = []
+
+# NGG1 binary tier format plus the zero-copy `NggExplorer` binding. Estate
+# specific (DreamLab's NarrativeGoldmine pipeline artefact), not something a
+# general ontology-visualisation consumer needs.
+ngg1 = []
+
+# Markdown-fronted ontology pages: the `ontology::markdown_parser` and the
+# filesystem `ontology::loader` built on it, plus the `parseMarkdownOntology`
+# and `validateOWL2` bindings.
+markdown-ontology = []
+
+# Explorer click/selection plumbing: ray-sphere hit testing (`interaction`) and
+# the `checkNodeClick` binding.
+interaction = []
+
+# Legacy full-graph serde export (`WebVowl.getGraphData`). Off by default: it is
+# an O(n) boundary serialisation deliberately removed from the explorer hot
+# path, which reads positions zero-copy instead. Enable for diagnostics only.
+debug-serde = []
+
+# Data-parallel ontology loading via rayon. Native only — rayon's thread pool
+# does not build for `wasm32-unknown-unknown` without extra plumbing.
+parallel = ["dep:rayon"]
+
+# WASM SIMD128 acceleration for force accumulation. Requires a build targeting
+# `wasm32-unknown-unknown` with the `simd128` target feature enabled.
+simd = []
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[profile.dev]
+opt-level = 0
+
+[[test]]
+name = "integration_test"
+
+[[test]]
+name = "ontology_metadata_test"
+
+[[test]]
+name = "phase3_integration"
+
+[[test]]
+name = "markdown_parser_test"
+required-features = ["markdown-ontology"]
+
+[[test]]
+name = "owl2_validation_test"
+required-features = ["markdown-ontology"]
+
+[[test]]
+name = "ngg1_explorer_test"
+required-features = ["ngg1"]
+
+[[bench]]
+name = "layout_bench"
+harness = false
+
+[[bench]]
+name = "parser_bench"
+harness = false
+
+[[bench]]
+name = "interaction_bench"
+harness = false
+required-features = ["interaction"]
+
+[[bench]]
+name = "phase3_benchmarks"
+harness = false
+required-features = ["interaction"]
+
+[[example]]
+name = "barnes_hut_benchmark"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

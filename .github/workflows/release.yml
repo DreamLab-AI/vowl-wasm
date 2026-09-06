@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_NET_RETRY: 10
+
+jobs:
+  release:
+    name: Build bundle and publish release
+    runs-on: ubuntu-latest
+    env:
+      # Hoisted to the job so the npm step's `if:` can test it — `secrets` is
+      # not readable from a step-level `if` expression.
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: release
+
+      - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
+        with:
+          version: latest
+
+      - name: Check the tag matches the crate version
+        run: |
+          set -euo pipefail
+          crate_version=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$tag" != "$crate_version" ]; then
+            echo "::error::tag v$tag does not match Cargo.toml version $crate_version"
+            exit 1
+          fi
+          echo "VERSION=$crate_version" >> "$GITHUB_ENV"
+
+      # The estate consumer needs these three features, so the released bundle
+      # is the all-estate-features build. Kept in step with ci.yml.
+      - name: Build the bundle
+        run: |
+          wasm-pack build --target web --release --scope dreamlab-ai \
+            --features ngg1,markdown-ontology,interaction
+
+      - name: Pack the bundle
+        id: pack
+        run: |
+          set -euo pipefail
+          cd pkg
+          npm pack
+          tarball=$(ls ./*.tgz)
+          mv "$tarball" "../vowl-wasm-${VERSION}-pkg.tgz"
+          cd ..
+          sha256sum "vowl-wasm-${VERSION}-pkg.tgz" | tee "vowl-wasm-${VERSION}-pkg.tgz.sha256"
+          echo "tarball=vowl-wasm-${VERSION}-pkg.tgz" >> "$GITHUB_OUTPUT"
+
+      - name: Attach the bundle to the release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: |
+            ${{ steps.pack.outputs.tarball }}
+            ${{ steps.pack.outputs.tarball }}.sha256
+          generate_release_notes: true
+
+      # npm publish is a MANUAL step. No npm token is provisioned for this
+      # repository, so this step is written to skip cleanly rather than fail the
+      # release. To automate it, add an NPM_TOKEN repository secret; until then
+      # publish by hand from the release asset:
+      #
+      #   gh release download v<version> -p '*-pkg.tgz'
+      #   npm publish vowl-wasm-<version>-pkg.tgz --access public
+      - name: Publish to npm (skipped without NPM_TOKEN)
+        if: ${{ github.ref_type == 'tag' && env.NPM_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npm publish "${{ steps.pack.outputs.tarball }}" --access public
+
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: vowl-wasm-pkg
+          path: |
+            pkg/
+            ${{ steps.pack.outputs.tarball }}
+          if-no-files-found: error
