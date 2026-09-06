@@ -2,7 +2,7 @@
 
 [package]
 name = "vowl-wasm"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.85"
 license = "MIT"
@@ -85,10 +85,16 @@ parallel = ["dep:rayon"]
 # `wasm32-unknown-unknown` with the `simd128` target feature enabled.
 simd = []
 
+# Tuned for the published `.wasm`, which is what this crate mostly ships. `z`
+# over `3` costs the layout loop a little throughput and buys a much smaller
+# download; `panic = "abort"` drops the unwinding machinery, which WASM cannot
+# use anyway.
 [profile.release]
-opt-level = 3
+opt-level = "z"
 lto = true
 codegen-units = 1
+strip = true
+panic = "abort"
 
 [profile.dev]
 opt-level = 0
@@ -135,6 +141,15 @@ required-features = ["interaction"]
 [[example]]
 name = "barnes_hut_benchmark"
 
+# Deliberately off. `strip = true` above already removes the ~190 KB `name`
+# section, and running binaryen on top of an `opt-level = "z"` + LTO build is a
+# net loss over the wire: measured on the 0.1.1 estate bundle, `-Oz
+# --strip-debug` takes the module from 1,114,091 to 1,032,999 bytes raw but
+# pushes gzip from 379,414 to 395,517 and brotli from 279,066 to 288,007. Since
+# every host serves this compressed, the smaller raw module is the worse
+# download. (It also needs `-all` to validate rustc's bulk-memory output, which
+# ties the build to a binaryen version.) Revisit if binaryen's size passes stop
+# fighting the compressor.
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = false
 

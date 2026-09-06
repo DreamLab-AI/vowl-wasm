@@ -186,7 +186,8 @@ jobs:
 
           # The zero-copy worker path is the reason this bundle exists; if these
           # exports vanish, the explorer breaks at runtime rather than at build.
-          for sym in NggExplorer positionsPtr positionsLen loadCsr getMetadata; do
+          for sym in NggExplorer positionsPtr positionsLen loadCsr getMetadata \
+                     getNodePositions writePositionsInto getNodeIds; do
             grep -q "$sym" pkg/vowl_wasm.d.ts \
               || { echo "::error::export $sym missing from the bundle"; exit 1; }
           done

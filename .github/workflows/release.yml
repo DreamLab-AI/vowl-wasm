@@ -86,6 +86,10 @@ jobs:
           npm pkg set repository.type=git \
             repository.url=git+https://github.com/DreamLab-AI/vowl-wasm.git \
             publishConfig.access=public
+          # wasm-pack writes `"sideEffects": ["./snippets/*"]` unconditionally,
+          # but this bundle ships no snippets directory. `false` is true of it
+          # and lets a bundler tree-shake the glue.
+          npm pkg set sideEffects=false --json
           node -e 'const p=require("./package.json"); if (p.version!==process.env.VERSION) { console.error("pkg version", p.version, "!=", process.env.VERSION); process.exit(1) }'
 
       - name: Pack the bundle

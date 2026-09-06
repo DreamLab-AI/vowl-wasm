@@ -74,6 +74,38 @@ vowl.runSimulation(300);
 console.log(vowl.getNodeCount(), vowl.getStatistics(), vowl.getMetadata());
 ```
 
+### Reading positions back
+
+`getNodePositions()` returns a `Float32Array` of interleaved `x, y` in node
+index order. That index order is **stable for the lifetime of a loaded graph** —
+ticking, pinning, filtering and folding never reorder or remove nodes — so map
+index to id once and then read only floats per frame:
+
+```js
+const ids = vowl.getNodeIds();        // once, after loadOntology
+
+function frame() {
+  vowl.tick();
+  const xy = vowl.getNodePositions(); // ids[i] <-> xy[2i], xy[2i + 1]
+  for (let i = 0; i < ids.length; i++) {
+    moveNode(ids[i], xy[2 * i], xy[2 * i + 1]);
+  }
+}
+```
+
+To reuse one buffer instead of allocating per frame, use
+`writePositionsInto(buf)`, which fills a caller-owned `Float32Array` and returns
+the number of floats written:
+
+```js
+const xy = new Float32Array(vowl.getNodeCount() * 2);
+vowl.tick();
+draw(xy.subarray(0, vowl.writePositionsInto(xy)));
+```
+
+Labels, types and edges still come from `getGraphData()`, which stays behind the
+`debug-serde` feature.
+
 For a rendering worker, `NggExplorer` avoids per-frame serialisation entirely:
 
 ```js
@@ -100,7 +132,7 @@ re-read `positionsPtr()` after either.
 ## Public API
 
 This is the **frozen 0.1.0 surface**. Names and signatures will not change
-without a major version bump.
+without a major version bump; later 0.1.x releases only add to it.
 
 ### `WebVowl` — always available
 
@@ -117,6 +149,9 @@ without a major version bump.
 | `setLinkDistance(d)` | Spring rest length |
 | `setChargeStrength(s)` | Repulsion strength |
 | `getNodeCount()` / `getEdgeCount()` | Graph size |
+| `getNodeIds()` | Node ids, in index order |
+| `getNodePositions()` | Live `x, y` per node as a `Float32Array` |
+| `writePositionsInto(buf)` | Copy those positions into a caller-owned buffer |
 | `getStatistics()` | Degree, connected components, OWL2 metrics |
 | `getMetadata()` | Ontology header: IRI, version, title, description |
 

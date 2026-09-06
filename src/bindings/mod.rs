@@ -273,6 +273,123 @@ impl WebVowl {
         self.graph.as_ref().map(|g| g.edge_count()).unwrap_or(0)
     }
 
+    /// Node ids, in the same index order as [`get_node_positions`].
+    ///
+    /// Call this once after [`load_ontology`](Self::load_ontology) to build the
+    /// index-to-id map, then read positions per frame without touching strings
+    /// again. Returns an empty array when no ontology has been loaded.
+    ///
+    /// ```javascript
+    /// const ids = vowl.getNodeIds();
+    /// // ids[i] is the node whose coordinates live at getNodePositions()[2i], [2i + 1]
+    /// ```
+    ///
+    /// [`get_node_positions`]: Self::get_node_positions
+    #[wasm_bindgen(js_name = getNodeIds)]
+    pub fn get_node_ids(&self) -> Vec<String> {
+        self.graph
+            .as_ref()
+            .map(|g| g.nodes().iter().map(|n| n.id.clone()).collect())
+            .unwrap_or_default()
+    }
+
+    /// Live node positions, interleaved `x, y` in node index order.
+    ///
+    /// Returns a freshly allocated `Float32Array` of `getNodeCount() * 2`
+    /// elements: element `2i` is node `i`'s `x` and element `2i + 1` its `y`.
+    /// Empty when no ontology has been loaded.
+    ///
+    /// # Index order
+    ///
+    /// Index `i` is the node's insertion position — the order
+    /// [`load_ontology`](Self::load_ontology) built the graph in. That order is
+    /// **stable for the lifetime of a loaded graph**: ticking, pinning,
+    /// filtering and folding never reorder or remove nodes (the filters flip a
+    /// visibility flag and leave the node in place), so an index captured once
+    /// after `loadOntology` stays valid until the next `loadOntology`. The
+    /// length always matches `getNodeCount()`, and therefore the
+    /// `basic.node_count` reported by [`get_statistics`](Self::get_statistics).
+    ///
+    /// Pair it once with [`get_node_ids`](Self::get_node_ids) to map index to
+    /// node id:
+    ///
+    /// ```javascript
+    /// const ids = vowl.getNodeIds();       // once, after loadOntology
+    ///
+    /// function frame() {                   // per frame
+    ///     vowl.tick();
+    ///     const xy = vowl.getNodePositions();
+    ///     for (let i = 0; i < ids.length; i++) {
+    ///         moveNode(ids[i], xy[2 * i], xy[2 * i + 1]);
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// Positions are `f64` internally and are narrowed to `f32` here, which is
+    /// exact enough for screen coordinates and halves the bytes crossing the
+    /// boundary. This is the always-available replacement for the
+    /// `debug-serde`-gated `getGraphData()` when all a caller wants is
+    /// coordinates; it allocates one typed array per call instead of
+    /// serialising the whole graph. To reuse one buffer across frames, call
+    /// [`write_positions_into`](Self::write_positions_into) instead.
+    #[wasm_bindgen(js_name = getNodePositions)]
+    pub fn get_node_positions(&self) -> Vec<f32> {
+        let Some(graph) = self.graph.as_ref() else {
+            return Vec::new();
+        };
+
+        let nodes = graph.nodes();
+        let mut out = Vec::with_capacity(nodes.len() * 2);
+        for node in nodes {
+            out.push(node.visual.x as f32);
+            out.push(node.visual.y as f32);
+        }
+        out
+    }
+
+    /// Copy live positions into a caller-owned buffer, allocating nothing.
+    ///
+    /// Writes interleaved `x, y` in the same index order as
+    /// [`get_node_positions`](Self::get_node_positions) and returns the number
+    /// of `f32` elements written. It writes the overlap — at most
+    /// `min(out.len(), getNodeCount() * 2)` elements — so a short buffer
+    /// truncates rather than failing, and the tail of a longer one is left
+    /// untouched. This mirrors `NggExplorer::write_positions_into`, the
+    /// equivalent on the `ngg1` binary-tier path.
+    ///
+    /// ```javascript
+    /// const xy = new Float32Array(vowl.getNodeCount() * 2);  // once
+    ///
+    /// function frame() {                                     // per frame
+    ///     vowl.tick();
+    ///     const written = vowl.writePositionsInto(xy);
+    ///     draw(xy.subarray(0, written));
+    /// }
+    /// ```
+    ///
+    /// `wasm-bindgen` copies the typed array into WASM memory and back out
+    /// again around this call, so what this saves over
+    /// [`get_node_positions`](Self::get_node_positions) is the per-frame
+    /// allocation, not the copy. The genuinely copy-free path is
+    /// `NggExplorer::positions_ptr`, which requires the `ngg1` tier format.
+    #[wasm_bindgen(js_name = writePositionsInto)]
+    pub fn write_positions_into(&self, out: &mut [f32]) -> usize {
+        let Some(graph) = self.graph.as_ref() else {
+            return 0;
+        };
+
+        let mut written = 0;
+        for node in graph.nodes() {
+            let Some(slot) = out.get_mut(written..written + 2) else {
+                break;
+            };
+            slot[0] = node.visual.x as f32;
+            slot[1] = node.visual.y as f32;
+            written += 2;
+        }
+        written
+    }
+
     /// Ontology header of the most recently loaded ontology.
     ///
     /// Returns the OWL/RDF header fields extracted at load time — the ontology
@@ -809,16 +926,23 @@ impl ValidationResultData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use wasm_bindgen_test::*;
+    #[cfg(target_arch = "wasm32")]
+    use wasm_bindgen_test::wasm_bindgen_test;
 
-    #[wasm_bindgen_test]
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
     fn test_webvowl_creation() {
         let webvowl = WebVowl::new();
         assert_eq!(webvowl.get_node_count(), 0);
         assert_eq!(webvowl.get_edge_count(), 0);
     }
 
-    #[wasm_bindgen_test]
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
     fn test_load_ontology() {
         let mut webvowl = WebVowl::new();
 
@@ -838,5 +962,146 @@ mod tests {
         let result = webvowl.load_ontology(json);
         assert!(result.is_ok());
         assert_eq!(webvowl.get_node_count(), 1);
+    }
+
+    /// A two-class, one-property ontology; enough to have a stable node order.
+    const TWO_CLASS_ONTOLOGY: &str = r#"{
+        "class": [
+            { "id": "c1", "label": "Person",       "type": "owl:Class" },
+            { "id": "c2", "label": "Organisation", "type": "owl:Class" }
+        ],
+        "property": [
+            { "id": "p1", "label": "worksFor", "type": "owl:ObjectProperty",
+              "domain": "c1", "range": "c2" }
+        ]
+    }"#;
+
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    fn positions_are_empty_before_an_ontology_is_loaded() {
+        let vowl = WebVowl::new();
+        assert!(vowl.get_node_positions().is_empty());
+        assert!(vowl.get_node_ids().is_empty());
+
+        let mut buf = [1.0f32; 4];
+        assert_eq!(vowl.write_positions_into(&mut buf), 0);
+        assert_eq!(buf, [1.0; 4], "an unloaded graph must not touch the buffer");
+    }
+
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    fn positions_are_two_floats_per_node() {
+        let mut vowl = WebVowl::new();
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+
+        assert_eq!(vowl.get_node_count(), 2);
+        assert_eq!(vowl.get_node_positions().len(), vowl.get_node_count() * 2);
+        assert_eq!(vowl.get_node_ids().len(), vowl.get_node_count());
+    }
+
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    fn positions_are_indexed_by_the_id_order() {
+        let mut vowl = WebVowl::new();
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+
+        // Pin each node somewhere unmistakable, then read the positions back
+        // through the index: `ids[i]` must describe `xy[2i], xy[2i + 1]`.
+        vowl.pin_node("c1", 10.0, 20.0).unwrap();
+        vowl.pin_node("c2", -30.0, 40.0).unwrap();
+
+        let ids = vowl.get_node_ids();
+        let xy = vowl.get_node_positions();
+
+        for (i, id) in ids.iter().enumerate() {
+            let expected = match id.as_str() {
+                "c1" => (10.0, 20.0),
+                "c2" => (-30.0, 40.0),
+                other => panic!("unexpected node id {other}"),
+            };
+            assert_eq!(
+                (xy[2 * i], xy[2 * i + 1]),
+                expected,
+                "node {id} at index {i}"
+            );
+        }
+    }
+
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    fn the_index_order_survives_ticking_and_filtering() {
+        let mut vowl = WebVowl::new();
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+        let before = vowl.get_node_ids();
+
+        vowl.init_simulation().unwrap();
+        vowl.run_simulation(25).unwrap();
+        assert_eq!(
+            vowl.get_node_ids(),
+            before,
+            "ticking must not reorder nodes"
+        );
+
+        // Filtering flips a visibility flag; it must not drop a node from the
+        // index, or every captured index would silently shift.
+        vowl.filter_by_degree(99).unwrap();
+        assert_eq!(
+            vowl.get_node_ids(),
+            before,
+            "filtering must not reorder nodes"
+        );
+        assert_eq!(vowl.get_node_positions().len(), before.len() * 2);
+
+        vowl.reset_visibility().unwrap();
+        assert_eq!(vowl.get_node_ids(), before);
+    }
+
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    fn write_positions_into_matches_the_allocating_accessor() {
+        let mut vowl = WebVowl::new();
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+        vowl.init_simulation().unwrap();
+        vowl.run_simulation(10).unwrap();
+
+        let allocated = vowl.get_node_positions();
+        let mut buf = vec![0.0f32; allocated.len()];
+        assert_eq!(vowl.write_positions_into(&mut buf), allocated.len());
+        assert_eq!(buf, allocated);
+    }
+
+    // Run under `cargo test` on the host and under `wasm-pack test` in a
+    // browser: bare `#[wasm_bindgen_test]` expands to nothing off wasm32.
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test)]
+    fn write_positions_into_writes_only_the_overlap() {
+        let mut vowl = WebVowl::new();
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+        vowl.pin_node("c1", 1.0, 2.0).unwrap();
+
+        let full = vowl.get_node_positions();
+        assert_eq!(full.len(), 4);
+
+        // Short buffer: whole nodes only, truncated rather than failing.
+        let mut short = [-1.0f32; 3];
+        assert_eq!(vowl.write_positions_into(&mut short), 2);
+        assert_eq!([short[0], short[1]], [full[0], full[1]]);
+        assert_eq!(short[2], -1.0, "a partial node must not be written");
+
+        // Long buffer: the tail is left alone.
+        let mut long = [-1.0f32; 6];
+        assert_eq!(vowl.write_positions_into(&mut long), 4);
+        assert_eq!(long[..4], full[..4]);
+        assert_eq!([long[4], long[5]], [-1.0, -1.0]);
     }
 }

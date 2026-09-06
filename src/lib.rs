@@ -56,7 +56,27 @@
 //!
 //! Every method below is exported to JavaScript under the `js_name` shown. This
 //! is the **frozen 0.1.0 surface**: names and signatures will not change without
-//! a major version bump.
+//! a major version bump. Later 0.1.x releases only add to it — `getNodeIds`,
+//! `getNodePositions` and `writePositionsInto` arrived in 0.1.1.
+//!
+//! ## Reading positions
+//!
+//! [`get_node_positions`](bindings::WebVowl::get_node_positions) is the
+//! always-available way to get coordinates out after a
+//! [`tick`](bindings::WebVowl::tick). Node **index order is stable for the
+//! lifetime of a loaded graph** — ticking, pinning, filtering and folding never
+//! reorder or remove nodes — so pair it once with
+//! [`get_node_ids`](bindings::WebVowl::get_node_ids) and then read only floats
+//! per frame:
+//!
+//! ```javascript
+//! const ids = vowl.getNodeIds();          // once, after loadOntology
+//! vowl.tick();
+//! const xy = vowl.getNodePositions();     // ids[i] <-> xy[2i], xy[2i + 1]
+//! ```
+//!
+//! `getGraphData()` remains the way to read labels, types and edges, and stays
+//! behind `debug-serde`.
 //!
 //! ## `WebVowl` — always available
 //!
@@ -74,6 +94,9 @@
 //! | `setChargeStrength(s)` | [`set_charge_strength`](bindings::WebVowl::set_charge_strength) | Repulsion strength |
 //! | `getNodeCount()` | [`get_node_count`](bindings::WebVowl::get_node_count) | Node count |
 //! | `getEdgeCount()` | [`get_edge_count`](bindings::WebVowl::get_edge_count) | Edge count |
+//! | `getNodeIds()` | [`get_node_ids`](bindings::WebVowl::get_node_ids) | Node ids, in index order |
+//! | `getNodePositions()` | [`get_node_positions`](bindings::WebVowl::get_node_positions) | Live `x, y` per node as a `Float32Array` |
+//! | `writePositionsInto(buf)` | [`write_positions_into`](bindings::WebVowl::write_positions_into) | Copy those positions into a caller-owned buffer |
 //! | `getStatistics()` | [`get_statistics`](bindings::WebVowl::get_statistics) | Degree, components, OWL2 metrics |
 //! | `getMetadata()` | [`get_metadata`](bindings::WebVowl::get_metadata) | Ontology header (IRI, version, title) |
 //!
