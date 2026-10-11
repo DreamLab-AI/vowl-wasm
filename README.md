@@ -28,6 +28,12 @@ Vitalis Wiens). WebVOWL is the origin of the visual notation and of the ontology
 JSON shape this crate reads; none of its JavaScript, fixtures, or assets are
 vendored here. Both licence notices are carried in [`LICENSE`](./LICENSE).
 
+The browser release also uses the dependencies listed in
+[the frozen 0.2.0 inventory](./docs/UPSTREAMS.md). Its full
+[third-party notice companion](https://github.com/DreamLab-AI/vowl-wasm/releases/download/v0.2.0/vowl-wasm-0.2.0-THIRD-PARTY-NOTICES.md)
+supplies the dependency notices omitted from the original tarball. Keep the
+companion with redistributions of that package.
+
 This crate is not affiliated with or endorsed by the WebVOWL project or TIB.
 
 ## Install
