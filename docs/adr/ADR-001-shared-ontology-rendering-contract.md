@@ -19,7 +19,7 @@ verified_paths:
 - Date: 2026-10-11
 - Status: Accepted
 - Implementation status: <!-- lands with ontomark step 5 --> implemented for NGG1 ownership; active
-- Implementation: <!-- lands with ontomark step 5 --> `src/ngg1.rs` re-exports the `ontomark-ngg1` crate (a direct dependency; `ontomark-compile` is not used because it carries `serde_yaml` and `regex`). ontomark owns the NGG1 specification, constants and codec; this repository owns rendering and layout only. The `markdown-ontology` feature, its parser, validator and `Domain` enum were deleted (EXP-10 decision D8). `verified_commit` is the commit that landed the code.
+- Implementation: <!-- lands with ontomark step 5 --> `src/ngg1.rs` re-exports the `ontomark-ngg1` crate (a direct dependency; `ontomark-compile` is not used because it carries `serde_yaml` and `regex`). ontomark owns the NGG1 specification, constants and codec; this repository owns rendering and layout only. The `markdown-ontology` feature, its parser, validator and loader were deleted (EXP-10 decision D8). `Domain` and `OntologyBlock` remain until the taxonomy step removes them. `verified_commit` is the commit that landed the code.
 - Parent decision: [VisionFlow ADR-2014: shared ontology workspace](../../../VisionFlow/docs/adr/ADR-2014-shared-ontology-workspace.md)
 - Investigation and delivery plan: [visionGraph ontology workspace](../../../visionGraph/planning/ontology-workspace/README.md)
 

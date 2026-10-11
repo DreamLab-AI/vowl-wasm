@@ -436,6 +436,40 @@ fn rel(p: &Path) -> String {
     p.strip_prefix(root()).unwrap_or(p).display().to_string()
 }
 
+/// The entire public codec must remain available through the old module path.
+/// A named subset can compile internally while silently dropping consumer APIs.
+fn full_codec_reexport(u: &syn::ItemUse, key: &str) -> bool {
+    matches!(u.vis, syn::Visibility::Public(_))
+        && matches!(&u.tree, syn::UseTree::Path(p)
+            if p.ident == key && matches!(&*p.tree, syn::UseTree::Glob(_)))
+}
+
+#[test]
+fn reexport_guard_rejects_partial_nested_and_renamed_exports() {
+    for source in [
+        "pub use ontomark_ngg1::{Ngg1, Ngg1Error};",
+        "pub use ontomark_ngg1::Ngg1;",
+        "pub use ontomark_ngg1::nested::*;",
+        "pub use ontomark_ngg1::Ngg1 as Codec;",
+        "use ontomark_ngg1::*;",
+        "pub(crate) use ontomark_ngg1::*;",
+        "pub use another_crate::*;",
+    ] {
+        let item: syn::ItemUse = syn::parse_str(source).unwrap();
+        assert!(
+            !full_codec_reexport(&item, "ontomark_ngg1"),
+            "a partial or private export passed the full API guard: {source}"
+        );
+    }
+    for (source, key) in [
+        ("pub use ontomark_ngg1::*;", "ontomark_ngg1"),
+        ("pub use renamed_codec::*;", "renamed_codec"),
+    ] {
+        let item: syn::ItemUse = syn::parse_str(source).unwrap();
+        assert!(full_codec_reexport(&item, key));
+    }
+}
+
 #[test]
 fn vw01_ngg1_rs_is_a_bare_reexport_and_no_second_codec_exists() {
     let pkg = own_package();
@@ -451,16 +485,8 @@ fn vw01_ngg1_rs_is_a_bare_reexport_and_no_second_codec_exists() {
     match &file.items[0] {
         syn::Item::Use(u) => {
             assert!(
-                matches!(u.vis, syn::Visibility::Public(_)),
-                "VW-01: the re-export in src/ngg1.rs must be `pub use`"
-            );
-            let first = match &u.tree {
-                syn::UseTree::Path(p) => p.ident.to_string(),
-                _ => String::new(),
-            };
-            assert_eq!(
-                first, key,
-                "VW-01: src/ngg1.rs must `pub use {key}::...` (the ontomark-ngg1 crate)"
+                full_codec_reexport(u, &key),
+                "VW-01: src/ngg1.rs must `pub use {key}::*;` to preserve the entire public codec API"
             );
         }
         other => panic!(

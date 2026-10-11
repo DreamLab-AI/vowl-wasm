@@ -56,7 +56,7 @@ proc-macro2 = "1"
 
 [features]
 # Nothing optional is on by default. The general-purpose engine — OWL/JSON
-# parsing, the graph model, force layout (quadtree + CSR), OWL2 validation,
+# parsing, the graph model, force layout (quadtree + CSR),
 # pinning and statistics — is always compiled.
 default = []
 
