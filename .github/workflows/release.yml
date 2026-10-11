@@ -35,7 +35,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
         with:
-          toolchain: stable
+          toolchain: '1.99.0'
           targets: wasm32-unknown-unknown
 
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
@@ -44,7 +44,7 @@ jobs:
 
       - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
         with:
-          version: latest
+          version: '0.15.0'
 
       # Trusted publishing needs npm >= 11.5.1 on Node >= 22.14; Node 24 ships a
       # current npm and `registry-url` writes the registry into the runner's
@@ -69,12 +69,25 @@ jobs:
           echo "RELEASE_TAG=$tag_ref" >> "$GITHUB_ENV"
           npm --version
 
+      - name: Verify reviewed third-party release inventory
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cargo run --locked --manifest-path tools/release-inventory/Cargo.toml -- \
+            verify . "$RELEASE_TAG" "$(rustc --version)" "$(wasm-pack --version)"
+          # Existing browser tarballs are immutable, including on manual reruns.
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+              --json assets > existing-release.json; then
+            node -e 'const r=require("./existing-release.json"); if (r.assets.some(a=>a.name===`vowl-wasm-${process.env.VERSION}-pkg.tgz`)) { console.error("Browser release asset already exists; preserve it and publish a separately reviewed companion"); process.exit(1); }'
+          fi
+
       # The published bundle is built with `ngg1,interaction`; the markdown
       # parser is gone (ontomark-parse owns it).
       - name: Build the bundle
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \
-            --features ngg1,interaction
+            -- --features ngg1,interaction --locked
 
       - name: Verify Rust and bundle contracts
         env:
@@ -100,26 +113,43 @@ jobs:
           npm pkg set sideEffects=false --json
           node -e 'const p=require("./package.json"); if (p.version!==process.env.VERSION) { console.error("pkg version", p.version, "!=", process.env.VERSION); process.exit(1) }'
 
+      - name: Include reviewed notices and exact source URLs
+        run: |
+          cargo run --locked --manifest-path tools/release-inventory/Cargo.toml -- \
+            package . "$RELEASE_TAG" "$(rustc --version)" "$(wasm-pack --version)"
+
       - name: Pack the bundle
         id: pack
         run: |
           set -euo pipefail
           cd pkg
-          npm pack
-          tarball=$(ls ./*.tgz)
+          npm pack --dry-run --json > ../npm-pack-preview.json
+          node -e 'const files=require("../npm-pack-preview.json")[0].files.map(f=>f.path); for (const name of ["THIRD-PARTY-NOTICES.md","docs/UPSTREAMS.md"]) { if (!files.includes(name)) { console.error("Missing reviewed package notice",name); process.exit(1); } }'
+          npm pack --json > ../npm-pack-result.json
+          tarball=$(node -e 'process.stdout.write(require("../npm-pack-result.json")[0].filename)')
           mv "$tarball" "../vowl-wasm-${VERSION}-pkg.tgz"
           cd ..
           sha256sum "vowl-wasm-${VERSION}-pkg.tgz" | tee "vowl-wasm-${VERSION}-pkg.tgz.sha256"
+          cp THIRD-PARTY-NOTICES.md "vowl-wasm-${VERSION}-THIRD-PARTY-NOTICES.md"
+          sha256sum "vowl-wasm-${VERSION}-THIRD-PARTY-NOTICES.md" \
+            > "vowl-wasm-${VERSION}-THIRD-PARTY-NOTICES.md.sha256"
           echo "tarball=vowl-wasm-${VERSION}-pkg.tgz" >> "$GITHUB_OUTPUT"
 
       - name: Attach the bundle to the release
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
-        with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          files: |
-            ${{ steps.pack.outputs.tarball }}
-            ${{ steps.pack.outputs.tarball }}.sha256
-          generate_release_notes: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+              --verify-tag --generate-notes
+          fi
+          # No --clobber: the server also refuses replacement after a race.
+          gh release upload "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            "${{ steps.pack.outputs.tarball }}" \
+            "${{ steps.pack.outputs.tarball }}.sha256" \
+            "vowl-wasm-${VERSION}-THIRD-PARTY-NOTICES.md" \
+            "vowl-wasm-${VERSION}-THIRD-PARTY-NOTICES.md.sha256"
 
       # OIDC trusted publishing: no token, no OTP. The exact tarball attached to
       # the GitHub release is what goes to npm, so the two artefacts are

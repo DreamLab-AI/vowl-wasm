@@ -86,3 +86,27 @@ All 24 scanner licence groups are accounted for. Generic fallbacks were replaced
 Frozen Cargo.lock SHA-256: `e3135d1bc8557a81af6af232c1ce893c7a8099d8a8c41538110dda9f52ff3aa9`. Target-filtered Cargo metadata SHA-256: `127173803cb956a89842807c5d74aede44dfb514ddf3cdc588a045ba13f10611`.
 
 The notice companion corrects this specific frozen browser distribution. Future source, lockfile, feature, target or toolchain changes require a fresh inventory and notice review before packaging. Existing published crates and pinned tarballs cannot be rewritten by this addendum.
+
+## Guard for future browser packages
+
+The release workflow runs the private Rust tool in
+`tools/release-inventory` before building and again before packaging.
+`docs/release-inventory.json` binds the reviewed notices to the crate version,
+release tag, WASM target/features, exact compiler and wasm-pack versions,
+source/configuration files, Cargo lock and notice digests. Any drift fails the
+release until the new closure and full notices have been reviewed. The tool
+uses RustCrypto SHA-256, Serde and TOML parsing; it is a build tool, excluded
+from the browser dependency inventory.
+
+After validation, the tool copies the full notice and this source inventory
+into `pkg` and adds both names to the explicit npm `files` allowlist. The
+workflow checks `npm pack --dry-run --json` for both entries before packing,
+and publishes the full notice/checksum separately too. Existing browser
+release assets cause a refusal before rebuilding; the original 0.2.0 tarball
+continues to use its independently attached notice companion.
+
+For a future release, audit its new Cargo closure and sysroot, review updated
+notices and source URLs, then record the reviewed hashes/version/profile in
+the machine inventory. Updating only hashes to bypass a mismatch does not
+constitute that review. The frozen 0.2.0 inventory remains evidence for its
+own release, not an automatic claim about a later version.
