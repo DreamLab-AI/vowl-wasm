@@ -7,7 +7,7 @@ implementation_status: implemented # <!-- lands with ontomark step 5 -->
 activation_status: active # <!-- lands with ontomark step 5 -->
 owner: jjohare
 review_trigger: source ownership, graph protocol or host adapter change
-verified_commit: 0aef092f10bd74c5e208c45fb7d55677246d1dbd # <!-- lands with ontomark step 5 -->
+verified_commit: 49096e794333b3f569820defb9d92cdf17e31592
 verified_paths:
   - src/ngg1.rs
   - Cargo.toml
