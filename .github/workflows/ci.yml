@@ -194,6 +194,14 @@ jobs:
           echo "bundle ok: $name@$version"
           ls -la pkg/
 
+      # The migration test's bundle checks are skipped when pkg/ is absent (the
+      # plain test job); here they are mandatory: real wasm module, size budget,
+      # exact frozen JavaScript API.
+      - name: Bundle gate
+        env:
+          VOWL_BUNDLE_GATE: "1"
+        run: cargo test --test ontomark_ngg1_migration --features ngg1,interaction
+
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: vowl-wasm-pkg

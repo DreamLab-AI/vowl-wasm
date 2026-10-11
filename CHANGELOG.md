@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+<!-- lands with ontomark step 5 -->
 - NGG1 is now a re-export of the [`ontomark-ngg1`](https://crates.io/crates/ontomark-ngg1)
   crate (0.1.0). `src/ngg1.rs` is `pub use ontomark_ngg1::*;` and carries no magic
   number, stride, offset or flag constant of its own. The `vowl_wasm::ngg1` path,
@@ -29,13 +30,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Buffers written by the NGG1 writer are unaffected.
 - **Removed JavaScript methods `WebVowl.parseMarkdownOntology` and
   `WebVowl.validateOWL2`**, with the Rust items behind them (below). Neither was in
-  the published npm bundle.
+  the 0.1.2 published npm bundle (0.1.0 and 0.1.1 shipped them).
 
 ### Removed
 
-- The `markdown-ontology` feature and everything behind it: `ontology::markdown_parser`,
-  `ontology::loader`, `ontology::owl2_validator`, the `parseMarkdownOntology` and
-  `validateOWL2` bindings, and the `regex` dependency. Markdown vault parsing belongs
+- The `markdown-ontology` feature and what it gated: `ontology::markdown_parser`,
+  `ontology::loader`, the `parseMarkdownOntology` and `validateOWL2` bindings, and the
+  `regex` dependency. `ontology::owl2_validator` was not behind the feature (its
+  `pub mod` was unconditional in 0.1.2, only the `validateOWL2` binding was gated);
+  it is removed with the rest under decision D8. Markdown vault parsing belongs
   to `ontomark-parse`. The `Domain` enum and `OntologyBlock` remain until the
   taxonomy step removes them.
 
@@ -53,7 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   −81.2% gzip.
 
   `parseMarkdownOntology` and `validateOWL2` are therefore absent from the
-  published bundle. Nothing about the crate changed: build with
+  0.1.2 published bundle (the bindings were behind the feature; the
+  `ontology::owl2_validator` module itself was compiled in regardless). Nothing about the crate changed: build with
   `--features ngg1,markdown-ontology,interaction` to get them back.
 
 - `regex` is now an optional dependency, pulled in only by `markdown-ontology`.

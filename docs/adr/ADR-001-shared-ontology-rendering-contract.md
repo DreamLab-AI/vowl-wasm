@@ -3,19 +3,23 @@ id: ADR-001
 title: Shared ontology rendering contract
 date: 2026-10-11
 decision_status: accepted
-implementation_status: implemented
-activation_status: active
+implementation_status: implemented # <!-- lands with ontomark step 5 -->
+activation_status: active # <!-- lands with ontomark step 5 -->
 owner: jjohare
 review_trigger: source ownership, graph protocol or host adapter change
-verified_commit:
-verified_paths: []
+verified_commit: 0aef092f10bd74c5e208c45fb7d55677246d1dbd # <!-- lands with ontomark step 5 -->
+verified_paths:
+  - src/ngg1.rs
+  - Cargo.toml
+  - tests/ontomark_ngg1_migration.rs
 ---
 
 # ADR-001: Shared ontology rendering contract
 
 - Date: 2026-10-11
-- Status: Accepted; implemented for NGG1 ownership; active
-- Implementation: <!-- lands with ontomark step 5 --> `src/ngg1.rs` re-exports the NGG1 reader of ontomark (`ontomark-compile`, no default features). ontomark owns the NGG1 specification, constants and codec; this repository owns rendering and layout only. The `markdown-ontology` feature, its parser, validator and `Domain` enum were deleted (EXP-10 decision D8). `verified_commit` is set when the step 5 branch merges.
+- Status: Accepted
+- Implementation status: <!-- lands with ontomark step 5 --> implemented for NGG1 ownership; active
+- Implementation: <!-- lands with ontomark step 5 --> `src/ngg1.rs` re-exports the `ontomark-ngg1` crate (a direct dependency; `ontomark-compile` is not used because it carries `serde_yaml` and `regex`). ontomark owns the NGG1 specification, constants and codec; this repository owns rendering and layout only. The `markdown-ontology` feature, its parser, validator and `Domain` enum were deleted (EXP-10 decision D8). `verified_commit` is the commit that landed the code.
 - Parent decision: [VisionFlow ADR-2014: shared ontology workspace](../../../VisionFlow/docs/adr/ADR-2014-shared-ontology-workspace.md)
 - Investigation and delivery plan: [visionGraph ontology workspace](../../../visionGraph/planning/ontology-workspace/README.md)
 
