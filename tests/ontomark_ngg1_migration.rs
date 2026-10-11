@@ -337,6 +337,20 @@ struct Facts {
     strings: Vec<String>,
     ints: BTreeSet<u128>,
     byte_strings: Vec<Vec<u8>>,
+    /// `from_le_bytes`-style calls: how a binary format is read by hand.
+    byte_decoders: BTreeSet<String>,
+}
+
+impl Facts {
+    fn note_decoder(&mut self, ident: &syn::Ident) {
+        let n = ident.to_string();
+        if matches!(
+            n.as_str(),
+            "from_le_bytes" | "from_be_bytes" | "from_ne_bytes"
+        ) {
+            self.byte_decoders.insert(n);
+        }
+    }
 }
 
 impl<'ast> Visit<'ast> for Facts {
@@ -383,6 +397,16 @@ impl<'ast> Visit<'ast> for Facts {
     fn visit_item_mod(&mut self, i: &'ast syn::ItemMod) {
         self.defined.insert(i.ident.to_string());
         syn::visit::visit_item_mod(self, i);
+    }
+    fn visit_expr_method_call(&mut self, i: &'ast syn::ExprMethodCall) {
+        self.note_decoder(&i.method);
+        syn::visit::visit_expr_method_call(self, i);
+    }
+    fn visit_expr_path(&mut self, i: &'ast syn::ExprPath) {
+        if let Some(seg) = i.path.segments.last() {
+            self.note_decoder(&seg.ident);
+        }
+        syn::visit::visit_expr_path(self, i);
     }
     fn visit_lit_str(&mut self, i: &'ast syn::LitStr) {
         self.strings.push(i.value());
@@ -460,7 +484,8 @@ fn vw01_ngg1_rs_is_a_bare_reexport_and_no_second_codec_exists() {
 
     // No other NGG1 codec anywhere outside tests: no format constants, no magic number.
     let facts = facts_of(&non_test_sources());
-    let magic = 0x3147_474E_u128;
+    // The magic as a little-endian u32 and as the byte-swapped value a renamed copy might use.
+    let magics = [0x3147_474E_u128, 0x4E47_4731_u128];
     let mut offenders = Vec::new();
     for (path, f) in &facts {
         for n in NGG1_DEFINING_NAMES {
@@ -468,8 +493,15 @@ fn vw01_ngg1_rs_is_a_bare_reexport_and_no_second_codec_exists() {
                 offenders.push(format!("{}: defines `{n}`", rel(path)));
             }
         }
-        if f.ints.contains(&magic) {
-            offenders.push(format!("{}: holds the NGG1 magic 0x3147474E", rel(path)));
+        if magics.iter().any(|m| f.ints.contains(m)) {
+            offenders.push(format!("{}: holds the NGG1 magic (0x3147474E)", rel(path)));
+        }
+        if !f.byte_decoders.is_empty() {
+            offenders.push(format!(
+                "{}: reads binary fields by hand ({:?}); the NGG1 codec is ontomark-ngg1's",
+                rel(path),
+                f.byte_decoders
+            ));
         }
         if f.byte_strings.iter().any(|b| b.starts_with(b"NGG1")) {
             offenders.push(format!("{}: holds a b\"NGG1\" magic", rel(path)));
