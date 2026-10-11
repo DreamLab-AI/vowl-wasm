@@ -2,9 +2,9 @@
 id: ADR-001
 title: Shared ontology rendering contract
 date: 2026-10-11
-decision_status: proposed
-implementation_status: none
-activation_status: inactive
+decision_status: accepted
+implementation_status: implemented
+activation_status: active
 owner: jjohare
 review_trigger: source ownership, graph protocol or host adapter change
 verified_commit:
@@ -14,8 +14,8 @@ verified_paths: []
 # ADR-001: Shared ontology rendering contract
 
 - Date: 2026-10-11
-- Status: Proposed; inactive
-- Implementation: None authorised by this record; implementation follows a separate phase.
+- Status: Accepted; implemented for NGG1 ownership; active
+- Implementation: <!-- lands with ontomark step 5 --> `src/ngg1.rs` re-exports the NGG1 reader of ontomark (`ontomark-compile`, no default features). ontomark owns the NGG1 specification, constants and codec; this repository owns rendering and layout only. The `markdown-ontology` feature, its parser, validator and `Domain` enum were deleted (EXP-10 decision D8). `verified_commit` is set when the step 5 branch merges.
 - Parent decision: [VisionFlow ADR-2014: shared ontology workspace](../../../VisionFlow/docs/adr/ADR-2014-shared-ontology-workspace.md)
 - Investigation and delivery plan: [visionGraph ontology workspace](../../../visionGraph/planning/ontology-workspace/README.md)
 
@@ -74,4 +74,12 @@ Normal plugin operation requires no database, model, hosted service or estate ac
 
 First establish the shared contracts and fixtures, then prove the smallest complete offline plugin slice, then migrate existing consumers against the same released components. Preserve a reversible consumer version change until parity is demonstrated. Performance budgets must be measured on representative vaults and agreed before claiming mobile support.
 
-This ADR is a proposal only. It performs no source relocation, package publication, dependency upgrade, format migration, plugin implementation or change to current runtime behaviour.
+## Current effect
+
+<!-- lands with ontomark step 5 -->
+The NGG1 owner is ontomark, as this record required: one specification, one
+codec, one set of golden fixtures. vowl-wasm keeps its published crate and npm
+identity and its JavaScript API, and gains a dependency on ontomark's NGG1
+reader. The plugin, the TypeScript reader consolidation and the wider
+acceptance evidence above are tracked by their own steps and are not claimed
+here.

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<!-- lands with ontomark step 5 -->
+### Changed
+
+- NGG1 is now a re-export of ontomark's reader (`ontomark-compile` with default
+  features off). `src/ngg1.rs` no longer carries a magic number, stride, offset
+  or flag constant of its own, and ontomark owns the NGG1 specification. The
+  `vowl_wasm::ngg1` path and the `WebVowl` and `NggExplorer` JavaScript API
+  (`pkg/vowl_wasm.d.ts`) are unchanged. The published bundle is built with
+  `--features ngg1,interaction` and must stay close to 232,052 bytes: no
+  reasoner, RDF, YAML or regex crate may enter the dependency graph.
+
+### Removed
+
+- The `markdown-ontology` feature and everything behind it: `ontology::markdown_parser`,
+  `ontology::loader`, `ontology::owl2_validator`, the `Domain` enum and its
+  `narrativegoldmine.com` base URIs, the `parseMarkdownOntology` and
+  `validateOWL2` bindings, and the `regex` dependency. None were in the
+  published npm bundle. Markdown vault parsing belongs to `ontomark-parse`.
+
 ## [0.1.2] - 2026-09-06
 
 ### Changed

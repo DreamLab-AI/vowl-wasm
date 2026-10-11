@@ -11,6 +11,14 @@ build a typed graph from it, settle that graph with a force-directed layout, and
 hand the result to JavaScript — either as structured data, or as a pointer into
 WASM linear memory that a rendering worker reads without copying.
 
+<!-- lands with ontomark step 5 -->
+This crate renders; it does not own any ontology format. With the `ngg1`
+feature, `vowl_wasm::ngg1` and `NggExplorer` read NGG1 binary graph tiers through
+a re-export of the NGG1 reader in [ontomark](https://github.com/DreamLab-AI/ontomark)
+(`ontomark-compile`, no default features). ontomark is the single owner of the
+NGG1 specification, constants and codec; this crate holds no format constants of
+its own. The JavaScript API is unchanged.
+
 ## Attribution
 
 This is a **clean-room Rust reimplementation** of the **VOWL** visual notation
@@ -165,7 +173,6 @@ Filtering, folding and pinning are also always available: `filterByDegree`,
 | JavaScript | Feature |
 |---|---|
 | `new NggExplorer()` — `loadCsr`, `tick`, `isFinished`, `getAlpha`, `nodeCount`, `edgeCount`, `positionsPtr`, `positionsLen`, `writePositionsInto`, `setParam`, `reheat` | `ngg1` |
-| `parseMarkdownOntology(md)`, `validateOWL2(md)` | `markdown-ontology` |
 | `checkNodeClick(origin, direction)` | `interaction` |
 | `getGraphData()` | `debug-serde` |
 
@@ -173,12 +180,12 @@ Filtering, folding and pinning are also always available: `filterByDegree`,
 
 Every optional feature is **off by default**. The general-purpose engine —
 OWL/JSON parsing, the graph model, force layout (Barnes-Hut quadtree and the CSR
-simulation), OWL2 validation, pinning and statistics — is always compiled.
+simulation), pinning and statistics — is always compiled.
 
 | Feature | Default | What it adds |
 |---|---|---|
-| `ngg1` | off | NGG1 binary tier format and the `NggExplorer` zero-copy binding |
-| `markdown-ontology` | off | Markdown ontology parser and the filesystem loader built on it. Pulls in `regex` |
+<!-- lands with ontomark step 5 -->
+| `ngg1` | off | Re-export of ontomark's NGG1 reader and the `NggExplorer` zero-copy binding |
 | `interaction` | off | Ray-sphere hit testing for click and selection |
 | `debug-serde` | off | Legacy full-graph serde export, for diagnostics |
 | `parallel` | off | Data-parallel ontology loading via rayon. **Native only** |
@@ -188,17 +195,16 @@ Each feature compiles standalone, and the combinations are checked in CI.
 
 **The published npm bundle is built with `--features ngg1,interaction`.**
 
-`markdown-ontology` is deliberately *not* in it. It is the only thing that needs
-a regex engine, and `regex` + `aho-corasick` + `memchr` were 68% of the compiled
-code in 0.1.0 — the single largest thing in the download, for a parser neither
-in-estate consumer calls. Leaving it out takes the bundle from 1,477,462 to
-232,052 bytes (90,675 gzipped). If you need `parseMarkdownOntology` or
-`validateOWL2` in the browser, build the bundle yourself with the feature on:
+<!-- lands with ontomark step 5 -->
+The `markdown-ontology` feature, with its Markdown parser, OWL 2 validator and
+`Domain` enum, was removed. Parsing Markdown vaults is `ontomark-parse`'s job;
+`parseMarkdownOntology` and `validateOWL2` were never in the published bundle.
 
-```bash
-wasm-pack build --target web --release --scope dreamlab-ai \
-  --features ngg1,markdown-ontology,interaction
-```
+**Bundle size check.** The published bundle is 232,052 bytes (90,675 gzipped).
+The ontomark re-export must keep it there: it is taken with no default features,
+so no reasoner (`whelk-el`), RDF, YAML or regex crate may enter `Cargo.lock`.
+`tests/ontomark_ngg1_migration.rs` asserts that, and after a `wasm-pack build`
+(below) it also fails if `pkg/vowl_wasm_bg.wasm` exceeds 5% over 232,052 bytes.
 
 `parallel`, `simd` and `debug-serde` are likewise off in the published bundle;
 build from source to enable them.
@@ -248,12 +254,11 @@ This crate replaces three divergent in-tree copies of `webvowl-wasm`. Migrating:
    described this API, so the numbering starts over. There is no implied
    compatibility with either.
 
-4. **Feature gates.** `NggExplorer`, the markdown parser and `checkNodeClick`
-   were unconditional before and are now behind `ngg1`, `markdown-ontology` and
-   `interaction`. The published bundle enables `ngg1` and `interaction`; a
-   consumer building from source must ask for them, and anyone who needs the
-   markdown parser in the browser must build with `markdown-ontology` on
-   (see [Features](#features) for why it is not in the bundle).
+4. **Feature gates.** `NggExplorer` and `checkNodeClick`
+   were unconditional before and are now behind `ngg1` and `interaction`
+   (the Markdown parser has since been removed; see [Features](#features)).
+   The published bundle enables both; a consumer building from source must ask
+   for them.
 
 5. **Layout defaults changed.** `LayoutConfig::default()` now carries
    general-purpose force constants rather than values tuned for one
