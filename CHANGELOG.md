@@ -7,24 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-<!-- lands with ontomark step 5 -->
 ### Changed
 
-- NGG1 is now a re-export of ontomark's reader (`ontomark-compile` with default
-  features off). `src/ngg1.rs` no longer carries a magic number, stride, offset
-  or flag constant of its own, and ontomark owns the NGG1 specification. The
-  `vowl_wasm::ngg1` path and the `WebVowl` and `NggExplorer` JavaScript API
+- NGG1 is now a re-export of the [`ontomark-ngg1`](https://crates.io/crates/ontomark-ngg1)
+  crate (0.1.0). `src/ngg1.rs` is `pub use ontomark_ngg1::*;` and carries no magic
+  number, stride, offset or flag constant of its own. The `vowl_wasm::ngg1` path,
+  `Ngg1::parse` and the `WebVowl` and `NggExplorer` JavaScript API
   (`pkg/vowl_wasm.d.ts`) are unchanged. The published bundle is built with
-  `--features ngg1,interaction` and must stay close to 232,052 bytes: no
-  reasoner, RDF, YAML or regex crate may enter the dependency graph.
+  `--features ngg1,interaction`; no reasoner, RDF, YAML or regex crate enters the
+  dependency graph.
+
+### Breaking
+
+- **NGG1 malformed buffers now return an error instead of panicking.** The parser
+  additionally rejects a `row_ptr` that does not start at 0, decreases or does not
+  end at the edge count, an edge target that is not a node index, string offsets
+  out of order or past the blob, and a section offset inside the header. For
+  JavaScript callers, `NggExplorer.loadCsr(bytes)` now throws a string error
+  (`NGG1: ...`) for such buffers, where 0.1.2 accepted them and could trap
+  (abort, since `panic = "abort"`) later in `tick` or when reading positions.
+  Buffers written by the NGG1 writer are unaffected.
+- **Removed JavaScript methods `WebVowl.parseMarkdownOntology` and
+  `WebVowl.validateOWL2`**, with the Rust items behind them (below). Neither was in
+  the published npm bundle.
 
 ### Removed
 
 - The `markdown-ontology` feature and everything behind it: `ontology::markdown_parser`,
-  `ontology::loader`, `ontology::owl2_validator`, the `Domain` enum and its
-  `narrativegoldmine.com` base URIs, the `parseMarkdownOntology` and
-  `validateOWL2` bindings, and the `regex` dependency. None were in the
-  published npm bundle. Markdown vault parsing belongs to `ontomark-parse`.
+  `ontology::loader`, `ontology::owl2_validator`, the `parseMarkdownOntology` and
+  `validateOWL2` bindings, and the `regex` dependency. Markdown vault parsing belongs
+  to `ontomark-parse`. The `Domain` enum and `OntologyBlock` remain until the
+  taxonomy step removes them.
 
 ## [0.1.2] - 2026-09-06
 

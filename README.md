@@ -11,11 +11,10 @@ build a typed graph from it, settle that graph with a force-directed layout, and
 hand the result to JavaScript — either as structured data, or as a pointer into
 WASM linear memory that a rendering worker reads without copying.
 
-<!-- lands with ontomark step 5 -->
 This crate renders; it does not own any ontology format. With the `ngg1`
 feature, `vowl_wasm::ngg1` and `NggExplorer` read NGG1 binary graph tiers through
-a re-export of the NGG1 reader in [ontomark](https://github.com/DreamLab-AI/ontomark)
-(`ontomark-compile`, no default features). ontomark is the single owner of the
+a re-export of the [`ontomark-ngg1`](https://crates.io/crates/ontomark-ngg1) crate from
+[ontomark](https://github.com/DreamLab-AI/ontomark). ontomark is the single owner of the
 NGG1 specification, constants and codec; this crate holds no format constants of
 its own. The JavaScript API is unchanged.
 
@@ -184,7 +183,6 @@ simulation), pinning and statistics — is always compiled.
 
 | Feature | Default | What it adds |
 |---|---|---|
-<!-- lands with ontomark step 5 -->
 | `ngg1` | off | Re-export of ontomark's NGG1 reader and the `NggExplorer` zero-copy binding |
 | `interaction` | off | Ray-sphere hit testing for click and selection |
 | `debug-serde` | off | Legacy full-graph serde export, for diagnostics |
@@ -195,13 +193,12 @@ Each feature compiles standalone, and the combinations are checked in CI.
 
 **The published npm bundle is built with `--features ngg1,interaction`.**
 
-<!-- lands with ontomark step 5 -->
-The `markdown-ontology` feature, with its Markdown parser, OWL 2 validator and
-`Domain` enum, was removed. Parsing Markdown vaults is `ontomark-parse`'s job;
+The `markdown-ontology` feature, with its Markdown parser and OWL 2 validator,
+was removed. Parsing Markdown vaults is `ontomark-parse`'s job;
 `parseMarkdownOntology` and `validateOWL2` were never in the published bundle.
 
 **Bundle size check.** The published bundle is 232,052 bytes (90,675 gzipped).
-The ontomark re-export must keep it there: it is taken with no default features,
+The `ontomark-ngg1` re-export must keep it there: it has no dependencies,
 so no reasoner (`whelk-el`), RDF, YAML or regex crate may enter `Cargo.lock`.
 `tests/ontomark_ngg1_migration.rs` asserts that, and after a `wasm-pack build`
 (below) it also fails if `pkg/vowl_wasm_bg.wasm` exceeds 5% over 232,052 bytes.
