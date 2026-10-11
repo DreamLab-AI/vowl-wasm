@@ -44,7 +44,7 @@ jobs:
 
       - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
         with:
-          version: '0.15.0'
+          version: 'v0.15.0'
 
       # Trusted publishing needs npm >= 11.5.1 on Node >= 22.14; Node 24 ships a
       # current npm and `registry-url` writes the registry into the runner's

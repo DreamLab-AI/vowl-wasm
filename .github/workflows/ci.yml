@@ -33,7 +33,7 @@ jobs:
           components: rustfmt, clippy
       - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa
         with:
-          version: '0.15.0'
+          version: 'v0.15.0'
       - name: Check the guard and its regressions
         run: |
           cargo fmt --manifest-path tools/release-inventory/Cargo.toml -- --check
