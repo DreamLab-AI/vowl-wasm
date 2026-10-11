@@ -47,6 +47,11 @@ nalgebra = "0.32"
 # was 68% of the 0.1.0 bundle's code section.
 regex = { version = "1.10", optional = true }
 rayon = { version = "1", optional = true }
+# The NGG1 codec. Until ontomark 0.1.0-rc.1 is on crates.io this is pinned to
+# the exact git revision that was proven against this crate's test suite; the
+# pin is replaced by the crates.io version in this same branch once rc.1 is
+# published.
+ontomark-ngg1 = { git = "https://github.com/DreamLab-AI/ontomark", rev = "13d1d30275be9baadb3ea0e0f08db6e1465cfa8f", optional = true }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
@@ -62,8 +67,9 @@ default = []
 
 # NGG1 binary tier format plus the zero-copy `NggExplorer` binding. Estate
 # specific (DreamLab's NarrativeGoldmine pipeline artefact), not something a
-# general ontology-visualisation consumer needs.
-ngg1 = []
+# general ontology-visualisation consumer needs. The codec itself is the
+# `ontomark-ngg1` crate, re-exported as `vowl_wasm::ngg1`.
+ngg1 = ["dep:ontomark-ngg1"]
 
 # Markdown-fronted ontology pages: the `ontology::markdown_parser` and the
 # filesystem `ontology::loader` built on it, plus the `parseMarkdownOntology`
