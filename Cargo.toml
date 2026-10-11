@@ -50,6 +50,9 @@ wasm-bindgen-test = "0.3"
 mockall = "0.12"
 pretty_assertions = "1.4"
 criterion = "0.5"
+# Migration test (tests/ontomark_ngg1_migration.rs): parse Rust source, not text.
+syn = { version = "2", features = ["full", "visit"] }
+proc-macro2 = "1"
 
 [features]
 # Nothing optional is on by default. The general-purpose engine — OWL/JSON
