@@ -166,19 +166,15 @@ fn exported_js_names(files: &[&str]) -> BTreeSet<String> {
 
 #[test]
 fn vw01_manifest_depends_on_the_ontomark_ngg1_codec() {
+    // Decided (queen, 2026-10-11): NGG1 has its own dependency-light crate,
+    // `ontomark-ngg1`, and vowl-wasm depends on it directly. Depending on
+    // ontomark-compile (even feature-gated) is not accepted.
     let ngg_crate = dependency_entry("ontomark-ngg1");
     let compile = dependency_entry("ontomark-compile");
-    let ok = match (&ngg_crate, &compile) {
-        (Some(_), _) => true,
-        (None, Some(line)) => {
-            line.contains("default-features = false") && line.contains("\"ngg1\"")
-        }
-        _ => false,
-    };
     assert!(
-        ok,
-        "VW-01: Cargo.toml [dependencies] must name the ontomark NGG1 codec: `ontomark-ngg1`, or \
-         `ontomark-compile` with `default-features = false, features = [\"ngg1\"]` (found ngg1 crate: {ngg_crate:?}, compile: {compile:?})"
+        ngg_crate.is_some() && compile.is_none(),
+        "VW-01: Cargo.toml [dependencies] must name `ontomark-ngg1` and not `ontomark-compile` \
+         (found ngg1 crate: {ngg_crate:?}, compile: {compile:?})"
     );
 }
 
@@ -355,7 +351,7 @@ fn bundle_does_not_gain_reasoner_rdf_yaml_or_regex_dependencies() {
     assert!(
         bad.is_empty(),
         "bundle budget (232,052 B published, README): the NGG1 re-export pulled in {bad:?}; \
-         depend on a no-default-features NGG1 codec with no reasoner, RDF or YAML crates"
+         depend on `ontomark-ngg1`, which carries no reasoner, RDF or YAML crates"
     );
     // Opt-in byte check against a freshly built bundle.
     let wasm: &Path = &root().join("pkg/vowl_wasm_bg.wasm");
