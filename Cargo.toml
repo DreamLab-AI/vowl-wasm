@@ -41,11 +41,6 @@ web-sys = { version = "0.3", features = [
 thiserror = "1.0"
 petgraph = "0.6"
 nalgebra = "0.32"
-# Only the markdown parser and its filesystem loader need a regex engine. The
-# `owl2_validator` grammars it used to share are hand-rolled ASCII matchers, so
-# a default build links no `regex`, `aho-corasick` or `memchr` at all — which
-# was 68% of the 0.1.0 bundle's code section.
-regex = { version = "1.10", optional = true }
 rayon = { version = "1", optional = true }
 # The NGG1 codec. Until ontomark 0.1.0-rc.1 is on crates.io this is pinned to
 # the exact git revision that was proven against this crate's test suite; the
@@ -70,12 +65,6 @@ default = []
 # general ontology-visualisation consumer needs. The codec itself is the
 # `ontomark-ngg1` crate, re-exported as `vowl_wasm::ngg1`.
 ngg1 = ["dep:ontomark-ngg1"]
-
-# Markdown-fronted ontology pages: the `ontology::markdown_parser` and the
-# filesystem `ontology::loader` built on it, plus the `parseMarkdownOntology`
-# and `validateOWL2` bindings. Pulls in `regex`, which dominates the compiled
-# size — hence its absence from the published npm bundle since 0.1.2.
-markdown-ontology = ["dep:regex"]
 
 # Explorer click/selection plumbing: ray-sphere hit testing (`interaction`) and
 # the `checkNodeClick` binding.
@@ -116,14 +105,6 @@ name = "ontology_metadata_test"
 
 [[test]]
 name = "phase3_integration"
-
-[[test]]
-name = "markdown_parser_test"
-required-features = ["markdown-ontology"]
-
-[[test]]
-name = "owl2_validation_test"
-required-features = ["markdown-ontology"]
 
 [[test]]
 name = "ngg1_explorer_test"

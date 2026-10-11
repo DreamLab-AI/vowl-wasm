@@ -110,13 +110,11 @@ jobs:
         features:
           - { label: "none",              flags: "--no-default-features" }
           - { label: "ngg1",              flags: "--features ngg1" }
-          - { label: "markdown-ontology", flags: "--features markdown-ontology" }
           - { label: "interaction",       flags: "--features interaction" }
           - { label: "debug-serde",       flags: "--features debug-serde" }
           - { label: "parallel",          flags: "--features parallel" }
           - { label: "simd",              flags: "--features simd" }
           - { label: "bundle",            flags: "--features ngg1,interaction" }
-          - { label: "estate-source",     flags: "--features ngg1,markdown-ontology,interaction" }
           - { label: "all",               flags: "--all-features" }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -162,9 +160,8 @@ jobs:
         with:
           version: latest
 
-      # The published bundle deliberately omits `markdown-ontology`: it pulls in
-      # `regex`, which was 68% of the 0.1.0 code section, and neither in-estate
-      # consumer calls `parseMarkdownOntology`. Build from the crate to get it.
+      # The published bundle is built with `ngg1,interaction`; the markdown
+      # parser is gone (ontomark-parse owns it).
       - name: wasm-pack build
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \

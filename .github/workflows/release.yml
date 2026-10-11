@@ -69,9 +69,8 @@ jobs:
           echo "RELEASE_TAG=$tag_ref" >> "$GITHUB_ENV"
           npm --version
 
-      # The published bundle deliberately omits `markdown-ontology`: it pulls in
-      # `regex`, which was 68% of the 0.1.0 code section, and neither in-estate
-      # consumer calls `parseMarkdownOntology`. Kept in step with ci.yml.
+      # The published bundle is built with `ngg1,interaction`; the markdown
+      # parser is gone (ontomark-parse owns it).
       - name: Build the bundle
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \

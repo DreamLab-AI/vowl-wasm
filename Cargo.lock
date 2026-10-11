@@ -847,7 +847,6 @@ dependencies = [
  "petgraph",
  "pretty_assertions",
  "rayon",
- "regex",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",

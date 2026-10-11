@@ -1,16 +1,9 @@
 //! OWL Ontology parsing and representation
 //!
-//! This module handles parsing OWL ontologies in JSON format and markdown format,
+//! This module handles parsing OWL ontologies in JSON format,
 //! converting them into internal graph representations.
 
-#[cfg(feature = "markdown-ontology")]
-#[cfg_attr(docsrs, doc(cfg(feature = "markdown-ontology")))]
-pub mod loader;
-#[cfg(feature = "markdown-ontology")]
-#[cfg_attr(docsrs, doc(cfg(feature = "markdown-ontology")))]
-pub mod markdown_parser;
 pub mod model;
-pub mod owl2_validator;
 pub mod parser;
 
 use crate::Result;

@@ -110,8 +110,6 @@
 //! | JavaScript | Feature | Purpose |
 //! |---|---|---|
 //! | `getGraphData()` | `debug-serde` | Full-graph serde export, for diagnostics |
-//! | `parseMarkdownOntology(md)` | `markdown-ontology` | Parse a markdown ontology block |
-//! | `validateOWL2(md)` | `markdown-ontology` | OWL2 best-practice validation |
 //! | `checkNodeClick(origin, dir)` | `interaction` | Ray-sphere node hit testing |
 //! | `new NggExplorer()` and its methods | `ngg1` | Zero-copy worker physics |
 //!
@@ -119,14 +117,11 @@
 //!
 //! All optional features are **off by default**; the general-purpose engine —
 //! OWL/JSON parsing, the graph model, force layout (Barnes-Hut quadtree and the
-//! CSR simulation), OWL2 validation, pinning and statistics — is always compiled.
+//! CSR simulation), pinning and statistics — is always compiled.
 //!
-//! - **`ngg1`** — the NGG1 binary tier format and the
+//! - **`ngg1`** — the NGG1 binary tier format (a re-export of the
+//!   [`ontomark-ngg1`](https://docs.rs/ontomark-ngg1) codec) and the
 //!   [`NggExplorer`](bindings::explorer::NggExplorer) binding.
-//! - **`markdown-ontology`** — the markdown ontology parser and the filesystem
-//!   loader built on it. The only feature that needs `regex`, which is why it is
-//!   not in the published npm bundle: it was 68% of the compiled code in 0.1.0.
-//!   Build the bundle yourself with the feature on if you need it in a browser.
 //! - **`interaction`** — ray-sphere hit testing for click and selection.
 //! - **`debug-serde`** — the legacy full-graph serde export.
 //! - **`parallel`** — data-parallel ontology loading via rayon. Native only.

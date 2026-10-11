@@ -9,7 +9,7 @@ use crate::{
     layout::{simulation::ForceSimulation, LayoutAlgorithm},
     ontology::{parser::StandardParser, OntologyMetadata, OntologyParser},
 };
-#[cfg(any(feature = "markdown-ontology", feature = "debug-serde"))]
+#[cfg(feature = "debug-serde")]
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -17,11 +17,6 @@ use wasm_bindgen::prelude::*;
 use crate::interaction::{find_closest_node_hit, NodeHitTest, Ray};
 #[cfg(feature = "interaction")]
 use nalgebra::Vector3;
-
-#[cfg(feature = "markdown-ontology")]
-use crate::ontology::{
-    markdown_parser::MarkdownParser, owl2_validator::ValidationResult, OntologyBlock,
-};
 
 /// Main WebVOWL WASM interface
 #[wasm_bindgen]
@@ -70,90 +65,6 @@ impl WebVowl {
         self.metadata = Some(ontology_data.metadata.clone());
         self.graph = Some(graph);
         Ok(())
-    }
-
-    /// Parse markdown ontology block and return structured data
-    ///
-    /// This parses a single markdown ontology block in the new standardized format.
-    /// Returns a JSON object with the parsed ontology data including:
-    /// - Full IRI
-    /// - Term ID and preferred term
-    /// - Domain classification
-    /// - Core properties
-    /// - Domain-specific extension properties
-    /// - OWL axioms (if present)
-    ///
-    /// # Example (JavaScript)
-    /// ```javascript
-    /// const ontologyData = webvowl.parseMarkdownOntology(markdownContent);
-    /// console.log(ontologyData);
-    /// // {
-    /// //   iri: "http://narrativegoldmine.com/ai#LargeLanguageModel",
-    /// //   termId: "AI-0850",
-    /// //   preferredTerm: "Large Language Models",
-    /// //   domain: "ai",
-    /// //   ...
-    /// // }
-    /// ```
-    #[cfg(feature = "markdown-ontology")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "markdown-ontology")))]
-    #[wasm_bindgen(js_name = parseMarkdownOntology)]
-    pub fn parse_markdown_ontology(&self, markdown: &str) -> std::result::Result<JsValue, JsValue> {
-        let parser = MarkdownParser::new();
-        let ontology_block = parser
-            .parse(markdown)
-            .map_err(|e| JsValue::from_str(&e.to_string()))?;
-
-        // Convert to serializable format
-        let data = MarkdownOntologyData::from_block(&ontology_block);
-        serde_wasm_bindgen::to_value(&data).map_err(|e| JsValue::from_str(&e.to_string()))
-    }
-
-    /// Validate markdown ontology content for OWL2 best practices
-    ///
-    /// This validates a markdown ontology block according to OWL2 best practices:
-    /// - IRI format validation (W3C IRI specification)
-    /// - IRI uniqueness checking
-    /// - Namespace validation
-    /// - OWL2 DL profile compliance
-    /// - Common antipattern detection
-    ///
-    /// Returns a JSON object with validation results:
-    /// - valid: boolean indicating if the ontology passes validation
-    /// - errors: array of critical error messages
-    /// - warnings: array of best practice warnings
-    ///
-    /// # Example (JavaScript)
-    /// ```javascript
-    /// const result = webvowl.validateOWL2(markdownContent);
-    /// console.log(result);
-    /// // {
-    /// //   valid: true,
-    /// //   errors: [],
-    /// //   warnings: ["Missing version information for change tracking"]
-    /// // }
-    /// ```
-    #[cfg(feature = "markdown-ontology")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "markdown-ontology")))]
-    #[wasm_bindgen(js_name = validateOWL2)]
-    pub fn validate_owl2(&self, markdown: &str) -> std::result::Result<JsValue, JsValue> {
-        let mut parser = MarkdownParser::new();
-
-        // Parse the markdown
-        let ontology_block = parser.parse(markdown).map_err(|e| {
-            // Return a validation result with parse error
-            let mut result = ValidationResult::new();
-            result.add_error(format!("Parse error: {}", e));
-            serde_wasm_bindgen::to_value(&ValidationResultData::from_result(&result))
-                .unwrap_or_else(|_| JsValue::from_str("{}"))
-        })?;
-
-        // Validate the block
-        let validation = parser.validate(&ontology_block);
-
-        // Convert to serializable format
-        let data = ValidationResultData::from_result(&validation);
-        serde_wasm_bindgen::to_value(&data).map_err(|e| JsValue::from_str(&e.to_string()))
     }
 
     /// Initialize the force simulation
@@ -850,76 +761,6 @@ impl GraphData {
             .collect();
 
         Self { nodes, edges }
-    }
-}
-
-#[cfg(feature = "markdown-ontology")]
-/// Markdown ontology data for JSON export
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct MarkdownOntologyData {
-    iri: String,
-    term_id: String,
-    preferred_term: String,
-    domain: String,
-    core_properties: std::collections::HashMap<String, String>,
-    extension_properties: std::collections::HashMap<String, String>,
-    owl_axioms: Option<String>,
-    is_public: bool,
-    metadata: MarkdownMetadata,
-}
-
-#[cfg(feature = "markdown-ontology")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct MarkdownMetadata {
-    term_id: String,
-    preferred_term: Option<String>,
-    domain: Option<String>,
-    maturity: Option<String>,
-    status: Option<String>,
-    authority_score: Option<f32>,
-}
-
-#[cfg(feature = "markdown-ontology")]
-impl MarkdownOntologyData {
-    fn from_block(block: &OntologyBlock) -> Self {
-        Self {
-            iri: block.iri.clone(),
-            term_id: block.term_id.clone(),
-            preferred_term: block.preferred_term.clone(),
-            domain: block.domain.prefix().to_string(),
-            core_properties: block.core_properties.clone(),
-            extension_properties: block.extension_properties.clone(),
-            owl_axioms: block.owl_axioms.clone(),
-            is_public: block.is_public,
-            metadata: MarkdownMetadata {
-                term_id: block.metadata.term_id.clone(),
-                preferred_term: block.metadata.preferred_term.clone(),
-                domain: block.metadata.domain.clone(),
-                maturity: block.metadata.maturity.clone(),
-                status: block.metadata.status.clone(),
-                authority_score: block.metadata.authority_score,
-            },
-        }
-    }
-}
-
-#[cfg(feature = "markdown-ontology")]
-/// Validation result data for JSON export
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct ValidationResultData {
-    valid: bool,
-    errors: Vec<String>,
-    warnings: Vec<String>,
-}
-
-#[cfg(feature = "markdown-ontology")]
-impl ValidationResultData {
-    fn from_result(result: &ValidationResult) -> Self {
-        Self {
-            valid: result.valid,
-            errors: result.errors.clone(),
-            warnings: result.warnings.clone(),
-        }
     }
 }
 
