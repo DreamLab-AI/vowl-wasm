@@ -200,6 +200,41 @@ was removed. Parsing Markdown vaults is `ontomark-parse`'s job.
 `parseMarkdownOntology` and `validateOWL2` were not in the 0.1.2 published bundle
 (0.1.0 and 0.1.1 shipped them); they are gone from the crate as well.
 
+Version 0.2.0 also removes the Rust-only `ontology::Domain` and
+`ontology::OntologyBlock` types. Class metadata accepts caller-supplied domain
+strings, including domains outside the estate, or no domain. The renderer holds
+no domain registry or namespace table.
+
+### Reading and writing NGG1 in JavaScript
+
+With `ngg1` enabled, `decodeNgg1(bytes)` returns an owned `NggGraph`.
+`ids()` and `degrees()` return `Uint32Array`; `positions()` returns packed
+`Float32Array` coordinates; `domains()` and `categories()` return `Uint16Array`;
+`flags()` and `edgeType()` return `Uint8Array`. `labels()` and `iris()` return
+string arrays. `rowPtr()` and `colIdx()` return CSR `Uint32Array` snapshots.
+All arrays are independent copies and remain usable after `graph.free()`.
+
+```javascript
+import init, { decodeNgg1, encodeNgg1, ngg1Constants } from '@dreamlab-ai/vowl-wasm';
+await init();
+const graph = decodeNgg1(bytes); // Uint8Array containing a tier
+const fields = [
+  graph.positions(), graph.ids(), graph.domains(), graph.categories(),
+  graph.flags(), graph.degrees(), graph.labels(), graph.iris(),
+  graph.rowPtr(), graph.colIdx(), graph.edgeType(),
+];
+graph.free();
+const encoded = encodeNgg1(...fields); // standalone Uint8Array
+const { CATEGORY_NONE, FLAG_META } = ngg1Constants();
+```
+
+For synthetic graphs, supply seed positions and metadata in the same local
+node order. Every node field and string array must match `ids.length`, positions
+must have twice that length, and CSR targets must be valid local indices.
+Malformed input throws an `NGG1: ...` string. The owned decoder rejects invalid
+UTF-8; unknown taxonomy ids, flag bits and edge codes are preserved. The existing
+`NggExplorer` remains the zero-copy physics interface for animation.
+
 **Bundle size.** Measured with the published-bundle build,
 `wasm-pack build --release --target web --features ngg1,interaction`
 (wasm-pack 0.15, wasm-bindgen 0.2.128, `wasm-opt` off as in `Cargo.toml`), on
@@ -207,23 +242,20 @@ was removed. Parsing Markdown vaults is `ontomark-parse`'s job.
 
 | Tree | `pkg/vowl_wasm_bg.wasm` | `gzip -9` |
 |---|---|---|
-| `main` (hand-written NGG1 reader) | 232,764 bytes | 91,418 bytes |
+| 0.1.2 source (hand-written NGG1 reader) | 232,764 bytes | 91,418 bytes |
+| 0.2.0 (shared codec, owned decode/encode bindings) | 264,158 bytes | 101,069 bytes |
 
 The 0.1.2 release notes record 232,052 bytes (90,675 gzipped); the difference is
 toolchain drift, not a source change.
 
-<!-- lands with ontomark step 5 -->
-| Tree | `pkg/vowl_wasm_bg.wasm` | `gzip -9` |
-|---|---|---|
-| `ontomark/ngg1` (re-export of `ontomark-ngg1`) | 233,528 bytes | 91,620 bytes |
-
-The `ontomark-ngg1` re-export adds 764 bytes (+0.33%) over `main`. No reasoner
+The 0.2.0 browser decoder, encoder and constants add 31,394 bytes (+13.49%) raw
+over the 0.1.2 source baseline. No reasoner
 (`whelk-el`), RDF, YAML or regex crate may enter the bundle's dependency graph:
 `tests/ontomark_ngg1_migration.rs` walks the normal dependencies of
 `--features ngg1,interaction` (dev-dependencies such as `criterion` do not ship).
 With `VOWL_BUNDLE_GATE=1` after a `wasm-pack build` (CI does this), it also
-requires `pkg/vowl_wasm_bg.wasm` to be a real WebAssembly module no more than 5%
-over the `main` size, with the recorded JavaScript API in `pkg/vowl_wasm.d.ts`.
+requires `pkg/vowl_wasm_bg.wasm` to be a real WebAssembly module below 280,000
+bytes, with the recorded 0.2.0 JavaScript API in `pkg/vowl_wasm.d.ts`.
 
 `parallel`, `simd` and `debug-serde` are likewise off in the published bundle;
 build from source to enable them.
@@ -237,6 +269,7 @@ cargo clippy --all-targets --all-features -- -D warnings
 # The published bundle
 wasm-pack build --target web --release --scope dreamlab-ai \
   --features ngg1,interaction
+node --test tests/ngg1_wasm.test.mjs
 ```
 
 `pkg/` is a build artefact and is not committed. CI uploads it as a workflow

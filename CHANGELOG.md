@@ -5,7 +5,17 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-10-11
+
+### Added
+
+- JavaScript `decodeNgg1(bytes)` returns an owned `NggGraph` with typed snapshots
+  of every node field, UTF-8 label/IRI and CSR array. `encodeNgg1(...)` writes
+  synthetic and focus tiers through `ontomark-ngg1`, validating field lengths
+  and CSR. `ngg1Constants()` exposes the owner's flags, sentinels and edge codes.
+  The existing `WebVowl` and `NggExplorer` exports retain their signatures.
+- Native and real WASM tests verify byte-exact golden encoding, arbitrary
+  taxonomy ids, Unicode strings, unknown codes, empty graphs and malformed input.
 
 ### Changed
 
@@ -13,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NGG1 is now a re-export of the [`ontomark-ngg1`](https://crates.io/crates/ontomark-ngg1)
   crate (0.1.0). `src/ngg1.rs` is `pub use ontomark_ngg1::*;` and carries no magic
   number, stride, offset or flag constant of its own. The `vowl_wasm::ngg1` path,
-  `Ngg1::parse` and the `WebVowl` and `NggExplorer` JavaScript API
+  `Ngg1::parse` and existing `WebVowl` and `NggExplorer` JavaScript methods
   (`pkg/vowl_wasm.d.ts`) are unchanged. The published bundle is built with
   `--features ngg1,interaction`; no reasoner, RDF, YAML or regex crate enters the
   dependency graph.
@@ -31,6 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Removed JavaScript methods `WebVowl.parseMarkdownOntology` and
   `WebVowl.validateOWL2`**, with the Rust items behind them (below). Neither was in
   the 0.1.2 published npm bundle (0.1.0 and 0.1.1 shipped them).
+- **Removed Rust types `ontology::Domain` and `ontology::OntologyBlock`.** They
+  belonged to the deleted Markdown parser. Class metadata still accepts any
+  caller-supplied domain string, or none; binary taxonomy ids are producer data.
 
 ### Removed
 
@@ -39,8 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `regex` dependency. `ontology::owl2_validator` was not behind the feature (its
   `pub mod` was unconditional in 0.1.2, only the `validateOWL2` binding was gated);
   it is removed with the rest under decision D8. Markdown vault parsing belongs
-  to `ontomark-parse`. The `Domain` enum and `OntologyBlock` remain until the
-  taxonomy step removes them.
+  to `ontomark-parse`. The six-domain registry, its estate namespace mapping and
+  `OntologyBlock` are removed with the taxonomy migration.
 
 ## [0.1.2] - 2026-09-06
 
@@ -124,7 +137,7 @@ Additive only: every 0.1.0 name and signature is unchanged.
   JavaScript surface, plus the zero-copy `NggExplorer` worker binding under the
   `ngg1` feature.
 
-[Unreleased]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.2...HEAD
+[0.2.0]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/DreamLab-AI/vowl-wasm/releases/tag/v0.1.0

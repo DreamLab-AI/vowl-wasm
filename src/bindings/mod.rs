@@ -4,6 +4,10 @@
 #[cfg_attr(docsrs, doc(cfg(feature = "ngg1")))]
 pub mod explorer;
 
+#[cfg(feature = "ngg1")]
+#[cfg_attr(docsrs, doc(cfg(feature = "ngg1")))]
+pub mod ngg;
+
 use crate::{
     graph::{builder::GraphBuilder, pinning::PinManager, GraphStatistics, VowlGraph},
     layout::{simulation::ForceSimulation, LayoutAlgorithm},

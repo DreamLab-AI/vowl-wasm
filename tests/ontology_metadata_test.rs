@@ -173,6 +173,48 @@ fn test_partial_metadata() {
 }
 
 #[test]
+fn caller_taxonomy_metadata_is_optional_and_preserved_without_an_estate_registry() {
+    for domain in [None, Some("clinical-trials"), Some("research/astronomy")] {
+        let mut attributes = serde_json::json!({"status": "Active"});
+        if let Some(value) = domain {
+            attributes["domain"] = serde_json::Value::String(value.to_string());
+        }
+        let json = serde_json::json!({
+            "class": [{
+                "id": "custom",
+                "label": "Custom class",
+                "type": "owl:Class",
+                "attributes": attributes
+            }],
+            "property": []
+        });
+        let ontology = StandardParser::new().parse(&json.to_string()).unwrap();
+        assert_eq!(
+            ontology.classes[0]
+                .ontology_meta
+                .as_ref()
+                .unwrap()
+                .domain
+                .as_deref(),
+            domain
+        );
+        let graph = GraphBuilder::from_ontology(&ontology).unwrap();
+        assert_eq!(
+            graph
+                .get_node("custom")
+                .unwrap()
+                .semantic
+                .ontology_meta
+                .as_ref()
+                .unwrap()
+                .domain
+                .as_deref(),
+            domain
+        );
+    }
+}
+
+#[test]
 fn test_semantic_relation_type_enum() {
     use SemanticRelationType::*;
 

@@ -76,6 +76,14 @@ jobs:
           wasm-pack build --target web --release --scope dreamlab-ai \
             --features ngg1,interaction
 
+      - name: Verify Rust and bundle contracts
+        env:
+          VOWL_BUNDLE_GATE: "1"
+        run: |
+          cargo test --locked --all-features --all-targets
+          cargo test --locked --all-features --doc
+          node --test tests/ngg1_wasm.test.mjs
+
       # npm's trusted-publisher check requires package.json repository.url to
       # match this repository exactly; wasm-pack copies Cargo.toml's
       # `repository`, which lacks the git+ prefix and .git suffix npm expects.

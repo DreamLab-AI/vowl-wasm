@@ -32,12 +32,14 @@ use syn::visit::Visit;
 
 /// Raw size of `pkg/vowl_wasm_bg.wasm` built from `main` (see the module docs).
 const MAIN_BUNDLE_BYTES: u64 = 232_764;
-/// Head-room over `main`; the re-export replaces a hand-written reader, so the bundle must not grow.
-const BUNDLE_BUDGET_BYTES: u64 = MAIN_BUNDLE_BYTES + MAIN_BUNDLE_BYTES / 20;
+/// The 0.2.0 owned decoder, encoder and constants add browser APIs over 0.1.2.
+/// Measured at 264,158 B; allow ~6% toolchain head-room without losing a size gate.
+const BUNDLE_BUDGET_BYTES: u64 = 280_000;
 /// A real vowl-wasm module is hundreds of kilobytes; anything below this is a stub.
 const BUNDLE_FLOOR_BYTES: u64 = 100_000;
 
-/// The exact wasm-bindgen export surface of the published bundle
+/// The exact 0.2.0 wasm-bindgen export surface of the published bundle.
+/// It preserves the 0.1.2 methods and adds NggGraph, decode/encode and constants.
 /// (`--features ngg1,interaction`), as listed in `pkg/vowl_wasm.d.ts` built from `main`
 /// (the 0.1.2 API). `parseMarkdownOntology`, `validateOWL2` and `getGraphData` are absent from
 /// it by history: the first two were behind `markdown-ontology` and are removed on purpose
@@ -55,6 +57,19 @@ const FROZEN_JS_EXPORTS: &[&str] = &[
     "NggExplorer.setParam",
     "NggExplorer.tick",
     "NggExplorer.writePositionsInto",
+    "NggGraph.categories",
+    "NggGraph.colIdx",
+    "NggGraph.degrees",
+    "NggGraph.domains",
+    "NggGraph.edgeCount",
+    "NggGraph.edgeType",
+    "NggGraph.flags",
+    "NggGraph.ids",
+    "NggGraph.iris",
+    "NggGraph.labels",
+    "NggGraph.nodeCount",
+    "NggGraph.positions",
+    "NggGraph.rowPtr",
     "WebVowl.checkNodeClick",
     "WebVowl.constructor",
     "WebVowl.filterByDegree",
@@ -85,8 +100,12 @@ const FROZEN_JS_EXPORTS: &[&str] = &[
     "WebVowl.unpinNode",
     "WebVowl.writePositionsInto",
     "class NggExplorer",
+    "class NggGraph",
     "class WebVowl",
+    "fn decodeNgg1",
+    "fn encodeNgg1",
     "fn init",
+    "fn ngg1Constants",
     "fn version",
 ];
 
@@ -750,6 +769,7 @@ fn eval_cfg(m: &syn::Meta) -> bool {
 struct Bindgen {
     js_name: Option<String>,
     constructor: bool,
+    custom_typescript: bool,
 }
 
 fn bindgen_attr(attrs: &[syn::Attribute]) -> Option<Bindgen> {
@@ -757,11 +777,14 @@ fn bindgen_attr(attrs: &[syn::Attribute]) -> Option<Bindgen> {
     let mut b = Bindgen {
         js_name: None,
         constructor: false,
+        custom_typescript: false,
     };
     if let syn::Meta::List(_) = &a.meta {
         a.parse_nested_meta(|m| {
             if m.path.is_ident("constructor") {
                 b.constructor = true;
+            } else if m.path.is_ident("typescript_custom_section") {
+                b.custom_typescript = true;
             } else if m.input.peek(syn::Token![=]) {
                 let e: syn::Expr = m.value()?.parse()?;
                 if m.path.is_ident("js_name") {
@@ -855,7 +878,7 @@ fn exports_in_items(items: Vec<syn::Item>, dir: &Path, out: &mut BTreeSet<String
                     syn::Item::Type(t) => &t.attrs,
                     _ => continue,
                 };
-                if cfg_active(attrs) && bindgen_attr(attrs).is_some() {
+                if cfg_active(attrs) && bindgen_attr(attrs).is_some_and(|b| !b.custom_typescript) {
                     out.insert(format!("other {}", quote_kind(&other)));
                 }
             }
@@ -915,7 +938,7 @@ fn js_surface_is_frozen_exactly() {
         got,
         frozen(),
         "frozen JS API: the wasm_bindgen exports of src/ (features ngg1,interaction) differ from \
-         the recorded 0.1.2 surface.\nadded: {:?}\nremoved: {:?}",
+         the recorded 0.2.0 surface.\nadded: {:?}\nremoved: {:?}",
         got.difference(&frozen()).collect::<Vec<_>>(),
         frozen().difference(&got).collect::<Vec<_>>()
     );

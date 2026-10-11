@@ -202,6 +202,9 @@ jobs:
           VOWL_BUNDLE_GATE: "1"
         run: cargo test --test ontomark_ngg1_migration --features ngg1,interaction
 
+      - name: Execute NGG1 JavaScript codec contracts
+        run: node --test tests/ngg1_wasm.test.mjs
+
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: vowl-wasm-pkg
