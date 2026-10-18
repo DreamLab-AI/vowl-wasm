@@ -105,6 +105,14 @@ impl NggExplorer {
         self.sim.set_param(key, val);
     }
 
+    /// Set the Barnes-Hut opening angle for many-body repulsion. The default is
+    /// 0.9 (d3-force); larger is faster but coarser, and `0` (or below) selects
+    /// the exact O(n²) all-pairs loop.
+    #[wasm_bindgen(js_name = setTheta)]
+    pub fn set_theta(&mut self, theta: f32) {
+        self.sim.set_theta(theta);
+    }
+
     /// Re-heat and resume a settled scope (convenience for `setParam("reheat")`).
     #[wasm_bindgen(js_name = reheat)]
     pub fn reheat(&mut self, alpha: f32) {

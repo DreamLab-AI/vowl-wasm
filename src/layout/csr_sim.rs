@@ -7,8 +7,14 @@
 //! VisionClaw `get_*_ptr` idiom (`scene-effects`), adapted.
 //!
 //! Design constraints (ADR §3):
-//! - Naive O(n²) repulsion, **scoped** — T1 caps at 1,500 nodes ⇒ ≤ 2.25M
-//!   pair-ops/tick; well within WASM headroom. Barnes-Hut is a follow-up slot.
+//! - Many-body repulsion is Barnes-Hut by default: a 2D quadtree is built once
+//!   per tick and distant cells are collapsed to their total charge at their
+//!   charge-weighted centre when `cell_width² / distance² < theta²` (`theta`
+//!   defaults to 0.9, the d3-force `forceManyBody` default). The pair formula
+//!   (`charge / d²`, index-derived nudge for coincident nodes) is the same as
+//!   the exact loop. Select the exact O(n²) all-pairs loop with
+//!   [`Repulsion::Exact`], `set_theta(0.0)` or `set_param("theta", 0.0)`; it
+//!   runs unchanged, so results can be compared against the approximation.
 //! - Springs on both edge kinds (subClassOf backbone + objectProperty relation).
 //! - **Deterministic** given the seeds: node order is the CSR local-index order,
 //!   all accumulation is over `Vec` indices (no `HashMap` iteration), coincident
@@ -19,6 +25,29 @@
 
 #[cfg(feature = "ngg1")]
 use crate::ngg1::Ngg1;
+
+/// Many-body repulsion strategy.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Repulsion {
+    /// Exact O(n²) all-pairs loop.
+    Exact,
+    /// Barnes-Hut quadtree approximation with the given opening angle `theta`
+    /// (larger ⇒ faster, less accurate). A `theta` of zero or below is
+    /// normalised to [`Repulsion::Exact`] by [`Repulsion::from_theta`].
+    BarnesHut(f32),
+}
+
+impl Repulsion {
+    /// Map a d3-style `theta` to a strategy: `theta <= 0` (or non-finite) is
+    /// [`Repulsion::Exact`], anything else is [`Repulsion::BarnesHut`].
+    pub fn from_theta(theta: f32) -> Self {
+        if theta.is_finite() && theta > 0.0 {
+            Repulsion::BarnesHut(theta)
+        } else {
+            Repulsion::Exact
+        }
+    }
+}
 
 /// Tunable scalar parameters. These are the only physics knobs exposed to JS
 /// (protocol `SimParamKey`); no WebVOWL-style settings sprawl.
@@ -38,6 +67,8 @@ pub struct SimConfig {
     pub center_gravity: f32,
     /// Layout centre.
     pub center: (f32, f32),
+    /// Repulsion strategy (default Barnes-Hut, `theta = 0.9`).
+    pub repulsion: Repulsion,
     /// Starting annealing temperature.
     pub alpha: f32,
     /// Per-tick multiplicative alpha decay: `alpha *= 1 - alpha_decay`.
@@ -57,10 +88,141 @@ impl Default for SimConfig {
             damping: 0.6,
             center_gravity: 0.02,
             center: (0.0, 0.0),
+            repulsion: Repulsion::BarnesHut(0.9),
             alpha: 1.0,
             alpha_decay: 0.0228,
             alpha_min: 0.001,
         }
+    }
+}
+
+const NONE: u32 = u32::MAX;
+/// Depth cap: coincident points end up in one multi-point leaf instead of
+/// recursing forever.
+const MAX_DEPTH: u32 = 40;
+
+/// Pair displacement `(dx, dy, d²)` for the pair `(lo, hi)` (`lo < hi`),
+/// from the point of view of the node on the `i` side (`is_lo` ⇒ `i == lo`).
+/// Mirrors the exact loop, including the deterministic coincident nudge.
+#[inline]
+fn pair_delta(dx: f32, dy: f32, lo: usize, hi: usize, is_lo: bool) -> (f32, f32, f32) {
+    let d2 = dx * dx + dy * dy;
+    if d2 >= 1e-6 {
+        return (dx, dy, d2);
+    }
+    let s = (lo as f32) * 12.9898 + (hi as f32) * 78.233;
+    let (mut ndx, mut ndy) = (s.sin() * 1e-2, s.cos() * 1e-2);
+    let mut nd2 = ndx * ndx + ndy * ndy;
+    if nd2 < 1e-9 {
+        ndx = 1e-2;
+        ndy = 0.0;
+        nd2 = 1e-4;
+    }
+    if is_lo {
+        (ndx, ndy, nd2)
+    } else {
+        (-ndx, -ndy, nd2)
+    }
+}
+
+/// One quadtree cell. Leaves own `points[start..start + count]` (`start` is
+/// meaningless for internal cells); every cell carries charge-weighted sums
+/// over all its descendants.
+struct Cell {
+    cx: f32,
+    cy: f32,
+    half: f32,
+    /// Total charge (unit charge per node ⇒ node count).
+    count: u32,
+    /// Sum of member coordinates; `sx / count` is the centre of charge.
+    sx: f32,
+    sy: f32,
+    start: u32,
+    children: [u32; 4],
+}
+
+impl Cell {
+    #[inline]
+    fn is_leaf(&self) -> bool {
+        self.children == [NONE; 4]
+    }
+}
+
+/// Arena quadtree over the interleaved position buffer, rebuilt every tick.
+struct QuadTree {
+    cells: Vec<Cell>,
+    /// Node indices, grouped so each cell's members are contiguous.
+    points: Vec<u32>,
+}
+
+impl QuadTree {
+    /// Build over `n` points; `None` if there are none or any coordinate is
+    /// non-finite.
+    fn build(pos: &[f32], n: usize) -> Option<Self> {
+        if n == 0 {
+            return None;
+        }
+        let (mut x0, mut y0, mut x1, mut y1) = (f32::MAX, f32::MAX, f32::MIN, f32::MIN);
+        for i in 0..n {
+            let (x, y) = (pos[i * 2], pos[i * 2 + 1]);
+            if !x.is_finite() || !y.is_finite() {
+                return None;
+            }
+            x0 = x0.min(x);
+            x1 = x1.max(x);
+            y0 = y0.min(y);
+            y1 = y1.max(y);
+        }
+        let half = ((x1 - x0).max(y1 - y0) * 0.5).max(1e-3) * 1.0001;
+        let mut tree = QuadTree {
+            cells: Vec::with_capacity(n * 2),
+            points: Vec::with_capacity(n),
+        };
+        let idx: Vec<u32> = (0..n as u32).collect();
+        tree.add(pos, idx, (x0 + x1) * 0.5, (y0 + y1) * 0.5, half, 0);
+        Some(tree)
+    }
+
+    /// Recursively build a cell for `idx`, returning its arena index.
+    fn add(&mut self, pos: &[f32], idx: Vec<u32>, cx: f32, cy: f32, half: f32, depth: u32) -> u32 {
+        let me = self.cells.len() as u32;
+        let (mut sx, mut sy) = (0.0f32, 0.0f32);
+        for &i in &idx {
+            sx += pos[i as usize * 2];
+            sy += pos[i as usize * 2 + 1];
+        }
+        let start = self.points.len() as u32;
+        self.cells.push(Cell {
+            cx,
+            cy,
+            half,
+            count: idx.len() as u32,
+            sx,
+            sy,
+            start,
+            children: [NONE; 4],
+        });
+        if idx.len() <= 1 || depth >= MAX_DEPTH {
+            self.points.extend_from_slice(&idx);
+            return me;
+        }
+        let mut quads: [Vec<u32>; 4] = Default::default();
+        for &i in &idx {
+            let q = usize::from(pos[i as usize * 2] >= cx)
+                | (usize::from(pos[i as usize * 2 + 1] >= cy) << 1);
+            quads[q].push(i);
+        }
+        let h = half * 0.5;
+        for (q, members) in quads.into_iter().enumerate() {
+            if members.is_empty() {
+                continue;
+            }
+            let qx = cx + if q & 1 == 1 { h } else { -h };
+            let qy = cy + if q & 2 == 2 { h } else { -h };
+            let child = self.add(pos, members, qx, qy, h, depth + 1);
+            self.cells[me as usize].children[q] = child;
+        }
+        me
     }
 }
 
@@ -209,38 +371,8 @@ impl CsrSimulation {
         let mut fx = vec![0.0f32; n];
         let mut fy = vec![0.0f32; n];
 
-        // ── Repulsion: O(n²) Coulomb, every unordered pair once (Newton's 3rd).
-        let charge = self.config.charge;
-        for i in 0..n {
-            let xi = self.positions[i * 2];
-            let yi = self.positions[i * 2 + 1];
-            for j in (i + 1)..n {
-                let mut dx = xi - self.positions[j * 2];
-                let mut dy = yi - self.positions[j * 2 + 1];
-                let mut d2 = dx * dx + dy * dy;
-                if d2 < 1e-6 {
-                    // Coincident (or near): deterministic index-derived nudge so
-                    // the pair separates the same way on every run.
-                    let s = (i as f32) * 12.9898 + (j as f32) * 78.233;
-                    dx = s.sin() * 1e-2;
-                    dy = s.cos() * 1e-2;
-                    d2 = dx * dx + dy * dy;
-                    if d2 < 1e-9 {
-                        dx = 1e-2;
-                        dy = 0.0;
-                        d2 = 1e-4;
-                    }
-                }
-                let inv_d = 1.0 / d2.sqrt();
-                let mag = charge / d2; // repulsive magnitude
-                let ux = dx * inv_d;
-                let uy = dy * inv_d;
-                fx[i] += ux * mag;
-                fy[i] += uy * mag;
-                fx[j] -= ux * mag;
-                fy[j] -= uy * mag;
-            }
-        }
+        // ── Repulsion: exact all-pairs or Barnes-Hut (see module doc).
+        self.repulsion_forces(&mut fx, &mut fy);
 
         // ── Springs: Hooke toward rest length, both backbone and relation.
         let ld = self.config.link_distance;
@@ -289,6 +421,115 @@ impl CsrSimulation {
         if self.alpha < self.config.alpha_min {
             self.alpha = self.config.alpha_min;
             self.finished = true;
+        }
+    }
+
+    /// Accumulate many-body repulsion into `fx`/`fy` (length `n`) using the
+    /// configured strategy.
+    fn repulsion_forces(&self, fx: &mut [f32], fy: &mut [f32]) {
+        match self.config.repulsion {
+            Repulsion::Exact => self.repulsion_exact(fx, fy),
+            Repulsion::BarnesHut(theta) => self.repulsion_barnes_hut(theta, fx, fy),
+        }
+    }
+
+    /// O(n²) Coulomb, every unordered pair once (Newton's 3rd).
+    fn repulsion_exact(&self, fx: &mut [f32], fy: &mut [f32]) {
+        let n = self.n;
+        let charge = self.config.charge;
+        for i in 0..n {
+            let xi = self.positions[i * 2];
+            let yi = self.positions[i * 2 + 1];
+            for j in (i + 1)..n {
+                let mut dx = xi - self.positions[j * 2];
+                let mut dy = yi - self.positions[j * 2 + 1];
+                let mut d2 = dx * dx + dy * dy;
+                if d2 < 1e-6 {
+                    // Coincident (or near): deterministic index-derived nudge so
+                    // the pair separates the same way on every run.
+                    let s = (i as f32) * 12.9898 + (j as f32) * 78.233;
+                    dx = s.sin() * 1e-2;
+                    dy = s.cos() * 1e-2;
+                    d2 = dx * dx + dy * dy;
+                    if d2 < 1e-9 {
+                        dx = 1e-2;
+                        dy = 0.0;
+                        d2 = 1e-4;
+                    }
+                }
+                let inv_d = 1.0 / d2.sqrt();
+                let mag = charge / d2; // repulsive magnitude
+                let ux = dx * inv_d;
+                let uy = dy * inv_d;
+                fx[i] += ux * mag;
+                fy[i] += uy * mag;
+                fx[j] -= ux * mag;
+                fy[j] -= uy * mag;
+            }
+        }
+    }
+
+    /// Barnes-Hut repulsion: one quadtree per tick, one walk per node.
+    fn repulsion_barnes_hut(&self, theta: f32, fx: &mut [f32], fy: &mut [f32]) {
+        let n = self.n;
+        let Some(tree) = QuadTree::build(&self.positions, n) else {
+            return;
+        };
+        let charge = self.config.charge;
+        let theta2 = theta * theta;
+        let mut stack: Vec<u32> = Vec::with_capacity(64);
+        for i in 0..n {
+            let xi = self.positions[i * 2];
+            let yi = self.positions[i * 2 + 1];
+            let (mut ax, mut ay) = (0.0f32, 0.0f32);
+            stack.clear();
+            stack.push(0);
+            while let Some(c) = stack.pop() {
+                let cell = &tree.cells[c as usize];
+                if cell.is_leaf() {
+                    for &j in &tree.points[cell.start as usize..(cell.start + cell.count) as usize]
+                    {
+                        let j = j as usize;
+                        if j == i {
+                            continue;
+                        }
+                        // Same pair as the exact loop: lower index is "i".
+                        let (lo, hi) = if i < j { (i, j) } else { (j, i) };
+                        let (dx, dy, d2) = pair_delta(
+                            xi - self.positions[j * 2],
+                            yi - self.positions[j * 2 + 1],
+                            lo,
+                            hi,
+                            i == lo,
+                        );
+                        let mag = charge / d2;
+                        let inv_d = 1.0 / d2.sqrt();
+                        ax += dx * inv_d * mag;
+                        ay += dy * inv_d * mag;
+                    }
+                    continue;
+                }
+                let inside = (xi - cell.cx).abs() <= cell.half && (yi - cell.cy).abs() <= cell.half;
+                let m = cell.count as f32;
+                let dx = xi - cell.sx / m;
+                let dy = yi - cell.sy / m;
+                let d2 = dx * dx + dy * dy;
+                let w = cell.half * 2.0;
+                if !inside && d2 >= 1e-6 && w * w < theta2 * d2 {
+                    let inv_d = 1.0 / d2.sqrt();
+                    let mag = charge * m / d2;
+                    ax += dx * inv_d * mag;
+                    ay += dy * inv_d * mag;
+                } else {
+                    for &ch in &cell.children {
+                        if ch != NONE {
+                            stack.push(ch);
+                        }
+                    }
+                }
+            }
+            fx[i] += ax;
+            fy[i] += ay;
         }
     }
 
@@ -359,6 +600,15 @@ impl CsrSimulation {
     pub fn set_center_gravity(&mut self, v: f32) {
         self.config.center_gravity = v;
     }
+    /// Set the Barnes-Hut opening angle. `theta <= 0` selects the exact
+    /// all-pairs loop ([`Repulsion::Exact`]); the d3-force default is 0.9.
+    pub fn set_theta(&mut self, v: f32) {
+        self.config.repulsion = Repulsion::from_theta(v);
+    }
+    /// Select the repulsion strategy explicitly.
+    pub fn set_repulsion(&mut self, r: Repulsion) {
+        self.config.repulsion = r;
+    }
     /// Set the alpha floor.
     pub fn set_alpha_min(&mut self, v: f32) {
         self.config.alpha_min = v;
@@ -380,6 +630,7 @@ impl CsrSimulation {
             "damping" => self.set_damping(val),
             "centerGravity" => self.set_center_gravity(val),
             "alphaMin" => self.set_alpha_min(val),
+            "theta" => self.set_theta(val),
             "reheat" => self.reheat(val),
             _ => {}
         }
@@ -555,5 +806,129 @@ mod tests {
         }
         // No reallocation during ticking ⇒ the JS Float32Array view stays valid.
         assert_eq!(p0, sim.positions_ptr());
+    }
+
+    /// Deterministic xorshift layout in `[-300, 300]²`.
+    fn random_sim(n: usize, seed: u32) -> CsrSimulation {
+        let mut state = seed;
+        let mut next = move || {
+            state ^= state << 13;
+            state ^= state >> 17;
+            state ^= state << 5;
+            (state as f32 / u32::MAX as f32) * 600.0 - 300.0
+        };
+        let pos: Vec<f32> = (0..n * 2).map(|_| next()).collect();
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(pos, vec![], vec![], vec![]);
+        sim
+    }
+
+    fn forces(sim: &CsrSimulation) -> (Vec<f32>, Vec<f32>) {
+        let mut fx = vec![0.0; sim.n];
+        let mut fy = vec![0.0; sim.n];
+        sim.repulsion_forces(&mut fx, &mut fy);
+        (fx, fy)
+    }
+
+    #[test]
+    fn barnes_hut_theta_half_within_two_percent_of_exact() {
+        let mut sim = random_sim(300, 0x9E37_79B9);
+        sim.set_repulsion(Repulsion::Exact);
+        let (ex, ey) = forces(&sim);
+        sim.set_theta(0.5);
+        let (bx, by) = forces(&sim);
+        let (mut err, mut norm) = (0.0f64, 0.0f64);
+        for i in 0..300 {
+            let (dx, dy) = ((bx[i] - ex[i]) as f64, (by[i] - ey[i]) as f64);
+            err += (dx * dx + dy * dy).sqrt();
+            norm += ((ex[i] as f64).powi(2) + (ey[i] as f64).powi(2)).sqrt();
+        }
+        let rel = err / norm;
+        println!("barnes-hut theta 0.5 aggregate relative error = {rel:.5}");
+        assert!(rel < 0.02, "relative error {rel}");
+    }
+
+    #[test]
+    fn theta_zero_is_bit_identical_to_exact() {
+        let mut a = random_sim(120, 7);
+        let mut b = random_sim(120, 7);
+        a.set_repulsion(Repulsion::Exact);
+        b.set_theta(0.0);
+        assert_eq!(b.config.repulsion, Repulsion::Exact);
+        assert_eq!(forces(&a), forces(&b));
+        for _ in 0..20 {
+            a.tick();
+            b.tick();
+        }
+        let bits = |s: &CsrSimulation| s.positions.iter().map(|v| v.to_bits()).collect::<Vec<_>>();
+        assert_eq!(bits(&a), bits(&b));
+    }
+
+    #[test]
+    fn barnes_hut_layout_converges_and_stays_finite() {
+        let mut sim = random_sim(200, 42);
+        let a0 = sim.alpha();
+        assert!(matches!(sim.config.repulsion, Repulsion::BarnesHut(t) if t == 0.9));
+        for _ in 0..400 {
+            sim.tick();
+        }
+        assert!(sim.alpha() < a0);
+        assert!(sim.is_finished());
+        assert!(sim.positions.iter().all(|v| v.is_finite()));
+    }
+
+    #[test]
+    fn coincident_and_single_nodes_are_safe() {
+        for repulsion in [Repulsion::Exact, Repulsion::BarnesHut(0.9)] {
+            let mut one = CsrSimulation::new();
+            one.load_arrays(vec![5.0, 5.0], vec![], vec![], vec![]);
+            one.set_repulsion(repulsion);
+            let mut same = CsrSimulation::new();
+            same.load_arrays(vec![1.0; 20], vec![], vec![], vec![]);
+            same.set_repulsion(repulsion);
+            for _ in 0..50 {
+                one.tick();
+                same.tick();
+            }
+            assert!(one.positions.iter().all(|v| v.is_finite()));
+            assert!(same.positions.iter().all(|v| v.is_finite()));
+            assert_ne!(
+                same.positions[0], same.positions[2],
+                "coincident nodes separate"
+            );
+        }
+    }
+
+    #[test]
+    fn coincident_pair_forces_match_exact() {
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(vec![1.0, 1.0, 1.0, 1.0, 50.0, 3.0], vec![], vec![], vec![]);
+        sim.set_repulsion(Repulsion::Exact);
+        let exact = forces(&sim);
+        sim.set_theta(0.9);
+        let bh = forces(&sim);
+        for k in 0..3 {
+            assert!((exact.0[k] - bh.0[k]).abs() <= 1e-3 * exact.0[k].abs().max(1.0));
+            assert!((exact.1[k] - bh.1[k]).abs() <= 1e-3 * exact.1[k].abs().max(1.0));
+        }
+    }
+
+    /// `cargo test --release -- --ignored --nocapture`
+    #[test]
+    #[ignore]
+    fn tick_timing_n2000_exact_vs_barnes_hut() {
+        for (label, repulsion) in [
+            ("exact", Repulsion::Exact),
+            ("barnes-hut 0.9", Repulsion::BarnesHut(0.9)),
+        ] {
+            let mut sim = random_sim(2000, 1234);
+            sim.set_repulsion(repulsion);
+            sim.tick(); // warm-up
+            let t = std::time::Instant::now();
+            for _ in 0..20 {
+                sim.tick();
+            }
+            println!("n=2000 {label}: {:?}/tick", t.elapsed() / 20);
+        }
     }
 }
