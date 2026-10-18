@@ -65,6 +65,15 @@ impl ForceSimulation {
     pub fn set_link_distance(&mut self, distance: f64) {
         self.config.link_distance = distance;
     }
+    /// Re-heat a settled or cooling simulation so it resumes motion
+    /// (protocol `reheat`, matching `CsrSimulation::reheat`). `alpha` is
+    /// clamped to `(0, 1]`; a non-finite or non-positive value is ignored.
+    pub fn reheat(&mut self, alpha: f64) {
+        if alpha.is_finite() && alpha > 0.0 {
+            self.alpha = alpha.min(1.0);
+        }
+    }
+
 
     /// Set charge strength
     pub fn set_charge_strength(&mut self, strength: f64) {
@@ -345,6 +354,22 @@ impl Default for ForceSimulation {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn reheat_resumes_a_settled_simulation() {
+        let mut sim = ForceSimulation::new();
+        sim.alpha = 0.0;
+        assert!(sim.is_finished());
+        sim.reheat(f64::NAN);
+        assert_eq!(sim.alpha, 0.0);
+        sim.reheat(-1.0);
+        assert_eq!(sim.alpha, 0.0);
+        sim.reheat(2.0);
+        assert_eq!(sim.alpha, 1.0);
+        assert!(!sim.is_finished());
+        sim.reheat(0.3);
+        assert!((sim.alpha - 0.3).abs() < 1e-12);
+    }
+
     use super::*;
     use crate::graph::{node::NodeBuilder, NodeType, VowlGraph};
 

@@ -128,6 +128,13 @@ impl WebVowl {
         self.simulation.alpha()
     }
 
+    /// Re-heat a settled simulation so `tick` moves nodes again, for example
+    /// after a filter or a drag. Mirrors `NggExplorer.reheat`.
+    #[wasm_bindgen(js_name = reheat)]
+    pub fn reheat(&mut self, alpha: f64) {
+        self.simulation.reheat(alpha);
+    }
+
     /// Set simulation center
     #[wasm_bindgen(js_name = setCenter)]
     pub fn set_center(&mut self, x: f64, y: f64) {
