@@ -74,7 +74,6 @@ impl ForceSimulation {
         }
     }
 
-
     /// Set charge strength
     pub fn set_charge_strength(&mut self, strength: f64) {
         self.config.charge_strength = strength;
