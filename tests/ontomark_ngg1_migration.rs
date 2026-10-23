@@ -38,7 +38,8 @@ const BUNDLE_BUDGET_BYTES: u64 = 280_000;
 /// A real vowl-wasm module is hundreds of kilobytes; anything below this is a stub.
 const BUNDLE_FLOOR_BYTES: u64 = 100_000;
 
-/// The exact 0.2.0 wasm-bindgen export surface of the published bundle.
+/// The exact wasm-bindgen export surface of the bundle: the published 0.2.0 surface plus the
+/// additive ER-20 bindings `WebVowl.reheat` and `NggExplorer.setTheta`.
 /// It preserves the 0.1.2 methods and adds NggGraph, decode/encode and constants.
 /// (`--features ngg1,interaction`), as listed in `pkg/vowl_wasm.d.ts` built from `main`
 /// (the 0.1.2 API). `parseMarkdownOntology`, `validateOWL2` and `getGraphData` are absent from
@@ -55,6 +56,7 @@ const FROZEN_JS_EXPORTS: &[&str] = &[
     "NggExplorer.positionsPtr",
     "NggExplorer.reheat",
     "NggExplorer.setParam",
+    "NggExplorer.setTheta",
     "NggExplorer.tick",
     "NggExplorer.writePositionsInto",
     "NggGraph.categories",
@@ -89,6 +91,7 @@ const FROZEN_JS_EXPORTS: &[&str] = &[
     "WebVowl.loadOntology",
     "WebVowl.pinNode",
     "WebVowl.resetPins",
+    "WebVowl.reheat",
     "WebVowl.resetVisibility",
     "WebVowl.runSimulation",
     "WebVowl.setCenter",

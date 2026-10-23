@@ -31,9 +31,16 @@ jobs:
         with:
           toolchain: '1.99.0'
           components: rustfmt, clippy
-      - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa
-        with:
-          version: 'v0.15.0'
+      - name: Install wasm-pack 0.15.0 (pinned release, checksum-verified)
+        run: |
+          curl --proto '=https' --tlsv1.2 --retry 5 --fail --silent --show-error --location \
+            -o "$RUNNER_TEMP/wasm-pack.tgz" \
+            https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz
+          echo "c09f971ecaed9a2efc80fdcea7a00ef6b53c7fadc8c57d1f61b53a6aa66b668a  $RUNNER_TEMP/wasm-pack.tgz" | sha256sum --check -
+          mkdir -p "$HOME/.cargo/bin"
+          tar -xzf "$RUNNER_TEMP/wasm-pack.tgz" --strip-components=1 -C "$HOME/.cargo/bin" \
+            wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack
+          wasm-pack --version
       - name: Check the guard and its regressions
         run: |
           cargo fmt --manifest-path tools/release-inventory/Cargo.toml -- --check
@@ -178,9 +185,16 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           key: wasm-pack
-      - uses: jetli/wasm-pack-action@0d096b08b4e5a7de8c28de67e11e945404e9eefa # v0.4.0
-        with:
-          version: latest
+      - name: Install wasm-pack 0.15.0 (pinned release, checksum-verified)
+        run: |
+          curl --proto '=https' --tlsv1.2 --retry 5 --fail --silent --show-error --location \
+            -o "$RUNNER_TEMP/wasm-pack.tgz" \
+            https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz
+          echo "c09f971ecaed9a2efc80fdcea7a00ef6b53c7fadc8c57d1f61b53a6aa66b668a  $RUNNER_TEMP/wasm-pack.tgz" | sha256sum --check -
+          mkdir -p "$HOME/.cargo/bin"
+          tar -xzf "$RUNNER_TEMP/wasm-pack.tgz" --strip-components=1 -C "$HOME/.cargo/bin" \
+            wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack
+          wasm-pack --version
 
       # The published bundle is built with `ngg1,interaction`; the markdown
       # parser is gone (ontomark-parse owns it).
