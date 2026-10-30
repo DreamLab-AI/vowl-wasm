@@ -5,6 +5,21 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-10-30
+
+### Fixed
+
+- `CsrSimulation` repulsion is softened below a quarter of `link_distance`, and
+  each node's per-tick displacement is capped at twice `link_distance`. A
+  near-coincident seed pair was previously thrown thousands of units on the
+  first tick (`charge / d²` is unbounded as `d → 0`). Both bounds derive from
+  `link_distance`; the exported surface is unchanged.
+
+### Added
+
+- Barnes-Hut quadtree repulsion for `CsrSimulation` (default `theta = 0.9`),
+  with `setTheta`, and `reheat` on `ForceSimulation` and `WebVowl` (ER-20).
+
 ## [0.2.0] - 2026-10-11
 
 ### Added
