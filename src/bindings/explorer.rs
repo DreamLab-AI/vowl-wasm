@@ -2,7 +2,8 @@
 //! (ADR-NG-001 §3). One instance per worker: load a tier with `load_csr`, expose
 //! the live position buffer to JS zero-copy via `positions_ptr`/`positions_len`
 //! (or copy it out with `write_positions_into` on the transferable path), and
-//! drive the sim with `tick`/`is_finished`/`get_alpha`/`set_*`.
+//! drive the sim with `tick`/`is_finished`/`get_alpha`/`set_*`, pinning dragged
+//! nodes with `pin_node`/`unpin_node`.
 //!
 //! This replaces the old `get_graph_data()` boundary-serialisation hot path
 //! (deleted from default builds, kept behind the `debug-serde` feature on the
@@ -111,6 +112,22 @@ impl NggExplorer {
     #[wasm_bindgen(js_name = setTheta)]
     pub fn set_theta(&mut self, theta: f32) {
         self.sim.set_theta(theta);
+    }
+
+    /// Hold node `index` at `(x, y)` while the host drags it; its neighbours
+    /// keep reacting to it. Returns `false`, changing nothing, for an index
+    /// outside the loaded scope or a non-finite coordinate, so a stale UI event
+    /// cannot take the worker down. Pair with `reheat` to wake a settled scope.
+    #[wasm_bindgen(js_name = pinNode)]
+    pub fn pin_node(&mut self, index: u32, x: f32, y: f32) -> bool {
+        self.sim.pin(index as usize, x, y)
+    }
+
+    /// Release a pinned node back to the layout. Returns `false` for an index
+    /// outside the loaded scope. `loadCsr` clears every pin.
+    #[wasm_bindgen(js_name = unpinNode)]
+    pub fn unpin_node(&mut self, index: u32) -> bool {
+        self.sim.unpin(index as usize)
     }
 
     /// Re-heat and resume a settled scope (convenience for `setParam("reheat")`).

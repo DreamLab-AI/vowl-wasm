@@ -39,7 +39,8 @@ const BUNDLE_BUDGET_BYTES: u64 = 280_000;
 const BUNDLE_FLOOR_BYTES: u64 = 100_000;
 
 /// The exact wasm-bindgen export surface of the bundle: the published 0.2.0 surface plus the
-/// additive ER-20 bindings `WebVowl.reheat` and `NggExplorer.setTheta`.
+/// additive ER-20 bindings `WebVowl.reheat` and `NggExplorer.setTheta`, and the additive 0.2.2
+/// drag bindings `NggExplorer.pinNode` and `NggExplorer.unpinNode`.
 /// It preserves the 0.1.2 methods and adds NggGraph, decode/encode and constants.
 /// (`--features ngg1,interaction`), as listed in `pkg/vowl_wasm.d.ts` built from `main`
 /// (the 0.1.2 API). `parseMarkdownOntology`, `validateOWL2` and `getGraphData` are absent from
@@ -52,12 +53,14 @@ const FROZEN_JS_EXPORTS: &[&str] = &[
     "NggExplorer.isFinished",
     "NggExplorer.loadCsr",
     "NggExplorer.nodeCount",
+    "NggExplorer.pinNode",
     "NggExplorer.positionsLen",
     "NggExplorer.positionsPtr",
     "NggExplorer.reheat",
     "NggExplorer.setParam",
     "NggExplorer.setTheta",
     "NggExplorer.tick",
+    "NggExplorer.unpinNode",
     "NggExplorer.writePositionsInto",
     "NggGraph.categories",
     "NggGraph.colIdx",

@@ -245,6 +245,10 @@ pub struct CsrSimulation {
     positions: Vec<f32>,
     /// Interleaved velocities, length `n*2`.
     velocities: Vec<f32>,
+    /// Nodes held in place by the host (a pointer drag), length `n`. A pinned
+    /// node still repels and pulls on the others; it is only skipped when
+    /// positions are integrated. Cleared by every load.
+    pinned: Vec<bool>,
     /// Edge endpoints (local indices) and types, parallel arrays.
     edge_a: Vec<u32>,
     edge_b: Vec<u32>,
@@ -268,6 +272,7 @@ impl CsrSimulation {
             n: 0,
             positions: Vec::new(),
             velocities: Vec::new(),
+            pinned: Vec::new(),
             edge_a: Vec::new(),
             edge_b: Vec::new(),
             edge_type: Vec::new(),
@@ -326,6 +331,7 @@ impl CsrSimulation {
 
         self.n = positions.len() / 2;
         self.velocities = vec![0.0f32; positions.len()];
+        self.pinned = vec![false; positions.len() / 2];
         self.positions = positions;
         self.edge_a = edge_a;
         self.edge_b = edge_b;
@@ -362,6 +368,7 @@ impl CsrSimulation {
         self.n = g.node_count();
         self.positions = g.seed_positions();
         self.velocities = vec![0.0f32; self.n * 2];
+        self.pinned = vec![false; self.n];
         let (a, b, ty) = g.edges();
         self.edge_a = a;
         self.edge_b = b;
@@ -411,6 +418,9 @@ impl CsrSimulation {
         let alpha = self.alpha;
         let max_step = MAX_STEP_FACTOR * self.config.link_distance;
         for i in 0..n {
+            if self.pinned[i] {
+                continue;
+            }
             let px = self.positions[i * 2];
             let py = self.positions[i * 2 + 1];
             let ax = fx[i] + (cx - px) * cg;
@@ -637,6 +647,40 @@ impl CsrSimulation {
     pub fn set_alpha_min(&mut self, v: f32) {
         self.config.alpha_min = v;
     }
+    /// Hold node `i` at `(x, y)` with zero velocity until [`unpin`](Self::unpin)
+    /// or the next load. It keeps exerting forces, so its neighbours follow it.
+    /// Returns `false`, changing nothing, for an index outside the loaded scope
+    /// or a non-finite coordinate. Does not reheat; callers that want the
+    /// layout to respond call [`reheat`](Self::reheat) as well.
+    pub fn pin(&mut self, i: usize, x: f32, y: f32) -> bool {
+        if i >= self.n || !x.is_finite() || !y.is_finite() {
+            return false;
+        }
+        self.positions[i * 2] = x;
+        self.positions[i * 2 + 1] = y;
+        self.velocities[i * 2] = 0.0;
+        self.velocities[i * 2 + 1] = 0.0;
+        self.pinned[i] = true;
+        true
+    }
+
+    /// Release node `i` back to the layout. Returns `false` for an index
+    /// outside the loaded scope.
+    pub fn unpin(&mut self, i: usize) -> bool {
+        match self.pinned.get_mut(i) {
+            Some(p) => {
+                *p = false;
+                true
+            }
+            None => false,
+        }
+    }
+
+    /// `true` while node `i` is pinned; `false` for any index outside the scope.
+    pub fn is_pinned(&self, i: usize) -> bool {
+        self.pinned.get(i).copied().unwrap_or(false)
+    }
+
     /// Re-heat the simulation: raise alpha and clear the finished flag so a
     /// settled scope resumes motion (protocol `reheat`).
     pub fn reheat(&mut self, v: f32) {
@@ -977,6 +1021,73 @@ mod tests {
                 r(1)
             );
         }
+    }
+
+    /// Three nodes in a chain; the middle one is dragged far to the right.
+    fn chain() -> CsrSimulation {
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(
+            vec![0.0, 0.0, 30.0, 0.0, 60.0, 0.0],
+            vec![0, 1],
+            vec![1, 2],
+            vec![0, 0],
+        );
+        sim
+    }
+
+    #[test]
+    fn a_pinned_node_holds_its_position_and_its_neighbours_follow() {
+        let mut sim = chain();
+        assert!(sim.pin(1, 400.0, 0.0));
+        let before = sim.positions[0];
+        for _ in 0..200 {
+            sim.tick();
+        }
+        let p = &sim.positions;
+        assert_eq!((p[2], p[3]), (400.0, 0.0), "pinned node must not move");
+        assert!(
+            p[0] > before + 100.0,
+            "spring neighbour should follow, got {}",
+            p[0]
+        );
+        assert!(sim.is_pinned(1));
+    }
+
+    #[test]
+    fn unpinning_returns_the_node_to_the_layout() {
+        let mut sim = chain();
+        sim.pin(1, 400.0, 0.0);
+        sim.tick();
+        assert!(sim.unpin(1));
+        assert!(!sim.is_pinned(1));
+        sim.reheat(0.5);
+        sim.tick();
+        assert_ne!(sim.positions[2], 400.0, "an unpinned node moves again");
+    }
+
+    #[test]
+    fn invalid_pins_are_refused_without_panicking() {
+        let mut sim = chain();
+        assert!(!sim.pin(3, 0.0, 0.0));
+        assert!(!sim.pin(usize::MAX, 0.0, 0.0));
+        assert!(!sim.pin(0, f32::NAN, 0.0));
+        assert!(!sim.pin(0, 0.0, f32::INFINITY));
+        assert!(!sim.unpin(3));
+        assert!(!sim.is_pinned(3));
+        assert_eq!(sim.positions[0], 0.0, "a refused pin leaves the node alone");
+    }
+
+    #[test]
+    fn loading_a_new_scope_clears_every_pin() {
+        let mut sim = chain();
+        sim.pin(0, 5.0, 5.0);
+        sim.load_arrays(
+            vec![0.0, 0.0, 30.0, 0.0, 60.0, 0.0],
+            vec![0],
+            vec![1],
+            vec![0],
+        );
+        assert!(!sim.is_pinned(0));
     }
 
     /// `cargo test --release -- --ignored --nocapture`
