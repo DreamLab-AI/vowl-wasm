@@ -97,6 +97,14 @@ impl Default for SimConfig {
 }
 
 const NONE: u32 = u32::MAX;
+
+/// Repulsion softening radius as a fraction of `link_distance`. `charge / d²`
+/// is unbounded as `d → 0`, so a near-coincident seed pair would be thrown
+/// thousands of units in one tick; below this radius the magnitude is held at
+/// its value at the radius (direction still follows the true offset).
+const SOFTENING_FRACTION: f32 = 0.25;
+/// Per-tick displacement cap as a multiple of `link_distance`.
+const MAX_STEP_FACTOR: f32 = 2.0;
 /// Depth cap: coincident points end up in one multi-point leaf instead of
 /// recursing forever.
 const MAX_DEPTH: u32 = 40;
@@ -401,6 +409,7 @@ impl CsrSimulation {
         let cg = self.config.center_gravity;
         let damping = self.config.damping;
         let alpha = self.alpha;
+        let max_step = MAX_STEP_FACTOR * self.config.link_distance;
         for i in 0..n {
             let px = self.positions[i * 2];
             let py = self.positions[i * 2 + 1];
@@ -411,6 +420,12 @@ impl CsrSimulation {
             let mut vy = self.velocities[i * 2 + 1] + ay * alpha;
             vx *= damping;
             vy *= damping;
+            let speed = (vx * vx + vy * vy).sqrt();
+            if speed > max_step {
+                let k = max_step / speed;
+                vx *= k;
+                vy *= k;
+            }
             self.velocities[i * 2] = vx;
             self.velocities[i * 2 + 1] = vy;
             self.positions[i * 2] = px + vx;
@@ -422,6 +437,13 @@ impl CsrSimulation {
             self.alpha = self.config.alpha_min;
             self.finished = true;
         }
+    }
+
+    /// Squared softening radius for the repulsion magnitude.
+    #[inline]
+    fn softening_sq(&self) -> f32 {
+        let r = SOFTENING_FRACTION * self.config.link_distance;
+        r * r
     }
 
     /// Accumulate many-body repulsion into `fx`/`fy` (length `n`) using the
@@ -437,6 +459,7 @@ impl CsrSimulation {
     fn repulsion_exact(&self, fx: &mut [f32], fy: &mut [f32]) {
         let n = self.n;
         let charge = self.config.charge;
+        let soft2 = self.softening_sq();
         for i in 0..n {
             let xi = self.positions[i * 2];
             let yi = self.positions[i * 2 + 1];
@@ -458,7 +481,7 @@ impl CsrSimulation {
                     }
                 }
                 let inv_d = 1.0 / d2.sqrt();
-                let mag = charge / d2; // repulsive magnitude
+                let mag = charge / d2.max(soft2); // repulsive magnitude, softened
                 let ux = dx * inv_d;
                 let uy = dy * inv_d;
                 fx[i] += ux * mag;
@@ -476,6 +499,7 @@ impl CsrSimulation {
             return;
         };
         let charge = self.config.charge;
+        let soft2 = self.softening_sq();
         let theta2 = theta * theta;
         let mut stack: Vec<u32> = Vec::with_capacity(64);
         for i in 0..n {
@@ -502,7 +526,7 @@ impl CsrSimulation {
                             hi,
                             i == lo,
                         );
-                        let mag = charge / d2;
+                        let mag = charge / d2.max(soft2);
                         let inv_d = 1.0 / d2.sqrt();
                         ax += dx * inv_d * mag;
                         ay += dy * inv_d * mag;
@@ -517,7 +541,7 @@ impl CsrSimulation {
                 let w = cell.half * 2.0;
                 if !inside && d2 >= 1e-6 && w * w < theta2 * d2 {
                     let inv_d = 1.0 / d2.sqrt();
-                    let mag = charge * m / d2;
+                    let mag = charge * m / d2.max(soft2);
                     ax += dx * inv_d * mag;
                     ay += dy * inv_d * mag;
                 } else {
@@ -910,6 +934,48 @@ mod tests {
         for k in 0..3 {
             assert!((exact.0[k] - bh.0[k]).abs() <= 1e-3 * exact.0[k].abs().max(1.0));
             assert!((exact.1[k] - bh.1[k]).abs() <= 1e-3 * exact.1[k].abs().max(1.0));
+        }
+    }
+
+    /// A near-coincident seed pair (0.67 apart, as two published AI-domain classes
+    /// were) must not be flung across the canvas: `charge / d²` is unbounded as
+    /// `d → 0`, so without softening and a step cap tick 1 moved them ~2,700 units.
+    #[test]
+    fn near_coincident_seeds_stay_in_bounds() {
+        for repulsion in [Repulsion::Exact, Repulsion::BarnesHut(0.9)] {
+            let mut sim = random_sim(60, 99);
+            sim.positions[0] = 10.0;
+            sim.positions[1] = 10.0;
+            sim.positions[2] = 10.67;
+            sim.positions[3] = 10.0;
+            sim.set_repulsion(repulsion);
+            let before = sim.positions.clone();
+            sim.tick();
+            let max_step = 2.0 * sim.config.link_distance;
+            for i in 0..sim.n {
+                let d = ((sim.positions[i * 2] - before[i * 2]).powi(2)
+                    + (sim.positions[i * 2 + 1] - before[i * 2 + 1]).powi(2))
+                .sqrt();
+                assert!(d <= max_step + 1e-3, "{repulsion:?}: node {i} stepped {d}");
+            }
+            assert_ne!(
+                sim.positions[0], sim.positions[2],
+                "the pair still separates"
+            );
+            while !sim.is_finished() {
+                sim.tick();
+            }
+            let r =
+                |i: usize| (sim.positions[i * 2].powi(2) + sim.positions[i * 2 + 1].powi(2)).sqrt();
+            let mut radii: Vec<f32> = (0..sim.n).map(r).collect();
+            radii.sort_by(f32::total_cmp);
+            let median = radii[sim.n / 2];
+            assert!(
+                r(0) < 3.0 * median && r(1) < 3.0 * median,
+                "{repulsion:?}: pair ended at {} / {} vs median {median}",
+                r(0),
+                r(1)
+            );
         }
     }
 
