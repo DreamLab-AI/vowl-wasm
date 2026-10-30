@@ -20,7 +20,7 @@ function fields(graph) {
 test('the golden decodes all fields and re-encodes byte for byte through WASM', () => {
   const graph = decodeNgg1(golden);
   try {
-    assert.equal(version(), '0.2.1');
+    assert.equal(version(), '0.2.2');
     assert.equal(graph.nodeCount(), 3);
     assert.equal(graph.edgeCount(), 2);
     const data = fields(graph);

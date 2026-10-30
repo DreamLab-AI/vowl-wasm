@@ -1,6 +1,6 @@
 {
-  "version": "0.2.1",
-  "source_commit": "533f8c6532efd6c51d471db91df6c27c9aebfece",
+  "version": "0.2.2",
+  "source_commit": "567d661b3f5614080fc2c8897ab6091af40feefc",
   "target": "wasm32-unknown-unknown",
   "features": [
     "ngg1",
@@ -9,14 +9,14 @@
   "rustc_version": "rustc 1.99.0 (b940084d7 2026-09-28)",
   "wasm_pack_version": "wasm-pack 0.15.0",
   "source_files": {
-    "Cargo.lock": "c1ba569c7484d2789cc44492a17e35cfeafa274066081e75fd9a38efeb1172eb",
-    "Cargo.toml": "339139cd0d5d6ce2dfdfe48707a60fbabd985f90d45750137284b646ebcd20f3",
+    "Cargo.lock": "bf2fc5c5df9c46f1fb0599d9ead9464685aa3e3c03fd64ae7c15d2c5486a0aad",
+    "Cargo.toml": "a9f762868e6be175b3088c245a9f2cb3c9067710c54673da7cdd8bd84742fa23",
     "benches/interaction_bench.rs": "031b24562c5f79083854ae4b3313aed694a2a47ee75749ab4ca10da1d41924c7",
     "benches/layout_bench.rs": "eafcce94057bc5d9b170f677ba4fa6a49981eefc27882350972311c00ffdc4f0",
     "benches/parser_bench.rs": "e1c85819828e818be8d6b00b32822011586178707b9734a98a7f1ffe9bcb02da",
     "benches/phase3_benchmarks.rs": "252b5cc1eb9739836991419ac34590be321d66cde1bedc4e4406161401bfed78",
     "examples/barnes_hut_benchmark.rs": "c3388906d3c028b690a2f35c698309e0d5710895e77eec8b88e295998795eaf8",
-    "src/bindings/explorer.rs": "7b91cc04ef84f08cfe1f808189fb3b09b27c4f7bc07e7c775908c878fda127f8",
+    "src/bindings/explorer.rs": "b535dd5cd879db6825bdbbbb639b277f6f1d9b25928316cf0eb6b670df1de981",
     "src/bindings/mod.rs": "f854da192cbff94a84967e7aa382180ccd2243d469de87c7767faec06dbfeead",
     "src/bindings/ngg.rs": "9f942851b41b889927c0a97ad94ea21ae62bc5a6a4c09ae8c4d109635841de66",
     "src/debug.rs": "00c12a537a5f86e8a41a2fdeaf12911495e5fc4113bff881842fbb71db8fdfff",
@@ -28,7 +28,7 @@
     "src/graph/pinning.rs": "d3ca4e5cc6c8737053c02fbdb10a9e4769847c46ae12dcb1d16a2ed45223b294",
     "src/graph/statistics.rs": "234f01de6882de64f88908203a7e7e617267fcac12e406ca89d61a4ad1cdde1b",
     "src/interaction/mod.rs": "0f8c0542ba3b559bafaffcc4bfe4d3d281f2724a4baea497f742c47eb95dd4e4",
-    "src/layout/csr_sim.rs": "a676c8641881de5e8464d74c0b71fa4e8ead129b46c4244ce6f6f9575c0bf102",
+    "src/layout/csr_sim.rs": "501e3826fb4fe0f734f2a750e0ea474dd6d91adeaf6bef0445e6735193966b01",
     "src/layout/force.rs": "0a4aa2da67ab0e328e446d2225ad58f67de3d1137a5c70ac5328bd8b93459755",
     "src/layout/mod.rs": "65d2baaf4264bdd382d5b119ad0955e7afb6bf86e619d702da33a29cf7516f73",
     "src/layout/quadtree.rs": "e673330acb60f6a5950c4b698844c6f137a84702e422ace2b2797449166d93f5",
@@ -43,14 +43,14 @@
     "tests/fixtures/ngg1-3n2e.bin": "b4580c96e5d83fe44b791cc59b4e44cab573dcbb467d9bbe363eb1bcba6f0c3f",
     "tests/integration_test.rs": "5184def23054ea361fa1c13883128dceb2b1a3f173b00c39aaef0a362f0cc306",
     "tests/ngg1_explorer_test.rs": "5096f727f2ad0f0dce2905a094b72848344ea9567000aeb473e3d7007ce70b6b",
-    "tests/ngg1_wasm.test.mjs": "06110c5fe5decebb22fb07af8c16c50f69a773bbd46bb64e74bee253e1700707",
+    "tests/ngg1_wasm.test.mjs": "e7184210c8053874818a72777d52070682e9d1702dc318f53d5cb5f59f0bb1c1",
     "tests/ontology_metadata_test.rs": "a4284d6b190249fb4612cf13946d773ce864bc78eabaa8b02935f0ffee913268",
-    "tests/ontomark_ngg1_migration.rs": "80caa7368326f65c415c811120672b5629e407a62c2f523192151137c772628c",
+    "tests/ontomark_ngg1_migration.rs": "00daa0fdb1d70929bea831cc9388face3509b390e37b9cc159ae1c81eccbd231",
     "tests/ontomark_taxonomy_migration.rs": "62e1097dec5a489d76031f5b3713e3fad152c1c126e00a1c38abfcf6a41124c7",
     "tests/phase3_integration.rs": "df0ccbf877ec42a97580a24bc74b17bc6b2b57e3cbd8c8107f5f633b261c06f2"
   },
   "notice_files": {
-    "THIRD-PARTY-NOTICES.md": "52131bfc2ddd8ba8f5d45191e286115beeea3f1f2b6dad83384a5d49eee74382",
-    "docs/UPSTREAMS.md": "ed44bb2bd65f03483d4598d5ef9f6e1650121972623ef30707f16fa7757cc107"
+    "THIRD-PARTY-NOTICES.md": "2c1e67a10040fa6f5ee63c46a6ce96fd85af7bd929aa49e0fa0683bfd86b8a37",
+    "docs/UPSTREAMS.md": "c6f983d8bc25d4dd81bcb6d5ac30708de0ca6fd71c6cf656c865ddf2b6a28fa5"
   }
 }
