@@ -20,6 +20,12 @@ verified_paths:
 
 # ADR-001: Shared ontology rendering contract
 
+## External review reconciliation — 2026-11-02
+
+Source at `28af436` supports shared NGG1 ownership but not blanket renderer safety. The external findings remain: legacy `src/layout/quadtree.rs:166-238` recursively subdivides over-capacity coincident nodes with no depth/minimum-width stop; `src/bindings/mod.rs:56-76` replaces the graph without resetting interaction/simulation state; and `src/layout/csr_sim.rs:692-705` dispatches non-finite values without a common validation guard. The coincident-node claim concerns this legacy QuadTree, not the bounded CSR tree. Retain separate tests for both implementations, reload state and NaN/infinity inputs.
+
+The release workflow refuses a rerun when the immutable browser tarball already exists (`.github/workflows/release.yml:86-90`), before its npm publication step (`:165-173`). Read-only `npm view @dreamlab-ai/vowl-wasm@0.2.2 version dist.integrity --json` returned E404 on 2026-11-02. Thus a source release or GitHub tarball must not be called npm publication; no package was published in this review. A retry design must preserve immutable assets while independently verifying the registry artefact.
+
 - Date: 2026-10-11
 - Status: Accepted
 - Implementation status: <!-- lands with ontomark step 5 --> implemented for NGG1 ownership; active
