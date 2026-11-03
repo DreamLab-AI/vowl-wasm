@@ -20,6 +20,10 @@ verified_paths:
 
 # ADR-001: Shared ontology rendering contract
 
+## External findings repair — 2026-11-03
+
+The legacy QuadTree now retains coincident nodes in bounded-depth leaves; CSR numeric setters ignore non-finite values; loading an ontology resets pins and simulation state. Native all-feature library tests pass (156 passed, one ignored), including 51 coincident nodes and changed-identity reload. The release workflow can reuse a checksum-verified immutable GitHub bundle for a registry retry rather than rebuilding/replacing it. No registry publication or workflow execution was performed; adoption still requires a released artefact.
+
 ## External review reconciliation — 2026-11-02
 
 Source at `28af436` supports shared NGG1 ownership but not blanket renderer safety. The external findings remain: legacy `src/layout/quadtree.rs:166-238` recursively subdivides over-capacity coincident nodes with no depth/minimum-width stop; `src/bindings/mod.rs:56-76` replaces the graph without resetting interaction/simulation state; and `src/layout/csr_sim.rs:692-705` dispatches non-finite values without a common validation guard. The coincident-node claim concerns this legacy QuadTree, not the bounded CSR tree. Retain separate tests for both implementations, reload state and NaN/infinity inputs.

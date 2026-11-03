@@ -77,6 +77,7 @@ jobs:
           npm --version
 
       - name: Verify reviewed third-party release inventory
+        id: inventory
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -86,17 +87,32 @@ jobs:
           # Existing browser tarballs are immutable, including on manual reruns.
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
               --json assets > existing-release.json; then
-            node -e 'const r=require("./existing-release.json"); if (r.assets.some(a=>a.name===`vowl-wasm-${process.env.VERSION}-pkg.tgz`)) { console.error("Browser release asset already exists; preserve it and publish a separately reviewed companion"); process.exit(1); }'
+            node -e 'const fs=require("fs"),r=require("./existing-release.json"); fs.appendFileSync(process.env.GITHUB_OUTPUT,`existing=${r.assets.some(a=>a.name===`vowl-wasm-${process.env.VERSION}-pkg.tgz`)}\n`)'
           fi
+
+      - name: Reuse the immutable release bundle for a registry retry
+        if: steps.inventory.outputs.existing == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern "vowl-wasm-${VERSION}-pkg.tgz" \
+            --pattern "vowl-wasm-${VERSION}-pkg.tgz.sha256"
+          sha256sum --check "vowl-wasm-${VERSION}-pkg.tgz.sha256"
+          tar -xOf "vowl-wasm-${VERSION}-pkg.tgz" package/package.json > retry-package.json
+          node -e 'const p=require("./retry-package.json"); if(p.name!=="@dreamlab-ai/vowl-wasm" || p.version!==process.env.VERSION) process.exit(1)'
 
       # The published bundle is built with `ngg1,interaction`; the markdown
       # parser is gone (ontomark-parse owns it).
       - name: Build the bundle
+        if: steps.inventory.outputs.existing != 'true'
         run: |
           wasm-pack build --target web --release --scope dreamlab-ai \
             -- --features ngg1,interaction --locked
 
       - name: Verify Rust and bundle contracts
+        if: steps.inventory.outputs.existing != 'true'
         env:
           VOWL_BUNDLE_GATE: "1"
         run: |
@@ -108,6 +124,7 @@ jobs:
       # match this repository exactly; wasm-pack copies Cargo.toml's
       # `repository`, which lacks the git+ prefix and .git suffix npm expects.
       - name: Pin package metadata
+        if: steps.inventory.outputs.existing != 'true'
         run: |
           set -euo pipefail
           cd pkg
@@ -121,11 +138,13 @@ jobs:
           node -e 'const p=require("./package.json"); if (p.version!==process.env.VERSION) { console.error("pkg version", p.version, "!=", process.env.VERSION); process.exit(1) }'
 
       - name: Include reviewed notices and exact source URLs
+        if: steps.inventory.outputs.existing != 'true'
         run: |
           cargo run --locked --manifest-path tools/release-inventory/Cargo.toml -- \
             package . "$RELEASE_TAG" "$(rustc --version)" "$(wasm-pack --version)"
 
       - name: Pack the bundle
+        if: steps.inventory.outputs.existing != 'true'
         id: pack
         run: |
           set -euo pipefail
@@ -143,6 +162,7 @@ jobs:
           echo "tarball=vowl-wasm-${VERSION}-pkg.tgz" >> "$GITHUB_OUTPUT"
 
       - name: Attach the bundle to the release
+        if: steps.inventory.outputs.existing != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -169,7 +189,7 @@ jobs:
             echo "@dreamlab-ai/vowl-wasm@${VERSION} is already published; skipping"
             exit 0
           fi
-          npm publish "${{ steps.pack.outputs.tarball }}" --access public
+          npm publish "vowl-wasm-${VERSION}-pkg.tgz" --access public
           npm view "@dreamlab-ai/vowl-wasm@${VERSION}" version dist.integrity
 
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
@@ -177,5 +197,5 @@ jobs:
           name: vowl-wasm-pkg
           path: |
             pkg/
-            ${{ steps.pack.outputs.tarball }}
+            vowl-wasm-${{ env.VERSION }}-pkg.tgz
           if-no-files-found: error

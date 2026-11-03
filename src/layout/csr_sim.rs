@@ -616,27 +616,45 @@ impl CsrSimulation {
 
     /// Set repulsion constant (positive = repulsive).
     pub fn set_charge(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.charge = v;
     }
     /// Set spring rest length.
     pub fn set_link_distance(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.link_distance = v;
     }
     /// Set spring stiffness.
     pub fn set_link_strength(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.link_strength = v;
     }
     /// Set velocity damping.
     pub fn set_damping(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.damping = v;
     }
     /// Set centre-gravity strength.
     pub fn set_center_gravity(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.center_gravity = v;
     }
     /// Set the Barnes-Hut opening angle. `theta <= 0` selects the exact
     /// all-pairs loop ([`Repulsion::Exact`]); the d3-force default is 0.9.
     pub fn set_theta(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.repulsion = Repulsion::from_theta(v);
     }
     /// Select the repulsion strategy explicitly.
@@ -645,6 +663,9 @@ impl CsrSimulation {
     }
     /// Set the alpha floor.
     pub fn set_alpha_min(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.config.alpha_min = v;
     }
     /// Hold node `i` at `(x, y)` with zero velocity until [`unpin`](Self::unpin)
@@ -684,6 +705,9 @@ impl CsrSimulation {
     /// Re-heat the simulation: raise alpha and clear the finished flag so a
     /// settled scope resumes motion (protocol `reheat`).
     pub fn reheat(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
         self.alpha = v.max(self.config.alpha_min);
         self.finished = self.n == 0;
     }
@@ -844,6 +868,23 @@ mod tests {
         sim.set_param("unknownKey", 1.0); // ignored, no panic
         assert_eq!(sim.config.charge, 999.0);
         assert_eq!(sim.config.link_distance, 42.0);
+        for bad in [f32::NAN, f32::INFINITY, f32::NEG_INFINITY] {
+            for key in [
+                "charge",
+                "linkDistance",
+                "linkStrength",
+                "damping",
+                "centerGravity",
+                "alphaMin",
+                "theta",
+                "reheat",
+            ] {
+                sim.set_param(key, bad);
+            }
+        }
+        assert_eq!(sim.config.charge, 999.0);
+        assert_eq!(sim.config.link_distance, 42.0);
+        assert!(sim.alpha.is_finite());
     }
 
     #[cfg(feature = "ngg1")]

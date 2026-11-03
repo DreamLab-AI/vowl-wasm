@@ -67,6 +67,8 @@ impl WebVowl {
             .map_err(|e| JsValue::from_str(&e.to_string()))?;
 
         self.metadata = Some(ontology_data.metadata.clone());
+        self.pin_manager = PinManager::new();
+        self.simulation = ForceSimulation::new();
         self.graph = Some(graph);
         Ok(())
     }
@@ -814,6 +816,21 @@ mod tests {
         let result = webvowl.load_ontology(json);
         assert!(result.is_ok());
         assert_eq!(webvowl.get_node_count(), 1);
+    }
+
+    #[test]
+    fn loading_a_new_ontology_discards_old_pins_and_cooling() {
+        let mut vowl = WebVowl::new();
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+        let id = vowl.graph.as_ref().unwrap().nodes()[0].id.clone();
+        vowl.pin_manager
+            .pin_node(vowl.graph.as_mut().unwrap(), &id)
+            .unwrap();
+        vowl.simulation.reheat(0.01);
+        vowl.load_ontology(TWO_CLASS_ONTOLOGY).unwrap();
+        assert!(!vowl.pin_manager.is_pinned(&id));
+        assert_eq!(vowl.simulation.alpha(), 1.0);
+        assert!(!vowl.graph.as_ref().unwrap().nodes()[0].visual.fixed);
     }
 
     /// A two-class, one-property ontology; enough to have a stable node order.

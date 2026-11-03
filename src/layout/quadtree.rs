@@ -105,6 +105,7 @@ pub struct QuadTree {
 
     /// Maximum nodes per quadrant before subdivision
     capacity: usize,
+    depth: usize,
 }
 
 impl QuadTree {
@@ -117,6 +118,7 @@ impl QuadTree {
             center_of_mass: Vector2::zeros(),
             total_mass: 0.0,
             capacity,
+            depth: 0,
         }
     }
 
@@ -184,7 +186,9 @@ impl QuadTree {
         self.nodes.push(node_ref);
 
         // Subdivide if we exceed capacity
-        if self.nodes.len() > self.capacity {
+        // Coincident points cannot be separated by subdivision. Retain a
+        // bounded-depth leaf instead of exhausting the WASM call stack.
+        if self.nodes.len() > self.capacity && self.depth < 32 {
             self.subdivide();
         }
     }
@@ -194,7 +198,7 @@ impl QuadTree {
         let half_width = self.bounds.width / 2.0;
         let half_height = self.bounds.height / 2.0;
 
-        let children = Box::new([
+        let mut children = Box::new([
             // Quadrant 0: top-left
             QuadTree::new(
                 Rect::new(self.bounds.x, self.bounds.y, half_width, half_height),
@@ -232,6 +236,9 @@ impl QuadTree {
             ),
         ]);
 
+        for child in children.iter_mut() {
+            child.depth = self.depth + 1;
+        }
         self.children = Some(children);
 
         // Redistribute existing nodes to children
@@ -590,5 +597,18 @@ mod tests {
         // Tree should have reasonable depth (not degenerating to a list)
         let depth = tree.max_depth();
         assert!(depth > 0 && depth < 20);
+    }
+
+    #[test]
+    fn coincident_points_remain_in_a_bounded_leaf() {
+        let nodes: Vec<_> = (0..51)
+            .map(|i| create_test_node(&format!("n{i}"), 0.0, 0.0))
+            .collect();
+        let refs: Vec<_> = nodes.iter().collect();
+        let tree = QuadTree::build(&refs);
+        assert_eq!(tree.count_nodes(), 51);
+        assert!(tree.max_depth() <= 32);
+        let force = tree.calculate_force(Vector2::zeros(), "n0", 0.9, -1000.0);
+        assert!(force.x.is_finite() && force.y.is_finite());
     }
 }
