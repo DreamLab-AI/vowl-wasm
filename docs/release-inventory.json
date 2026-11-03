@@ -1,6 +1,6 @@
 {
-  "version": "0.2.2",
-  "source_commit": "567d661b3f5614080fc2c8897ab6091af40feefc",
+  "version": "0.2.3",
+  "source_commit": "756f49f5ab7bac9a97b3701157bb923da34abe22",
   "target": "wasm32-unknown-unknown",
   "features": [
     "ngg1",
@@ -9,15 +9,15 @@
   "rustc_version": "rustc 1.99.0 (b940084d7 2026-09-28)",
   "wasm_pack_version": "wasm-pack 0.15.0",
   "source_files": {
-    "Cargo.lock": "bf2fc5c5df9c46f1fb0599d9ead9464685aa3e3c03fd64ae7c15d2c5486a0aad",
-    "Cargo.toml": "a9f762868e6be175b3088c245a9f2cb3c9067710c54673da7cdd8bd84742fa23",
+    "Cargo.lock": "53a16a1fa20ddc19870ffe93f925db71871914b4fce0b492779d1c4f10015788",
+    "Cargo.toml": "3ed6dc48fefa7105b08e0bd02d153a4116f2c64cbf7276b3a6c8c32dca0912e3",
     "benches/interaction_bench.rs": "031b24562c5f79083854ae4b3313aed694a2a47ee75749ab4ca10da1d41924c7",
     "benches/layout_bench.rs": "eafcce94057bc5d9b170f677ba4fa6a49981eefc27882350972311c00ffdc4f0",
     "benches/parser_bench.rs": "e1c85819828e818be8d6b00b32822011586178707b9734a98a7f1ffe9bcb02da",
     "benches/phase3_benchmarks.rs": "252b5cc1eb9739836991419ac34590be321d66cde1bedc4e4406161401bfed78",
     "examples/barnes_hut_benchmark.rs": "c3388906d3c028b690a2f35c698309e0d5710895e77eec8b88e295998795eaf8",
     "src/bindings/explorer.rs": "b535dd5cd879db6825bdbbbb639b277f6f1d9b25928316cf0eb6b670df1de981",
-    "src/bindings/mod.rs": "f854da192cbff94a84967e7aa382180ccd2243d469de87c7767faec06dbfeead",
+    "src/bindings/mod.rs": "d3a3e9dd5a2599eebc156679321cede2a356f15d52eb2b45b7e64fd01cade900",
     "src/bindings/ngg.rs": "9f942851b41b889927c0a97ad94ea21ae62bc5a6a4c09ae8c4d109635841de66",
     "src/debug.rs": "00c12a537a5f86e8a41a2fdeaf12911495e5fc4113bff881842fbb71db8fdfff",
     "src/error.rs": "5a51919a5305dab5872d682f39a085fcc2a29d5e61800ffd3c54d02255f0c4f8",
@@ -28,10 +28,10 @@
     "src/graph/pinning.rs": "d3ca4e5cc6c8737053c02fbdb10a9e4769847c46ae12dcb1d16a2ed45223b294",
     "src/graph/statistics.rs": "234f01de6882de64f88908203a7e7e617267fcac12e406ca89d61a4ad1cdde1b",
     "src/interaction/mod.rs": "0f8c0542ba3b559bafaffcc4bfe4d3d281f2724a4baea497f742c47eb95dd4e4",
-    "src/layout/csr_sim.rs": "501e3826fb4fe0f734f2a750e0ea474dd6d91adeaf6bef0445e6735193966b01",
+    "src/layout/csr_sim.rs": "85c163397948aa1134b50a735dd504d5ed03a9d0be824dcfc03829335f905989",
     "src/layout/force.rs": "0a4aa2da67ab0e328e446d2225ad58f67de3d1137a5c70ac5328bd8b93459755",
     "src/layout/mod.rs": "65d2baaf4264bdd382d5b119ad0955e7afb6bf86e619d702da33a29cf7516f73",
-    "src/layout/quadtree.rs": "e673330acb60f6a5950c4b698844c6f137a84702e422ace2b2797449166d93f5",
+    "src/layout/quadtree.rs": "55db84441fabbbec17a2a2082522609b1580ce3f7e19b352f19b302d07ae1688",
     "src/layout/simd.rs": "6522a70ce586aadfc03446a302679aefe4d0dc025391572538fd32b30f1011a8",
     "src/layout/simulation.rs": "c0aeb7ced5d1e602e71ae27e574421fb3dd190c5285c35b78e716ac47df6052b",
     "src/lib.rs": "79747a04900a8f70337d20c47d003253a61f93b1396c986144cebffd09b191bc",
@@ -43,14 +43,14 @@
     "tests/fixtures/ngg1-3n2e.bin": "b4580c96e5d83fe44b791cc59b4e44cab573dcbb467d9bbe363eb1bcba6f0c3f",
     "tests/integration_test.rs": "5184def23054ea361fa1c13883128dceb2b1a3f173b00c39aaef0a362f0cc306",
     "tests/ngg1_explorer_test.rs": "5096f727f2ad0f0dce2905a094b72848344ea9567000aeb473e3d7007ce70b6b",
-    "tests/ngg1_wasm.test.mjs": "e7184210c8053874818a72777d52070682e9d1702dc318f53d5cb5f59f0bb1c1",
+    "tests/ngg1_wasm.test.mjs": "0fdac46b530a69ce9d10fbe6def3e48db69a0bcc02e78da2b21c33ff89f1cc29",
     "tests/ontology_metadata_test.rs": "a4284d6b190249fb4612cf13946d773ce864bc78eabaa8b02935f0ffee913268",
     "tests/ontomark_ngg1_migration.rs": "00daa0fdb1d70929bea831cc9388face3509b390e37b9cc159ae1c81eccbd231",
     "tests/ontomark_taxonomy_migration.rs": "62e1097dec5a489d76031f5b3713e3fad152c1c126e00a1c38abfcf6a41124c7",
     "tests/phase3_integration.rs": "df0ccbf877ec42a97580a24bc74b17bc6b2b57e3cbd8c8107f5f633b261c06f2"
   },
   "notice_files": {
-    "THIRD-PARTY-NOTICES.md": "2c1e67a10040fa6f5ee63c46a6ce96fd85af7bd929aa49e0fa0683bfd86b8a37",
-    "docs/UPSTREAMS.md": "c6f983d8bc25d4dd81bcb6d5ac30708de0ca6fd71c6cf656c865ddf2b6a28fa5"
+    "THIRD-PARTY-NOTICES.md": "cd168dca86c09653390296532cd6ba02660665cad6e612714b085a8728d2a8fe",
+    "docs/UPSTREAMS.md": "bde78876e98e9918757493bb59f6f57f6520fae481917bf60792073dfebc80af"
   }
 }

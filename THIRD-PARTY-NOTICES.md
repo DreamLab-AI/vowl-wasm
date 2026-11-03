@@ -1,6 +1,6 @@
-# VOWL WASM 0.2.2 third-party notices
+# VOWL WASM 0.2.3 third-party notices
 
-This licence companion covers the browser release `vowl-wasm-0.2.2-pkg.tgz`, built at tag `v0.2.2` (layout source `567d661b3f5614080fc2c8897ab6091af40feefc` plus the version stamp) with features `ngg1,interaction` for `wasm32-unknown-unknown`. Its Cargo closure and toolchain (rustc 1.99.0, wasm-pack 0.15.0) are identical to 0.2.0, whose notices were reviewed against the same `Cargo.lock`; the 0.2.0 tarball, its companion and the crates.io publications are unchanged. The companion supplies dependency notices omitted from that tarball; keep it with redistributions of the browser package.
+This licence companion covers the planned browser release `vowl-wasm-0.2.3-pkg.tgz`, tag `v0.2.3`, source `756f49f5ab7bac9a97b3701157bb923da34abe22`, features `ngg1,interaction`, target `wasm32-unknown-unknown`. The dependency closure is unchanged from 0.2.2: the Cargo lock diff changes only this crate's version, and the fixes add no third-party source. The official release workflow remains pinned to rustc 1.99.0 and wasm-pack 0.15.0, so the complete dependency and sysroot notices below carry forward unchanged. Local tests also used rustc 1.99.1; that candidate build is not the pinned release artefact. No registry or GitHub release is established by this notice review. Keep this companion with redistributions of the browser package.
 
 The frozen Cargo closure contains 53 package/version pairs, including build/procedural-macro dependencies and excluding dev dependencies. A package entry does not assert that all its code is linked into the WASM binary. The public inventory, source links and verification method are recorded in `docs/UPSTREAMS.md` in the VOWL repository.
 
