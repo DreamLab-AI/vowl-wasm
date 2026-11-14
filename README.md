@@ -143,6 +143,12 @@ while (!explorer.isFinished()) {
 The view is invalidated by the next `loadCsr` and by any WASM memory growth —
 re-read `positionsPtr()` after either.
 
+To lay out a graph you already hold in memory, skip NGG1 and call
+`explorer.loadArrays(positions, edgeA, edgeB, edgeType)` with an interleaved
+`Float32Array` of `[x, y, …]` and parallel `Uint32Array`/`Uint8Array` edge arrays.
+Node `i` is `positions[2i], positions[2i + 1]`, and that order holds until the next
+load. Invalid input throws instead of aborting the instance.
+
 ## Public API
 
 This is the **frozen 0.1.0 surface**. Names and signatures will not change
@@ -178,7 +184,7 @@ Filtering, folding and pinning are also always available: `filterByDegree`,
 
 | JavaScript | Feature |
 |---|---|
-| `new NggExplorer()` — `loadCsr`, `tick`, `isFinished`, `getAlpha`, `nodeCount`, `edgeCount`, `positionsPtr`, `positionsLen`, `writePositionsInto`, `setParam`, `reheat` | `ngg1` |
+| `new NggExplorer()` — `loadCsr`, `loadArrays`, `tick`, `isFinished`, `getAlpha`, `nodeCount`, `edgeCount`, `positionsPtr`, `positionsLen`, `writePositionsInto`, `setParam`, `reheat` | `ngg1` |
 | `checkNodeClick(origin, direction)` | `interaction` |
 | `getGraphData()` | `debug-serde` |
 

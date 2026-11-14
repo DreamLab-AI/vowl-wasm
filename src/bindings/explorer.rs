@@ -13,6 +13,44 @@
 use crate::layout::csr_sim::CsrSimulation;
 use wasm_bindgen::prelude::*;
 
+/// Check `loadArrays` input so that [`CsrSimulation::load_arrays`] cannot panic.
+fn validate_arrays(
+    positions: &[f32],
+    edge_a: &[u32],
+    edge_b: &[u32],
+    edge_type: &[u8],
+) -> Result<(), String> {
+    if positions.len() % 2 != 0 {
+        return Err(format!(
+            "loadArrays: positions must be interleaved [x,y,…]; got an odd length of {}",
+            positions.len()
+        ));
+    }
+    if let Some(i) = positions.iter().position(|v| !v.is_finite()) {
+        return Err(format!(
+            "loadArrays: positions[{i}] is not finite ({})",
+            positions[i]
+        ));
+    }
+    if edge_a.len() != edge_b.len() || edge_b.len() != edge_type.len() {
+        return Err(format!(
+            "loadArrays: edge arrays must be parallel; got {}/{}/{}",
+            edge_a.len(),
+            edge_b.len(),
+            edge_type.len()
+        ));
+    }
+    let n = positions.len() / 2;
+    for (e, (&a, &b)) in edge_a.iter().zip(edge_b).enumerate() {
+        if a as usize >= n || b as usize >= n {
+            return Err(format!(
+                "loadArrays: edge {e} ({a}, {b}) names a node outside 0..{n}"
+            ));
+        }
+    }
+    Ok(())
+}
+
 /// The explorer's physics engine, as seen from the worker in JS.
 #[wasm_bindgen]
 pub struct NggExplorer {
@@ -43,6 +81,47 @@ impl NggExplorer {
         self.sim
             .load_csr(bytes)
             .map_err(|e| JsValue::from_str(&e.to_string()))
+    }
+
+    /// Load a plain graph without encoding NGG1 first: interleaved warm-start
+    /// `positions` `[x0, y0, x1, y1, …]` plus three parallel edge arrays, where
+    /// `edgeA[e]`/`edgeB[e]` are node indices and `edgeType[e]` classifies the
+    /// spring. Swaps the whole scope, clears every pin and resets the
+    /// temperature, exactly as `loadCsr` does.
+    ///
+    /// **Index order.** Node `i` is `positions[2i], positions[2i + 1]`, and edge
+    /// endpoints refer to that index. The order is stable until the next load,
+    /// so the host can keep its own per-node metadata in the same order and read
+    /// positions back by index.
+    ///
+    /// **What may be passed.** Self-loops (`a == b`) and duplicate edges are
+    /// accepted. `tick` skips self-loops, so they exert no force; a duplicate
+    /// edge applies its spring once per copy, pulling twice as hard. Edges are
+    /// treated as undirected springs. An empty graph is valid and reports
+    /// finished.
+    ///
+    /// # Errors
+    ///
+    /// Rejects, leaving the previously loaded graph untouched, an odd
+    /// `positions` length, a non-finite position, edge arrays of differing
+    /// lengths, and any endpoint index at or beyond the node count. It never
+    /// panics, since a panic would abort the WASM instance.
+    #[wasm_bindgen(js_name = loadArrays)]
+    pub fn load_arrays(
+        &mut self,
+        positions: &[f32],
+        edge_a: &[u32],
+        edge_b: &[u32],
+        edge_type: &[u8],
+    ) -> Result<(), JsValue> {
+        validate_arrays(positions, edge_a, edge_b, edge_type).map_err(|e| JsValue::from_str(&e))?;
+        self.sim.load_arrays(
+            positions.to_vec(),
+            edge_a.to_vec(),
+            edge_b.to_vec(),
+            edge_type.to_vec(),
+        );
+        Ok(())
     }
 
     /// Advance one simulation step. No-op once settled.
@@ -134,5 +213,104 @@ impl NggExplorer {
     #[wasm_bindgen(js_name = reheat)]
     pub fn reheat(&mut self, alpha: f32) {
         self.sim.reheat(alpha);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Native tests cannot build a `JsValue`, so they drive the same
+    /// validate-then-load path through the sim directly.
+    fn load(
+        sim: &mut CsrSimulation,
+        p: &[f32],
+        a: &[u32],
+        b: &[u32],
+        t: &[u8],
+    ) -> Result<(), String> {
+        validate_arrays(p, a, b, t)?;
+        sim.load_arrays(p.to_vec(), a.to_vec(), b.to_vec(), t.to_vec());
+        Ok(())
+    }
+
+    fn seeded() -> CsrSimulation {
+        let mut sim = CsrSimulation::new();
+        load(
+            &mut sim,
+            &[0.0, 0.0, 10.0, 0.0, 0.0, 10.0],
+            &[0, 1],
+            &[1, 2],
+            &[0, 1],
+        )
+        .unwrap();
+        sim
+    }
+
+    #[test]
+    fn valid_graph_loads_and_settles_finite() {
+        let mut sim = seeded();
+        assert_eq!((sim.node_count(), sim.edge_count()), (3, 2));
+        for _ in 0..5000 {
+            sim.tick();
+        }
+        assert!(sim.is_finished());
+        let mut out = vec![0.0; 6];
+        sim.write_positions_into(&mut out);
+        assert!(out.iter().all(|v| v.is_finite()));
+    }
+
+    #[test]
+    fn self_loops_and_duplicates_are_accepted() {
+        let mut sim = CsrSimulation::new();
+        load(
+            &mut sim,
+            &[0.0, 0.0, 5.0, 0.0],
+            &[0, 0, 0],
+            &[0, 1, 1],
+            &[0, 0, 0],
+        )
+        .unwrap();
+        assert_eq!(sim.edge_count(), 3);
+        for _ in 0..50 {
+            sim.tick();
+        }
+        let mut out = vec![0.0; 4];
+        sim.write_positions_into(&mut out);
+        assert!(out.iter().all(|v| v.is_finite()));
+    }
+
+    #[test]
+    fn invalid_inputs_error_and_keep_the_previous_graph() {
+        let mut sim = seeded();
+        type Case<'a> = (&'a [f32], &'a [u32], &'a [u32], &'a [u8], &'a str);
+        let cases: [Case; 7] = [
+            (&[0.0, 0.0, 1.0], &[], &[], &[], "odd length"),
+            (&[0.0, f32::NAN], &[], &[], &[], "not finite"),
+            (&[f32::INFINITY, 0.0], &[], &[], &[], "not finite"),
+            (&[0.0, 0.0, 1.0, 1.0], &[0], &[1, 0], &[0], "parallel"),
+            (&[0.0, 0.0, 1.0, 1.0], &[0], &[1], &[], "parallel"),
+            (&[0.0, 0.0, 1.0, 1.0], &[0], &[2], &[0], "outside 0..2"),
+            (
+                &[0.0, 0.0, 1.0, 1.0],
+                &[u32::MAX],
+                &[0],
+                &[0],
+                "outside 0..2",
+            ),
+        ];
+        for (p, a, b, t, want) in cases {
+            let err = load(&mut sim, p, a, b, t).unwrap_err();
+            assert!(err.contains(want), "{err} should contain {want}");
+            assert_eq!((sim.node_count(), sim.edge_count()), (3, 2));
+        }
+    }
+
+    #[test]
+    fn empty_graph_is_accepted_and_finished() {
+        let mut sim = seeded();
+        load(&mut sim, &[], &[], &[], &[]).unwrap();
+        assert_eq!((sim.node_count(), sim.edge_count()), (0, 0));
+        assert!(sim.is_finished());
     }
 }

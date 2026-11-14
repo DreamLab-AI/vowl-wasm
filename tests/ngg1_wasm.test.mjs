@@ -97,6 +97,40 @@ test('empty tiers roundtrip and encoded graphs run through the existing zero-cop
   legacy.free();
 });
 
+test('loadArrays loads a plain graph, rejects bad input and keeps the previous graph', () => {
+  const explorer = new NggExplorer();
+  try {
+    explorer.loadArrays(
+      new Float32Array([0, 0, 10, 0, 0, 10]), new Uint32Array([0, 1]),
+      new Uint32Array([1, 2]), new Uint8Array([0, 1]),
+    );
+    assert.equal(explorer.nodeCount(), 3);
+    assert.equal(explorer.edgeCount(), 2);
+    for (let i = 0; i < 300; i++) explorer.tick();
+    const positions = new Float32Array(explorer.positionsLen());
+    explorer.writePositionsInto(positions);
+    assert.equal(positions.length, 6);
+    assert(positions.every(Number.isFinite));
+    const p = new Float32Array([0, 0, 1, 1]);
+    const none = new Uint32Array();
+    for (const [args, pattern] of [
+      [[new Float32Array([0, 0, 1]), none, none, new Uint8Array()], /odd length/],
+      [[new Float32Array([0, NaN]), none, none, new Uint8Array()], /not finite/],
+      [[p, new Uint32Array([0]), new Uint32Array([1, 0]), new Uint8Array([0])], /parallel/],
+      [[p, new Uint32Array([0]), new Uint32Array([2]), new Uint8Array([0])], /outside/],
+    ]) {
+      assert.throws(() => explorer.loadArrays(...args), pattern);
+      assert.equal(explorer.nodeCount(), 3);
+      assert.equal(explorer.edgeCount(), 2);
+    }
+    explorer.loadArrays(new Float32Array(), none, none, new Uint8Array());
+    assert.equal(explorer.nodeCount(), 0);
+    assert.equal(explorer.isFinished(), true);
+  } finally {
+    explorer.free();
+  }
+});
+
 test('decoder rejects every truncation, malformed CSR, version and UTF-8', () => {
   for (let n = 0; n < golden.length; n++) {
     assert.throws(() => decodeNgg1(golden.subarray(0, n)), /NGG1:/);

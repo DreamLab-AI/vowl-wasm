@@ -5,6 +5,20 @@ All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `NggExplorer.loadArrays(positions, edgeA, edgeB, edgeType)`: load a plain graph
+  into the force layout without encoding NGG1 first. Node `i` is
+  `positions[2i], positions[2i + 1]` and the order is stable until the next load.
+  Input is validated before it reaches `CsrSimulation::load_arrays`, so an odd
+  `positions` length, a non-finite position, non-parallel edge arrays or an
+  out-of-range endpoint throw an error and leave the loaded graph intact instead
+  of aborting the WASM instance. Self-loops are accepted but exert no force;
+  duplicate edges pull once per copy. Additive; recorded in the frozen export
+  surface.
+
 ## [0.2.2] - 2026-10-30
 
 ### Added
