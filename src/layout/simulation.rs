@@ -187,7 +187,6 @@ impl ForceSimulation {
 
         // Apply attraction along edges
         #[allow(unused_assignments, unused_variables)]
-        #[cfg_attr(not(target_arch = "wasm32"), allow(unused_assignments))]
         let mut attraction_count = 0;
         for node in &nodes {
             if let Ok(neighbors) = graph.neighbors(&node.id) {
