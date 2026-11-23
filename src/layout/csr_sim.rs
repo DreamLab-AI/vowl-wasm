@@ -22,6 +22,23 @@
 //!   produce identical buffers.
 //! - Auto-finish at the alpha floor (`is_finished`), matching `ngg1.ts`/protocol
 //!   `Settled`.
+//!
+//! Two opt-in readability forces are off by default, and with them off a run
+//! is bit-for-bit the 0.3.0 trajectory:
+//!
+//! - **Collision** (`collideRadius`, `collideStrength`, `collideIterations`),
+//!   with d3-force `forceCollide` semantics: every node is a disc of one global
+//!   radius, and overlapping discs push apart along their predicted positions
+//!   `p + v`. Neighbours are found with the same quadtree, so each iteration is
+//!   O(n log n).
+//! - **Component gravity** (`componentGravity`): every connected component is
+//!   pulled toward `center` as a rigid body, `strength · (center − centroid) ·
+//!   alpha` applied equally to each member. Disconnected fragments pack around
+//!   the main component instead of drifting, and no component's internal shape
+//!   is compressed (per-node `centerGravity`, which is d3 `forceX`/`forceY`,
+//!   already exists and would squeeze the main component too).
+//!
+//! See [`CsrSimulation::set_param`] for each key's default and range.
 
 #[cfg(feature = "ngg1")]
 use crate::ngg1::Ngg1;
@@ -96,6 +113,32 @@ impl Default for SimConfig {
     }
 }
 
+/// The opt-in readability forces. Kept apart from [`SimConfig`] so that
+/// adding them did not change that public struct.
+#[derive(Debug, Clone, Copy, PartialEq)]
+struct Readability {
+    /// Collision disc radius in world units; `0` disables collision.
+    collide_radius: f32,
+    /// Fraction of an overlap resolved per iteration, `0..=1`.
+    collide_strength: f32,
+    /// Collision passes per tick, `1..=MAX_COLLIDE_ITERATIONS`.
+    collide_iterations: u32,
+    /// Rigid per-component pull toward `center`, `0..=1`; `0` disables it.
+    component_gravity: f32,
+}
+
+impl Default for Readability {
+    fn default() -> Self {
+        // d3-force `forceCollide` defaults for strength and iterations.
+        Self {
+            collide_radius: 0.0,
+            collide_strength: 1.0,
+            collide_iterations: 1,
+            component_gravity: 0.0,
+        }
+    }
+}
+
 const NONE: u32 = u32::MAX;
 
 /// Repulsion softening radius as a fraction of `link_distance`. `charge / d²`
@@ -105,6 +148,9 @@ const NONE: u32 = u32::MAX;
 const SOFTENING_FRACTION: f32 = 0.25;
 /// Per-tick displacement cap as a multiple of `link_distance`.
 const MAX_STEP_FACTOR: f32 = 2.0;
+/// Upper bound for `collideIterations`. Each iteration rebuilds the quadtree,
+/// so this caps the per-tick collision cost at that many O(n log n) passes.
+pub const MAX_COLLIDE_ITERATIONS: u32 = 16;
 /// Depth cap: coincident points end up in one multi-point leaf instead of
 /// recursing forever.
 const MAX_DEPTH: u32 = 40;
@@ -253,6 +299,11 @@ pub struct CsrSimulation {
     edge_a: Vec<u32>,
     edge_b: Vec<u32>,
     edge_type: Vec<u8>,
+    /// Connected-component id per node (union of both edge kinds), length `n`,
+    /// numbered `0..component_count` in first-node order. Rebuilt by every load.
+    component: Vec<u32>,
+    component_count: usize,
+    readability: Readability,
     alpha: f32,
     finished: bool,
 }
@@ -276,10 +327,52 @@ impl CsrSimulation {
             edge_a: Vec::new(),
             edge_b: Vec::new(),
             edge_type: Vec::new(),
+            component: Vec::new(),
+            component_count: 0,
+            readability: Readability::default(),
             alpha: config.alpha,
             config,
             finished: false,
         }
+    }
+
+    /// Label the connected components of the loaded edge list. Edges naming a
+    /// node outside the scope, and self-edges, join nothing (as at tick time).
+    fn rebuild_components(&mut self) {
+        let n = self.n;
+        let mut parent: Vec<u32> = (0..n as u32).collect();
+        fn find(parent: &mut [u32], mut i: u32) -> u32 {
+            while parent[i as usize] != i {
+                let up = parent[parent[i as usize] as usize];
+                parent[i as usize] = up;
+                i = up;
+            }
+            i
+        }
+        for (&a, &b) in self.edge_a.iter().zip(&self.edge_b) {
+            if a as usize >= n || b as usize >= n || a == b {
+                continue;
+            }
+            let (ra, rb) = (find(&mut parent, a), find(&mut parent, b));
+            if ra != rb {
+                // Lower root wins, so labelling is independent of edge order.
+                let (lo, hi) = if ra < rb { (ra, rb) } else { (rb, ra) };
+                parent[hi as usize] = lo;
+            }
+        }
+        let mut label = vec![NONE; n];
+        let mut component = vec![0u32; n];
+        let mut count = 0u32;
+        for i in 0..n as u32 {
+            let root = find(&mut parent, i) as usize;
+            if label[root] == NONE {
+                label[root] = count;
+                count += 1;
+            }
+            component[i as usize] = label[root];
+        }
+        self.component = component;
+        self.component_count = count as usize;
     }
 
     /// Build simulation state from plain arrays, without the NGG1 format.
@@ -336,6 +429,7 @@ impl CsrSimulation {
         self.edge_a = edge_a;
         self.edge_b = edge_b;
         self.edge_type = edge_type;
+        self.rebuild_components();
         self.alpha = self.config.alpha;
         self.finished = self.n == 0;
     }
@@ -373,6 +467,7 @@ impl CsrSimulation {
         self.edge_a = a;
         self.edge_b = b;
         self.edge_type = ty;
+        self.rebuild_components();
         self.alpha = self.config.alpha;
         self.finished = self.n == 0;
     }
@@ -411,7 +506,13 @@ impl CsrSimulation {
             fy[b] -= fye;
         }
 
-        // ── Centre gravity + symplectic-Euler integration with damping.
+        // ── Rigid per-component pull (off by default; skipped, not zeroed, so
+        //    the default trajectory is bit-identical to 0.3.0).
+        if self.readability.component_gravity > 0.0 {
+            self.component_gravity_forces(&mut fx, &mut fy);
+        }
+
+        // ── Centre gravity + symplectic-Euler velocity update with damping.
         let (cx, cy) = self.config.center;
         let cg = self.config.center_gravity;
         let damping = self.config.damping;
@@ -438,8 +539,32 @@ impl CsrSimulation {
             }
             self.velocities[i * 2] = vx;
             self.velocities[i * 2 + 1] = vy;
-            self.positions[i * 2] = px + vx;
-            self.positions[i * 2 + 1] = py + vy;
+        }
+
+        // ── Collision on predicted positions (d3 `forceCollide`, not
+        //    alpha-scaled), then integrate.
+        if self.readability.collide_radius > 0.0 {
+            for _ in 0..self.readability.collide_iterations {
+                self.collide();
+            }
+            // Corrections accumulate over neighbours and passes; hold the same
+            // per-tick step cap as the force step so dense seeds stay bounded.
+            for i in 0..n {
+                let (vx, vy) = (self.velocities[i * 2], self.velocities[i * 2 + 1]);
+                let speed = (vx * vx + vy * vy).sqrt();
+                if speed > max_step {
+                    let k = max_step / speed;
+                    self.velocities[i * 2] = vx * k;
+                    self.velocities[i * 2 + 1] = vy * k;
+                }
+            }
+        }
+        for i in 0..n {
+            if self.pinned[i] {
+                continue;
+            }
+            self.positions[i * 2] += self.velocities[i * 2];
+            self.positions[i * 2 + 1] += self.velocities[i * 2 + 1];
         }
 
         self.alpha *= 1.0 - self.config.alpha_decay;
@@ -454,6 +579,107 @@ impl CsrSimulation {
     fn softening_sq(&self) -> f32 {
         let r = SOFTENING_FRACTION * self.config.link_distance;
         r * r
+    }
+
+    /// Add the rigid component pull to `fx`/`fy`: every member of component
+    /// `c` receives `component_gravity · (center − centroid(c))`, so a
+    /// component translates without changing shape. Pinned nodes count toward
+    /// their component's centroid and are skipped at integration as usual.
+    fn component_gravity_forces(&self, fx: &mut [f32], fy: &mut [f32]) {
+        let k = self.readability.component_gravity;
+        let (cx, cy) = self.config.center;
+        let mut sum = vec![(0.0f64, 0.0f64, 0u32); self.component_count];
+        for (i, &c) in self.component.iter().enumerate() {
+            let s = &mut sum[c as usize];
+            s.0 += f64::from(self.positions[i * 2]);
+            s.1 += f64::from(self.positions[i * 2 + 1]);
+            s.2 += 1;
+        }
+        let pull: Vec<(f32, f32)> = sum
+            .iter()
+            .map(|&(sx, sy, m)| {
+                let m = f64::from(m);
+                ((cx - (sx / m) as f32) * k, (cy - (sy / m) as f32) * k)
+            })
+            .collect();
+        for (i, &c) in self.component.iter().enumerate() {
+            fx[i] += pull[c as usize].0;
+            fy[i] += pull[c as usize].1;
+        }
+    }
+
+    /// One d3 `forceCollide` pass. Builds a quadtree over the predicted
+    /// positions `p + v`, then for every overlapping pair `(i, j)`, `i < j`,
+    /// moves both velocities apart by half of `strength · overlap` (all of it
+    /// to the free node when the other is pinned). `j`'s position is read live,
+    /// so corrections earlier in the pass are seen later, as in d3.
+    fn collide(&mut self) {
+        let n = self.n;
+        let r = self.readability.collide_radius;
+        let strength = self.readability.collide_strength;
+        let reach = 2.0 * r;
+        let reach2 = reach * reach;
+        let predicted: Vec<f32> = self
+            .positions
+            .iter()
+            .zip(&self.velocities)
+            .map(|(p, v)| p + v)
+            .collect();
+        let Some(tree) = QuadTree::build(&predicted, n) else {
+            return;
+        };
+        let mut stack: Vec<u32> = Vec::with_capacity(64);
+        for i in 0..n {
+            let xi = self.positions[i * 2] + self.velocities[i * 2];
+            let yi = self.positions[i * 2 + 1] + self.velocities[i * 2 + 1];
+            stack.clear();
+            stack.push(0);
+            while let Some(c) = stack.pop() {
+                let cell = &tree.cells[c as usize];
+                if (xi - cell.cx).abs() > cell.half + reach
+                    || (yi - cell.cy).abs() > cell.half + reach
+                {
+                    continue;
+                }
+                if !cell.is_leaf() {
+                    stack.extend(cell.children.iter().filter(|&&ch| ch != NONE));
+                    continue;
+                }
+                let members = &tree.points[cell.start as usize..(cell.start + cell.count) as usize];
+                for &j in members {
+                    let j = j as usize;
+                    if j <= i {
+                        continue;
+                    }
+                    let (pi, pj) = (self.pinned[i], self.pinned[j]);
+                    if pi && pj {
+                        continue;
+                    }
+                    let (dx, dy, d2) = pair_delta(
+                        xi - (self.positions[j * 2] + self.velocities[j * 2]),
+                        yi - (self.positions[j * 2 + 1] + self.velocities[j * 2 + 1]),
+                        i,
+                        j,
+                        true,
+                    );
+                    if d2 >= reach2 {
+                        continue;
+                    }
+                    let d = d2.sqrt();
+                    let k = (reach - d) / d * strength;
+                    let (ox, oy) = (dx * k, dy * k);
+                    let (wi, wj) = match (pi, pj) {
+                        (true, _) => (0.0, 1.0),
+                        (_, true) => (1.0, 0.0),
+                        _ => (0.5, 0.5),
+                    };
+                    self.velocities[i * 2] += ox * wi;
+                    self.velocities[i * 2 + 1] += oy * wi;
+                    self.velocities[j * 2] -= ox * wj;
+                    self.velocities[j * 2 + 1] -= oy * wj;
+                }
+            }
+        }
     }
 
     /// Accumulate many-body repulsion into `fx`/`fy` (length `n`) using the
@@ -712,8 +938,77 @@ impl CsrSimulation {
         self.finished = self.n == 0;
     }
 
-    /// Dispatch a `SimParamKey` string to the matching setter. Unknown keys are
-    /// ignored. Mirrors `protocol.ts::SimParamKey`.
+    /// Set the collision disc radius in world units. `0` (the default) turns
+    /// collision off; negative values clamp to `0`. One radius serves every
+    /// node: two nodes settle at least `2 · radius` apart.
+    pub fn set_collide_radius(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
+        self.readability.collide_radius = v.max(0.0);
+    }
+    /// Set the fraction of each overlap resolved per collision pass, clamped
+    /// to `0..=1` (default `1`, the d3-force default).
+    pub fn set_collide_strength(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
+        self.readability.collide_strength = v.clamp(0.0, 1.0);
+    }
+    /// Set the collision passes per tick: rounded to the nearest integer and
+    /// clamped to `1..=`[`MAX_COLLIDE_ITERATIONS`] (default `1`).
+    pub fn set_collide_iterations(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
+        // The clamp bounds the value, so the cast is exact.
+        self.readability.collide_iterations =
+            v.round().clamp(1.0, MAX_COLLIDE_ITERATIONS as f32) as u32;
+    }
+    /// Set the rigid per-component pull toward `center`, clamped to `0..=1`.
+    /// `0` (the default) turns it off.
+    pub fn set_component_gravity(&mut self, v: f32) {
+        if !v.is_finite() {
+            return;
+        }
+        self.readability.component_gravity = v.clamp(0.0, 1.0);
+    }
+
+    /// Dispatch a `SimParamKey` string to the matching setter. Unknown keys
+    /// and non-finite values are ignored. Mirrors `protocol.ts::SimParamKey`.
+    ///
+    /// | key | default | range | effect |
+    /// |---|---|---|---|
+    /// | `charge` | 2000 | any; positive repels | many-body repulsion |
+    /// | `linkDistance` | 60 | > 0 | spring rest length |
+    /// | `linkStrength` | 0.5 | ≥ 0 | spring stiffness |
+    /// | `damping` | 0.6 | `0..1` | velocity retained per tick |
+    /// | `centerGravity` | 0.02 | ≥ 0 | per-node pull to the centre (d3 `forceX`/`forceY`) |
+    /// | `alphaMin` | 0.001 | > 0 | temperature floor; the run finishes below it |
+    /// | `theta` | 0.9 | ≤ 0 exact, else Barnes-Hut | repulsion opening angle |
+    /// | `reheat` | — | > 0 | sets alpha and resumes a finished run |
+    /// | `collideRadius` | 0 (off) | ≥ 0, world units | collision disc radius |
+    /// | `collideStrength` | 1 | `0..=1` | overlap resolved per pass |
+    /// | `collideIterations` | 1 | `1..=16`, rounded | collision passes per tick |
+    /// | `componentGravity` | 0 (off) | `0..=1` | rigid per-component pull to the centre |
+    ///
+    /// With `collideRadius` and `componentGravity` at `0`, the layout is
+    /// bit-for-bit the one earlier releases produced.
+    ///
+    /// ```
+    /// use vowl_wasm::layout::csr_sim::CsrSimulation;
+    ///
+    /// let mut sim = CsrSimulation::new();
+    /// sim.load_arrays(vec![0.0, 0.0, 1.0, 0.0], vec![], vec![], vec![]);
+    /// sim.set_param("collideRadius", 14.0);
+    /// sim.set_param("componentGravity", 0.05);
+    /// while !sim.is_finished() {
+    ///     sim.tick();
+    /// }
+    /// let mut p = [0.0f32; 4];
+    /// sim.write_positions_into(&mut p);
+    /// assert!((p[0] - p[2]).hypot(p[1] - p[3]) >= 27.0);
+    /// ```
     pub fn set_param(&mut self, key: &str, val: f32) {
         match key {
             "charge" => self.set_charge(val),
@@ -724,6 +1019,10 @@ impl CsrSimulation {
             "alphaMin" => self.set_alpha_min(val),
             "theta" => self.set_theta(val),
             "reheat" => self.reheat(val),
+            "collideRadius" => self.set_collide_radius(val),
+            "collideStrength" => self.set_collide_strength(val),
+            "collideIterations" => self.set_collide_iterations(val),
+            "componentGravity" => self.set_component_gravity(val),
             _ => {}
         }
     }
@@ -878,6 +1177,10 @@ mod tests {
                 "alphaMin",
                 "theta",
                 "reheat",
+                "collideRadius",
+                "collideStrength",
+                "collideIterations",
+                "componentGravity",
             ] {
                 sim.set_param(key, bad);
             }
@@ -1129,6 +1432,272 @@ mod tests {
             vec![0],
         );
         assert!(!sim.is_pinned(0));
+    }
+
+    fn bits(sim: &CsrSimulation) -> Vec<u32> {
+        sim.positions.iter().map(|v| v.to_bits()).collect()
+    }
+
+    fn min_pair_distance(sim: &CsrSimulation) -> f32 {
+        let p = &sim.positions;
+        let mut min = f32::INFINITY;
+        for i in 0..sim.n {
+            for j in i + 1..sim.n {
+                min = min.min((p[i * 2] - p[j * 2]).hypot(p[i * 2 + 1] - p[j * 2 + 1]));
+            }
+        }
+        min
+    }
+
+    #[test]
+    fn readability_forces_are_off_by_default() {
+        let sim = CsrSimulation::new();
+        assert_eq!(sim.readability, Readability::default());
+        assert_eq!(sim.readability.collide_radius, 0.0);
+        assert_eq!(sim.readability.collide_strength, 1.0);
+        assert_eq!(sim.readability.collide_iterations, 1);
+        assert_eq!(sim.readability.component_gravity, 0.0);
+    }
+
+    #[test]
+    fn explicit_defaults_leave_the_trajectory_unchanged() {
+        let mut a = random_sim(80, 5);
+        let mut b = random_sim(80, 5);
+        b.set_param("collideRadius", 0.0);
+        b.set_param("collideStrength", 1.0);
+        b.set_param("collideIterations", 1.0);
+        b.set_param("componentGravity", 0.0);
+        for _ in 0..120 {
+            a.tick();
+            b.tick();
+        }
+        assert_eq!(bits(&a), bits(&b));
+    }
+
+    #[test]
+    fn collision_separates_overlapping_nodes() {
+        // A tight cluster with repulsion and springs switched off: only
+        // collision can move these nodes.
+        for theta in [0.0, 0.9] {
+            let mut sim = random_sim(40, 11);
+            for v in sim.positions.iter_mut() {
+                *v *= 0.05; // squeeze into a 30-unit box
+            }
+            sim.set_charge(0.0);
+            sim.set_center_gravity(0.0);
+            sim.set_theta(theta);
+            sim.set_param("collideRadius", 10.0);
+            sim.set_param("collideIterations", 4.0);
+            assert!(min_pair_distance(&sim) < 5.0);
+            for _ in 0..300 {
+                sim.tick();
+            }
+            let min = min_pair_distance(&sim);
+            assert!(min >= 20.0 - 0.5, "theta {theta}: min pair distance {min}");
+            assert!(sim.positions.iter().all(|v| v.is_finite()));
+        }
+    }
+
+    #[test]
+    fn collision_separates_coincident_nodes_deterministically() {
+        let run = || {
+            let mut sim = CsrSimulation::new();
+            sim.load_arrays(vec![3.0; 8], vec![], vec![], vec![]);
+            sim.set_charge(0.0);
+            sim.set_param("collideRadius", 5.0);
+            for _ in 0..200 {
+                sim.tick();
+            }
+            sim
+        };
+        let (a, b) = (run(), run());
+        assert_eq!(bits(&a), bits(&b));
+        let min = min_pair_distance(&a);
+        assert!(min >= 10.0 - 0.5, "min pair distance {min}");
+    }
+
+    #[test]
+    fn collision_never_moves_a_pinned_node() {
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(vec![0.0, 0.0, 1.0, 0.0], vec![], vec![], vec![]);
+        sim.set_charge(0.0);
+        sim.set_param("collideRadius", 10.0);
+        assert!(sim.pin(0, 0.0, 0.0));
+        for _ in 0..100 {
+            sim.tick();
+        }
+        assert_eq!((sim.positions[0], sim.positions[1]), (0.0, 0.0));
+        let d = sim.positions[2].hypot(sim.positions[3]);
+        assert!(d >= 20.0 - 0.5, "free node only {d} from the pinned one");
+    }
+
+    #[test]
+    fn component_gravity_moves_components_rigidly_toward_the_centre() {
+        // Two disconnected dumbbells far from the centre; no repulsion, no
+        // per-node gravity, springs at rest length: the component pull is the
+        // only force, so each dumbbell translates without changing its length.
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(
+            vec![400.0, 0.0, 460.0, 0.0, -300.0, 300.0, -300.0, 360.0],
+            vec![0, 2],
+            vec![1, 3],
+            vec![0, 0],
+        );
+        sim.set_charge(0.0);
+        sim.set_center_gravity(0.0);
+        sim.set_param("componentGravity", 0.1);
+        for _ in 0..300 {
+            sim.tick();
+        }
+        let p = &sim.positions;
+        let len = |a: usize, b: usize| (p[a * 2] - p[b * 2]).hypot(p[a * 2 + 1] - p[b * 2 + 1]);
+        assert!(
+            (len(0, 1) - 60.0).abs() < 1e-2,
+            "dumbbell 0 length {}",
+            len(0, 1)
+        );
+        assert!(
+            (len(2, 3) - 60.0).abs() < 1e-2,
+            "dumbbell 1 length {}",
+            len(2, 3)
+        );
+        for (a, b) in [(0, 1), (2, 3)] {
+            let cx = (p[a * 2] + p[b * 2]) * 0.5;
+            let cy = (p[a * 2 + 1] + p[b * 2 + 1]) * 0.5;
+            assert!(
+                cx.hypot(cy) < 20.0,
+                "component ({a},{b}) centroid at ({cx}, {cy})"
+            );
+        }
+    }
+
+    #[test]
+    fn component_gravity_leaves_pinned_nodes_alone() {
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(vec![200.0, 0.0, 260.0, 0.0], vec![0], vec![1], vec![0]);
+        sim.set_param("componentGravity", 0.2);
+        assert!(sim.pin(0, 200.0, 0.0));
+        for _ in 0..100 {
+            sim.tick();
+        }
+        assert_eq!((sim.positions[0], sim.positions[1]), (200.0, 0.0));
+    }
+
+    #[test]
+    fn components_are_recomputed_on_every_load() {
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(vec![0.0; 8], vec![0, 2], vec![1, 3], vec![0, 0]);
+        assert_eq!(sim.component_count, 2);
+        sim.load_arrays(vec![0.0; 8], vec![0, 1, 2], vec![1, 2, 3], vec![0, 0, 0]);
+        assert_eq!(sim.component_count, 1);
+        // Out-of-range endpoints and self-loops join nothing.
+        sim.load_arrays(vec![0.0; 6], vec![0, 1], vec![9, 1], vec![0, 0]);
+        assert_eq!(sim.component_count, 3);
+    }
+
+    /// The settings recommended to consumers.
+    fn recommended(sim: &mut CsrSimulation) {
+        sim.set_param("collideRadius", 21.0);
+        sim.set_param("collideStrength", 0.7);
+        sim.set_param("collideIterations", 3.0);
+        sim.set_param("componentGravity", 0.1);
+    }
+
+    /// Largest per-node displacement of one tick.
+    fn max_tick_step(sim: &mut CsrSimulation) -> f32 {
+        let before = sim.positions.clone();
+        sim.tick();
+        (0..sim.n)
+            .map(|i| {
+                (sim.positions[i * 2] - before[i * 2])
+                    .hypot(sim.positions[i * 2 + 1] - before[i * 2 + 1])
+            })
+            .fold(0.0, f32::max)
+    }
+
+    #[test]
+    fn readability_forces_respect_the_step_cap_on_dense_seeds() {
+        // A near-coincident pair inside a random scope, and the golden-angle
+        // spiral (`24 * sqrt(i)`) the hosts seed with: about 100 nodes inside
+        // a 240-unit disc, far denser than a 21-unit collision radius allows.
+        let mut pair = random_sim(60, 99);
+        pair.positions[..4].copy_from_slice(&[10.0, 10.0, 10.67, 10.0]);
+        let golden = std::f32::consts::PI * (3.0 - 5.0f32.sqrt());
+        let spiral_pos: Vec<f32> = (0..100)
+            .flat_map(|i| {
+                let (a, r) = (i as f32 * golden, 24.0 * (i as f32).sqrt());
+                [r * a.cos(), r * a.sin()]
+            })
+            .collect();
+        let mut spiral = CsrSimulation::new();
+        let ring: Vec<u32> = (0..100).collect();
+        let next: Vec<u32> = (0..100).map(|i| (i + 1) % 100).collect();
+        spiral.load_arrays(spiral_pos, ring, next, vec![0; 100]);
+        for (label, mut sim) in [("pair", pair), ("spiral", spiral)] {
+            recommended(&mut sim);
+            let cap = MAX_STEP_FACTOR * sim.config.link_distance;
+            while !sim.is_finished() {
+                let step = max_tick_step(&mut sim);
+                assert!(step <= cap + 1e-3, "{label}: a node stepped {step} > {cap}");
+            }
+            assert!(sim.positions.iter().all(|v| v.is_finite()), "{label}");
+            let min = min_pair_distance(&sim);
+            assert!(min >= 0.95 * 42.0, "{label}: min pair distance {min}");
+        }
+    }
+
+    #[cfg(feature = "ngg1")]
+    #[test]
+    fn load_csr_labels_components() {
+        let mut sim = CsrSimulation::new();
+        sim.load_arrays(vec![0.0; 10], vec![], vec![], vec![]);
+        assert_eq!(sim.component_count, 5);
+        sim.load_csr(&worked_example()).unwrap();
+        assert_eq!(sim.component.len(), 3);
+        assert_eq!(sim.component_count, 1);
+        sim.set_param("componentGravity", 0.1);
+        for _ in 0..50 {
+            sim.tick();
+        }
+        assert!(sim.positions.iter().all(|v| v.is_finite()));
+    }
+
+    #[test]
+    fn readability_params_are_clamped_and_reject_non_finite() {
+        let mut sim = loaded();
+        sim.set_param("collideRadius", -5.0);
+        assert_eq!(sim.readability.collide_radius, 0.0);
+        sim.set_param("collideStrength", 3.0);
+        assert_eq!(sim.readability.collide_strength, 1.0);
+        sim.set_param("collideStrength", -1.0);
+        assert_eq!(sim.readability.collide_strength, 0.0);
+        sim.set_param("collideIterations", 0.0);
+        assert_eq!(sim.readability.collide_iterations, 1);
+        sim.set_param("collideIterations", 2.6);
+        assert_eq!(sim.readability.collide_iterations, 3);
+        sim.set_param("collideIterations", 1e9);
+        assert_eq!(sim.readability.collide_iterations, MAX_COLLIDE_ITERATIONS);
+        sim.set_param("componentGravity", -0.5);
+        assert_eq!(sim.readability.component_gravity, 0.0);
+        sim.set_param("componentGravity", 5.0);
+        assert_eq!(sim.readability.component_gravity, 1.0);
+
+        sim.set_param("collideRadius", 12.0);
+        sim.set_param("collideStrength", 0.7);
+        sim.set_param("collideIterations", 2.0);
+        sim.set_param("componentGravity", 0.05);
+        let before = sim.readability;
+        for bad in [f32::NAN, f32::INFINITY, f32::NEG_INFINITY] {
+            for key in [
+                "collideRadius",
+                "collideStrength",
+                "collideIterations",
+                "componentGravity",
+            ] {
+                sim.set_param(key, bad);
+            }
+        }
+        assert_eq!(sim.readability, before);
     }
 
     /// `cargo test --release -- --ignored --nocapture`

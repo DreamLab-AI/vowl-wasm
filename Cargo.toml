@@ -20,13 +20,16 @@ categories = [
 # `tests/fixtures/ontologies/` holds third-party ontologies under their own
 # licences (PersonasOnto is CC BY-SA 3.0; SIOC states none). They are test
 # inputs only and must not ship in the MIT-licensed crate, so they and the one
-# test that embeds them stay out of the package. The ngg1 golden fixture is this
-# crate's own data and is embedded by a unit test, so it stays in.
+# tests that embed them stay out of the package, with the layout goldens derived
+# from them. The ngg1 golden fixture is this crate's own data and is embedded by
+# a unit test, so it stays in.
 exclude = [
     "/.github",
     "/deny.toml",
     "/examples/*.html",
     "/tests/fixtures/ontologies/",
+    "/tests/fixtures/ngg-golden/",
+    "/tests/ngg_explorer_layout_test.rs",
     "/tests/webvowl_layout_test.rs",
 ]
 

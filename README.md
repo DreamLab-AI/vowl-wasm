@@ -188,6 +188,19 @@ Filtering, folding and pinning are also always available: `filterByDegree`,
 | `checkNodeClick(origin, direction)` | `interaction` |
 | `getGraphData()` | `debug-serde` |
 
+`NggExplorer.setParam(key, value)` has two opt-in readability forces, both off
+by default. With them off, layouts are bit-for-bit those of 0.3.0.
+`collideRadius` (with `collideStrength` and `collideIterations`) treats every
+node as a disc of one radius and keeps discs from overlapping, like d3
+`forceCollide`. `componentGravity` pulls each connected component toward the
+centre as a rigid body, so small disconnected fragments sit next to the main
+graph instead of drifting off. For nodes drawn with a radius of up to 12 px, as
+`@dreamlab-ai/ontomark-graph` draws them, start from `collideRadius` 21,
+`collideStrength` 0.7, `collideIterations` 3 and `componentGravity` 0.1. On the
+test ontologies that leaves no two nodes closer than 40 units without making
+the layout larger. `collideRadius` 14 packs tighter. The rustdoc for `CsrSimulation::set_param` lists every
+key with its default and range.
+
 ## Features
 
 Every optional feature is **off by default**. The general-purpose engine —

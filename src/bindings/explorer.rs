@@ -177,9 +177,33 @@ impl NggExplorer {
         self.sim.write_positions_into(out);
     }
 
-    /// Live-tune a scalar parameter by `protocol.ts` key: `charge`,
-    /// `linkDistance`, `linkStrength`, `damping`, `centerGravity`, `alphaMin`,
-    /// `reheat`. Unknown keys are ignored.
+    /// Live-tune a scalar parameter by `protocol.ts` key. Unknown keys and
+    /// non-finite values are ignored; the readability keys clamp out-of-range
+    /// values.
+    ///
+    /// Layout: `charge` (default 2000, positive repels), `linkDistance` (60),
+    /// `linkStrength` (0.5), `damping` (0.6, `0..1`), `centerGravity` (0.02,
+    /// per-node pull to the centre), `alphaMin` (0.001), `theta` (0.9; `<= 0`
+    /// selects exact repulsion) and `reheat` (sets alpha and resumes).
+    ///
+    /// Readability, off by default (with both at 0 the layout is bit-for-bit
+    /// the 0.3.0 one):
+    /// - `collideRadius` (default 0 = off, `>= 0` world units): every node is a
+    ///   disc of this radius, and overlapping discs push apart (d3
+    ///   `forceCollide`). One global radius, so nodes settle at least twice it
+    ///   apart.
+    /// - `collideStrength` (default 1, `0..=1`): share of an overlap resolved
+    ///   per pass.
+    /// - `collideIterations` (default 1, `1..=16`, rounded): passes per tick.
+    /// - `componentGravity` (default 0 = off, `0..=1`): pulls each connected
+    ///   component toward the centre as a rigid body, so disconnected
+    ///   fragments pack around the main graph without squeezing it.
+    ///
+    /// For a host drawing nodes with a radius of up to 12 px, start from
+    /// `collideRadius` 21, `collideStrength` 0.7, `collideIterations` 3 and
+    /// `componentGravity` 0.1: on the test ontologies no two nodes end closer
+    /// than 40 units and the layout grows no larger. `collideRadius` 14 packs
+    /// tighter.
     #[wasm_bindgen(js_name = setParam)]
     pub fn set_param(&mut self, key: &str, val: f32) {
         self.sim.set_param(key, val);
