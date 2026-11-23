@@ -2,13 +2,19 @@
 //!
 //! Run `verify ROOT TAG RUSTC_VERSION WASM_PACK_VERSION` before building, then
 //! `package` with the same arguments after wasm-pack writes `ROOT/pkg`.
-use serde::Deserialize;
+//!
+//! `generate ROOT TAG RUSTC_VERSION WASM_PACK_VERSION SOURCE_COMMIT` rewrites
+//! `ROOT/docs/release-inventory.json` from the working tree, hashing exactly
+//! what `verify` hashes. Run it only after the dependency closure and the
+//! notices have been reviewed for the new release: it records that review, it
+//! does not perform it.
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, fs, path::Path};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 struct Inventory {
     version: String,
@@ -69,25 +75,70 @@ fn source_files(root: &Path) -> Result<BTreeMap<String, String>> {
     Ok(files)
 }
 
+/// The two reviewed notice files every release package carries.
+const NOTICE_FILES: [&str; 2] = ["THIRD-PARTY-NOTICES.md", "docs/UPSTREAMS.md"];
+
+/// The release feature profile `verify` requires.
+const FEATURES: [&str; 2] = ["ngg1", "interaction"];
+
+fn crate_version(root: &Path) -> Result<String> {
+    let manifest: toml::Value = toml::from_str(&fs::read_to_string(root.join("Cargo.toml"))?)?;
+    Ok(manifest["package"]["version"]
+        .as_str()
+        .ok_or("missing package version")?
+        .to_owned())
+}
+
+fn is_commit(sha: &str) -> bool {
+    sha.len() == 40 && sha.bytes().all(|b| b.is_ascii_hexdigit())
+}
+
+fn generate(
+    root: &Path,
+    tag: &str,
+    rustc: &str,
+    wasm_pack: &str,
+    source_commit: &str,
+) -> Result<()> {
+    let version = crate_version(root)?;
+    if tag != format!("v{version}") {
+        return Err("release tag differs from the Cargo.toml version".into());
+    }
+    if !is_commit(source_commit) {
+        return Err("source commit must be a full 40-digit hex SHA".into());
+    }
+    let notice_files = NOTICE_FILES
+        .into_iter()
+        .map(|name| Ok((name.to_owned(), hash(&root.join(name))?)))
+        .collect::<Result<BTreeMap<_, _>>>()?;
+    let inventory = Inventory {
+        version,
+        source_commit: source_commit.to_owned(),
+        target: "wasm32-unknown-unknown".to_owned(),
+        features: FEATURES.into_iter().map(str::to_owned).collect(),
+        rustc_version: rustc.trim().to_owned(),
+        wasm_pack_version: wasm_pack.trim().to_owned(),
+        source_files: source_files(root)?,
+        notice_files,
+    };
+    let mut json = serde_json::to_vec_pretty(&inventory)?;
+    json.push(b'\n');
+    fs::write(root.join("docs/release-inventory.json"), json)?;
+    verify(root, tag, rustc, wasm_pack)
+}
+
 fn verify(root: &Path, tag: &str, rustc: &str, wasm_pack: &str) -> Result<()> {
     let inventory: Inventory =
         serde_json::from_slice(&fs::read(root.join("docs/release-inventory.json"))?)?;
-    let manifest: toml::Value = toml::from_str(&fs::read_to_string(root.join("Cargo.toml"))?)?;
-    let version = manifest["package"]["version"]
-        .as_str()
-        .ok_or("missing package version")?;
+    let version = crate_version(root)?;
     if inventory.version != version || tag != format!("v{version}") {
         return Err(
             "release tag/version differs from reviewed inventory; regenerate notices".into(),
         );
     }
-    if inventory.source_commit.len() != 40
-        || !inventory
-            .source_commit
-            .bytes()
-            .all(|b| b.is_ascii_hexdigit())
+    if !is_commit(&inventory.source_commit)
         || inventory.target != "wasm32-unknown-unknown"
-        || inventory.features != ["ngg1", "interaction"]
+        || inventory.features != FEATURES
         || inventory.rustc_version != rustc.trim()
         || inventory.wasm_pack_version != wasm_pack.trim()
     {
@@ -98,13 +149,12 @@ fn verify(root: &Path, tag: &str, rustc: &str, wasm_pack: &str) -> Result<()> {
             "release sources/lock/config differ from reviewed inventory; regenerate notices".into(),
         );
     }
-    let expected = ["THIRD-PARTY-NOTICES.md", "docs/UPSTREAMS.md"];
-    if inventory.notice_files.len() != expected.len() {
+    if inventory.notice_files.len() != NOTICE_FILES.len() {
         return Err(
             "notice inventory must include exactly the full notices and source inventory".into(),
         );
     }
-    for name in expected {
+    for name in NOTICE_FILES {
         if inventory.notice_files.get(name) != Some(&hash(&root.join(name))?) {
             return Err(format!("reviewed notice digest mismatch: {name}").into());
         }
@@ -150,17 +200,15 @@ fn package(root: &Path, tag: &str, rustc: &str, wasm_pack: &str) -> Result<()> {
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args().skip(1).collect();
-    if args.len() != 5 {
-        return Err(
-            "usage: vowl-release-inventory verify|package ROOT TAG RUSTC_VERSION WASM_PACK_VERSION"
-                .into(),
-        );
-    }
-    let root = Path::new(&args[1]);
-    match args[0].as_str() {
-        "verify" => verify(root, &args[2], &args[3], &args[4])?,
-        "package" => package(root, &args[2], &args[3], &args[4])?,
-        _ => return Err("unknown mode".into()),
+    let usage = "usage: vowl-release-inventory verify|package ROOT TAG RUSTC_VERSION WASM_PACK_VERSION\n       \
+                 vowl-release-inventory generate ROOT TAG RUSTC_VERSION WASM_PACK_VERSION SOURCE_COMMIT";
+    match (args.first().map(String::as_str), args.len()) {
+        (Some("verify"), 5) => verify(Path::new(&args[1]), &args[2], &args[3], &args[4])?,
+        (Some("package"), 5) => package(Path::new(&args[1]), &args[2], &args[3], &args[4])?,
+        (Some("generate"), 6) => {
+            generate(Path::new(&args[1]), &args[2], &args[3], &args[4], &args[5])?
+        }
+        _ => return Err(usage.into()),
     }
     println!("Reviewed release inventory verified");
     Ok(())
@@ -259,6 +307,35 @@ mod tests {
         p["features"] = serde_json::json!(["parallel"]);
         fs::write(path, serde_json::to_vec(&p).unwrap()).unwrap();
         assert!(check(t.path()).is_err());
+    }
+    #[test]
+    fn generate_round_trips_through_verify_after_a_source_change() {
+        let t = fixture();
+        let r = t.path();
+        fs::write(r.join("Cargo.toml"), "[package]\nversion='0.3.0'\n").unwrap();
+        fs::write(r.join("src/new.rs"), "// reviewed addition").unwrap();
+        assert!(verify(r, "v0.3.0", "rustc reviewed", "wasm-pack reviewed").is_err());
+        let sha = "b".repeat(40);
+        generate(r, "v0.3.0", "rustc reviewed", "wasm-pack reviewed", &sha).unwrap();
+        verify(r, "v0.3.0", "rustc reviewed", "wasm-pack reviewed").unwrap();
+        let written: serde_json::Value =
+            serde_json::from_slice(&fs::read(r.join("docs/release-inventory.json")).unwrap())
+                .unwrap();
+        assert_eq!(written["source_commit"], sha.as_str());
+        assert!(written["source_files"]["src/new.rs"].is_string());
+    }
+    #[test]
+    fn generate_refuses_mismatched_tag_and_short_commit() {
+        let t = fixture();
+        let r = t.path();
+        let before = fs::read(r.join("docs/release-inventory.json")).unwrap();
+        let sha = "c".repeat(40);
+        assert!(generate(r, "v0.2.1", "rustc reviewed", "wasm-pack reviewed", &sha).is_err());
+        assert!(generate(r, "v0.2.0", "rustc reviewed", "wasm-pack reviewed", "abc").is_err());
+        assert_eq!(
+            fs::read(r.join("docs/release-inventory.json")).unwrap(),
+            before
+        );
     }
     #[test]
     fn refuses_npm_version_mismatch() {

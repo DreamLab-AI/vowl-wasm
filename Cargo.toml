@@ -2,7 +2,7 @@
 
 [package]
 name = "vowl-wasm"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.85"
 license = "MIT"
@@ -17,7 +17,18 @@ categories = [
     "web-programming",
     "data-structures",
 ]
-exclude = ["/.github", "/deny.toml", "/examples/*.html"]
+# `tests/fixtures/ontologies/` holds third-party ontologies under their own
+# licences (PersonasOnto is CC BY-SA 3.0; SIOC states none). They are test
+# inputs only and must not ship in the MIT-licensed crate, so they and the one
+# test that embeds them stay out of the package. The ngg1 golden fixture is this
+# crate's own data and is embedded by a unit test, so it stays in.
+exclude = [
+    "/.github",
+    "/deny.toml",
+    "/examples/*.html",
+    "/tests/fixtures/ontologies/",
+    "/tests/webvowl_layout_test.rs",
+]
 
 [lib]
 name = "vowl_wasm"

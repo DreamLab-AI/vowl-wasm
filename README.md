@@ -288,9 +288,14 @@ node --test tests/ngg1_wasm.test.mjs
 artifact, and tagged releases attach it as `vowl-wasm-<version>-pkg.tgz` and
 publish that same tarball to npm as `@dreamlab-ai/vowl-wasm` through npm
 trusted publishing (OIDC from `release.yml`; no token is stored anywhere and
-provenance attestations are generated automatically). To republish an existing
-tag, run the Release workflow with the tag as its input; it skips versions the
-registry already has.
+provenance attestations are generated automatically). That needs a Trusted
+Publisher entry on npmjs.com for the package naming this repository, the
+workflow file `release.yml` and no environment. The workflow's first job checks
+the entry by performing the OIDC exchange, so a missing or mismatched entry
+fails before any release asset is attached; run the Release workflow with
+`npm_preflight_only` to check it before pushing a tag. To republish an existing
+tag, run the Release workflow with the tag as its input; it reuses the attached
+tarball and skips versions the registry already has.
 
 MSRV: **1.85**.
 
