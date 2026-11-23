@@ -56,7 +56,8 @@ jobs:
             "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" \
             | jq -r '.value')
           echo "::add-mask::$id_token"
-          escaped=$(jq -rn --arg p "$PACKAGE" '$p | @uri')
+          # npm's escapedName form, as the CLI sends it: keep the @, escape the /.
+          escaped="${PACKAGE/\//%2f}"
           status=$(curl --silent --show-error --output "$RUNNER_TEMP/exchange.json" \
             --write-out '%{http_code}' -X POST \
             -H "Authorization: Bearer $id_token" \
