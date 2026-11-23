@@ -21,7 +21,7 @@ inputs and SHA-256 digests in `docs/release-inventory.json` with `generate`:
 
 ```sh
 cargo run --locked --manifest-path tools/release-inventory/Cargo.toml -- \
-  generate . v0.3.0 "rustc 1.99.0 (b940084d7 2026-09-28)" "wasm-pack 0.15.0" \
+  generate . v0.4.0 "rustc 1.99.0 (b940084d7 2026-09-28)" "wasm-pack 0.15.0" \
   <40-digit source commit>
 ```
 
