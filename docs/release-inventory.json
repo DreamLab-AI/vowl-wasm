@@ -1,6 +1,6 @@
 {
-  "version": "0.3.0",
-  "source_commit": "3a8eb4b9acc602c534283af63edf00c37bcdb190",
+  "version": "0.4.0",
+  "source_commit": "e27b567cddab3977c5adb6795f6315818d59aa29",
   "target": "wasm32-unknown-unknown",
   "features": [
     "ngg1",
@@ -9,14 +9,14 @@
   "rustc_version": "rustc 1.99.0 (b940084d7 2026-09-28)",
   "wasm_pack_version": "wasm-pack 0.15.0",
   "source_files": {
-    "Cargo.lock": "6b32453c80bce5c2e1cd9231f45a527ac2244668aceb96357161ecf3836af544",
-    "Cargo.toml": "0e8b6d3b48a04740d22050dc6d655069eb10b89fd524798635daa0955605b883",
+    "Cargo.lock": "6069f00c929c81b0448a2a48ce1c73e4dfb5b3f2a0f044cb056ce028300d927b",
+    "Cargo.toml": "93f1ab68f94eb706d0eb877945ce05a72809ba213d8bb8bb0392054d9971fec7",
     "benches/interaction_bench.rs": "031b24562c5f79083854ae4b3313aed694a2a47ee75749ab4ca10da1d41924c7",
     "benches/layout_bench.rs": "eafcce94057bc5d9b170f677ba4fa6a49981eefc27882350972311c00ffdc4f0",
     "benches/parser_bench.rs": "e1c85819828e818be8d6b00b32822011586178707b9734a98a7f1ffe9bcb02da",
     "benches/phase3_benchmarks.rs": "252b5cc1eb9739836991419ac34590be321d66cde1bedc4e4406161401bfed78",
     "examples/barnes_hut_benchmark.rs": "c3388906d3c028b690a2f35c698309e0d5710895e77eec8b88e295998795eaf8",
-    "src/bindings/explorer.rs": "67673554fe4dca0784e9f161d4d7213c0f6a09a11805c474b28bb335b4ff4a96",
+    "src/bindings/explorer.rs": "f5611f5870af5b5863892a908d570eb7cea0c71dfdbc114bcb06fc0ba583c2f0",
     "src/bindings/mod.rs": "9af42de02fc78204d2f72eef303efec156ca7ff0d7beeea536bb2f409687af90",
     "src/bindings/ngg.rs": "9f942851b41b889927c0a97ad94ea21ae62bc5a6a4c09ae8c4d109635841de66",
     "src/debug.rs": "00c12a537a5f86e8a41a2fdeaf12911495e5fc4113bff881842fbb71db8fdfff",
@@ -28,7 +28,7 @@
     "src/graph/pinning.rs": "d3ca4e5cc6c8737053c02fbdb10a9e4769847c46ae12dcb1d16a2ed45223b294",
     "src/graph/statistics.rs": "234f01de6882de64f88908203a7e7e617267fcac12e406ca89d61a4ad1cdde1b",
     "src/interaction/mod.rs": "0f8c0542ba3b559bafaffcc4bfe4d3d281f2724a4baea497f742c47eb95dd4e4",
-    "src/layout/csr_sim.rs": "85c163397948aa1134b50a735dd504d5ed03a9d0be824dcfc03829335f905989",
+    "src/layout/csr_sim.rs": "bd806952d08021cdeddd40da4b97f376e3f0fbd1aeab2905fa70dccbb4296c81",
     "src/layout/force.rs": "a3050e632f0ef56caa33bee55bc312b1b335f4c178dcb9bf15afd45bb9898258",
     "src/layout/mod.rs": "4a548c109eb5c9f1c0dc2cf6b6e82652483c84fcea25bb1911921ed756639393",
     "src/layout/quadtree.rs": "88743f6564509a4b31e7f723889043dbd9b69803892fbe3384d48545123ced25",
@@ -40,6 +40,20 @@
     "src/ontology/model.rs": "abbb28126c565e3197aadb3c836edbdfb86bfbd05068dad0dfa11be39a642023",
     "src/ontology/parser.rs": "f04c7024be97eb423fb9f34b2a140aeb9ed50ff1417bdcf7d78bf94c8cd2342a",
     "src/render/mod.rs": "38ff657ea2229975bd77a64658bfec34071bbe685463dfc01c37f7bec512dd8d",
+    "tests/fixtures/ngg-golden/benchmark.t50.f32le": "8bedba69e1ec2cc603d844c36688f377caca5ca47b9fc126095bc669947418b6",
+    "tests/fixtures/ngg-golden/benchmark.t600.f32le": "f66404de3b062ad0b16a78c4477d42695db39a063f52affc1e53e86221299c03",
+    "tests/fixtures/ngg-golden/foaf.t50.f32le": "78a59ca91b769afe6fabbf4bfc18e236563ee56e3804ad8dacd6f252b0c569b0",
+    "tests/fixtures/ngg-golden/foaf.t600.f32le": "5ca6539f84ef7ffa02db68d63faff116d1c5f360640cf3fc08c220137060f2da",
+    "tests/fixtures/ngg-golden/goodrelations.t50.f32le": "6c96d8934f06974293961db0dd02af6768cbdb55db10a0afa433ca56f5f6f5f3",
+    "tests/fixtures/ngg-golden/goodrelations.t600.f32le": "75cfc26dde1e8519cd144c27ef8add6ba209bf98d58cf019967320cd0f3b9ab5",
+    "tests/fixtures/ngg-golden/muto.t50.f32le": "43dc69f0a13b0b4e1a1823e6a2cfab4bb6d1e7de89d461af0fea02f75d857a7e",
+    "tests/fixtures/ngg-golden/muto.t600.f32le": "ae077774047c2cffdda5e4817f7b8cbf4ddfe20d1c8b15003834007aa5956045",
+    "tests/fixtures/ngg-golden/ontovibe.t50.f32le": "144eef32f1f570382899bf63b95dbb2eb4c21635158f77e552c343bd7ef9f7d7",
+    "tests/fixtures/ngg-golden/ontovibe.t600.f32le": "9d3a8f56cfe7dea86f46c56139baa6a3429441a34d3963ce7b09de79f68ea1eb",
+    "tests/fixtures/ngg-golden/personasonto.t50.f32le": "3466378c1b5e198a1dec2ffca414efb7748cd0d728ad890988fcb6665c6698ef",
+    "tests/fixtures/ngg-golden/personasonto.t600.f32le": "cdecdf342711270b2c4d11a183093c76b952ad9a29d5726f4aca4a38ff117c8c",
+    "tests/fixtures/ngg-golden/sioc.t50.f32le": "b0aa0d37e90c914892d2ed23855431844c66727df558ad99d5fde4e0684ab83a",
+    "tests/fixtures/ngg-golden/sioc.t600.f32le": "ead00cf197c3a840e441bbae81d89582f2e1505548e930b0cfe9f725914c467d",
     "tests/fixtures/ngg1-3n2e.bin": "b4580c96e5d83fe44b791cc59b4e44cab573dcbb467d9bbe363eb1bcba6f0c3f",
     "tests/fixtures/ontologies/README.md": "790d2362ec697f68be3c9d4be8dda222158224b24d8bc046cf1a644415ed88ab",
     "tests/fixtures/ontologies/benchmark.json": "8bbab623fc9b49c341a95ab87cdedacba03353fd9b23f7a33420430e928e6f25",
@@ -52,7 +66,8 @@
     "tests/fixtures/ontologies/sioc.json": "3afd7a19e5945819b997628fc5d6e9632eac41f78f492602fa5d5833cdb51d7f",
     "tests/integration_test.rs": "5184def23054ea361fa1c13883128dceb2b1a3f173b00c39aaef0a362f0cc306",
     "tests/ngg1_explorer_test.rs": "5096f727f2ad0f0dce2905a094b72848344ea9567000aeb473e3d7007ce70b6b",
-    "tests/ngg1_wasm.test.mjs": "08fecad8bee7643dc9d33ead0c9d30fa103ee0a6ccf1eb869a4a739e3afbb0f3",
+    "tests/ngg1_wasm.test.mjs": "4daf300ec5dea50b21c6122be928f0efdd596432f3e0604c9162ebd266d73933",
+    "tests/ngg_explorer_layout_test.rs": "f6f78d940f4f9b2544774afbf60c1980877d85d842e6fc880633261dfd4b0bc4",
     "tests/ontology_metadata_test.rs": "a4284d6b190249fb4612cf13946d773ce864bc78eabaa8b02935f0ffee913268",
     "tests/ontomark_ngg1_migration.rs": "8c317c6f60d47c5bdeb5e176dfe417d98549e654c24946f0bdfed13eba756b2d",
     "tests/ontomark_taxonomy_migration.rs": "62e1097dec5a489d76031f5b3713e3fad152c1c126e00a1c38abfcf6a41124c7",
@@ -60,7 +75,7 @@
     "tests/webvowl_layout_test.rs": "51a70dbb96de5dfff4663ec737cc1957fdabd3fedb13916bda69f3f06b15c74a"
   },
   "notice_files": {
-    "THIRD-PARTY-NOTICES.md": "c2653662607a1b781d1aca6e6e8ad1c7f3fc4d4c7db08ac85504a17d1253b831",
-    "docs/UPSTREAMS.md": "544933067eeafc6fdf64725ed48d30d33235916227344816cc521c674eda4b82"
+    "THIRD-PARTY-NOTICES.md": "9af37d3c83d6d47c5f3c5782cfd22e21cff344568f4cfe83be365aeee0cce776",
+    "docs/UPSTREAMS.md": "eab9b6edab8aaed3c3417466272aba8ff8a1920fb4ee68df0588535375d6825e"
   }
 }

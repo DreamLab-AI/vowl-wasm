@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-23
+
+An additive minor release. With the new parameters at their defaults,
+`NggExplorer` layouts are byte-identical to 0.3.0: positions after 50 and 600
+ticks on all seven test ontologies are pinned as golden buffers, natively and
+through the WASM bundle, and those buffers match the published 0.3.0 bundle's
+output. No consumer's layout moves on upgrade. The frozen JavaScript export
+surface is unchanged; the new controls are `setParam` keys.
+
+### Added
+
+- `NggExplorer.setParam` / `CsrSimulation::set_param` readability forces, both
+  off by default:
+  - `collideRadius` (default `0` = off, `>= 0` world units),
+    `collideStrength` (default `1`, `0..=1`) and `collideIterations`
+    (default `1`, `1..=16`, rounded). These use d3 `forceCollide` semantics with
+    one global node radius: overlapping discs push apart on predicted
+    positions, with neighbours found through the existing Barnes-Hut quadtree
+    (O(n log n) per pass). Corrections are held to the existing per-tick step
+    cap.
+  - `componentGravity` (default `0` = off, `0..=1`) pulls each connected
+    component toward the centre as a rigid body, so small disconnected
+    fragments sit next to the main graph instead of drifting off. Per-node
+    `centerGravity`, which is d3 `forceX`/`forceY`, is unchanged.
+  - Matching Rust setters `set_collide_radius`, `set_collide_strength`,
+    `set_collide_iterations` and `set_component_gravity`, plus
+    `layout::csr_sim::MAX_COLLIDE_ITERATIONS`. `SimConfig` is unchanged.
+  - Suggested starting point for nodes drawn with a radius of up to 12 px:
+    `collideRadius` 21, `collideStrength` 0.7, `collideIterations` 3,
+    `componentGravity` 0.1. On the test ontologies that leaves no two nodes
+    closer than 40 units (0.3.0: 9 to 570 such pairs per ontology, minimum
+    distance down to 2.0) and settles within 138 ticks.
+
 ### Fixed
 
 - Release workflow: the check after `npm publish` now polls the registry with
@@ -304,7 +337,8 @@ Additive only: every 0.1.0 name and signature is unchanged.
   JavaScript surface, plus the zero-copy `NggExplorer` worker binding under the
   `ngg1` feature.
 
-[Unreleased]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.3...v0.3.0
 [0.2.3]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.1...v0.2.2

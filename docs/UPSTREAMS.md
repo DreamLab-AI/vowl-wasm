@@ -1,6 +1,6 @@
 # VOWL browser release upstream attribution
 
-This inventory binds the `vowl-wasm` 0.3.0 browser release to tag `v0.3.0`, layout source `3a8eb4b9acc602c534283af63edf00c37bcdb190` plus the release stamp, features `ngg1,interaction` and target `wasm32-unknown-unknown`. The reviewed diff since 0.2.3 changes only this crate's version in Cargo.lock and adds no third-party source or dependencies, so the package table and complete notices carry forward from 0.2.3. The release workflow still requires rustc 1.99.0 and wasm-pack 0.15.0. [Full notices](../THIRD-PARTY-NOTICES.md) accompany the package and each release as a [separate public release asset](https://github.com/DreamLab-AI/vowl-wasm/releases/download/v0.3.0/vowl-wasm-0.3.0-THIRD-PARTY-NOTICES.md). Existing frozen release assets remain unchanged.
+This inventory binds the `vowl-wasm` 0.4.0 browser release to tag `v0.4.0`, layout source `e27b567cddab3977c5adb6795f6315818d59aa29` plus the release stamp, features `ngg1,interaction` and target `wasm32-unknown-unknown`. The reviewed diff since 0.3.0 changes only this crate's version in Cargo.lock and adds no third-party source or dependencies, so the package table and complete notices carry forward from 0.3.0. The release workflow still requires rustc 1.99.0 and wasm-pack 0.15.0. [Full notices](../THIRD-PARTY-NOTICES.md) accompany the package and each release as a [separate public release asset](https://github.com/DreamLab-AI/vowl-wasm/releases/download/v0.4.0/vowl-wasm-0.4.0-THIRD-PARTY-NOTICES.md). Existing frozen release assets remain unchanged.
 
 ## Authors and lineage
 
@@ -62,7 +62,7 @@ Versions, authors, licence expressions and repositories come from the frozen Car
 | thiserror-impl | 1.0.69 | `MIT OR Apache-2.0` | David Tolnay &lt;dtolnay@gmail.com&gt; | [Repository](https://github.com/dtolnay/thiserror) / [Source](https://crates.io/api/v1/crates/thiserror-impl/1.0.69/download) |
 | typenum | 1.20.1 | `MIT OR Apache-2.0` | See upstream contributor history | [Repository](https://github.com/paholg/typenum) / [Source](https://crates.io/api/v1/crates/typenum/1.20.1/download) |
 | unicode-ident | 1.0.24 | `(MIT OR Apache-2.0) AND Unicode-3.0` | David Tolnay &lt;dtolnay@gmail.com&gt; | [Repository](https://github.com/dtolnay/unicode-ident) / [Source](https://crates.io/api/v1/crates/unicode-ident/1.0.24/download) |
-| vowl-wasm | 0.3.0 | `MIT` | See upstream contributor history | [Repository](https://github.com/DreamLab-AI/vowl-wasm) |
+| vowl-wasm | 0.4.0 | `MIT` | See upstream contributor history | [Repository](https://github.com/DreamLab-AI/vowl-wasm) |
 | wasm-bindgen | 0.2.128 | `MIT OR Apache-2.0` | The wasm-bindgen Developers | [Repository](https://github.com/wasm-bindgen/wasm-bindgen) / [Source](https://crates.io/api/v1/crates/wasm-bindgen/0.2.128/download) |
 | wasm-bindgen-macro | 0.2.128 | `MIT OR Apache-2.0` | The wasm-bindgen Developers | [Repository](https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/macro) / [Source](https://crates.io/api/v1/crates/wasm-bindgen-macro/0.2.128/download) |
 | wasm-bindgen-macro-support | 0.2.128 | `MIT OR Apache-2.0` | The wasm-bindgen Developers | [Repository](https://github.com/wasm-bindgen/wasm-bindgen/tree/main/crates/macro-support) / [Source](https://crates.io/api/v1/crates/wasm-bindgen-macro-support/0.2.128/download) |
