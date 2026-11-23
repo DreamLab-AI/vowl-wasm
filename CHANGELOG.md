@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-23
+
+A minor (breaking) release: the layout fix below changes the force sign and
+the centring semantics that direct Rust callers of `vowl_wasm::layout` see.
+The JavaScript `WebVowl` and `NggExplorer` surfaces keep their signatures; the
+frozen export surface only gains `NggExplorer.loadArrays`.
+
+### Breaking changes for Rust callers
+
+- `layout::force::calculate_repulsion`, `calculate_batch_repulsion`, the
+  `layout::simd` repulsion and leaf kernels and the leaf path of
+  `QuadTree::calculate_force` now return a repulsive force for a **negative**
+  strength (d3-force convention, as `LayoutConfig::charge_strength` already
+  documented). A caller that passed a positive strength to get repulsion must
+  negate it.
+- `LayoutConfig::center_strength` now means d3-force `forceCenter` strength (a
+  centroid translation per tick), not a per-node spring towards the centre.
+  The default value is unchanged; a caller that tuned it for the old spring
+  will see much weaker centring of individual nodes.
+- `WebVowl.loadOntology` keeps the simulation settings made before it instead
+  of resetting them to defaults.
+
 ### Added
 
 - `NggExplorer.loadArrays(positions, edgeA, edgeB, edgeType)`: load a plain graph
@@ -41,6 +63,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (the fraction of the centroid's offset removed per tick, applied as a
   translation) instead of a per-node spring towards the centre. The default
   value is unchanged.
+- Packaging: the crate's `exclude` list now omits `tests/fixtures/ontologies/`
+  and the test that embeds it (`tests/webvowl_layout_test.rs`). The fixtures
+  keep their own third-party licences (PersonasOnto is CC BY-SA 3.0; SIOC
+  states none) and do not ship in the MIT-licensed crate. The npm package was
+  already limited to the wasm-pack `files` allowlist plus the notices.
 
 ### Fixed
 
@@ -78,6 +105,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A per-tick step cap (twice the larger of `link_distance` and `seed_radius`)
   and a non-finite-velocity reset guard the integrator. Neither is reached on
   the test ontologies.
+
+## [0.2.3] - 2026-11-03
+
+GitHub release only (browser tarball and notices); not published to npm or
+crates.io.
+
+### Fixed
+
+- The legacy `QuadTree` keeps coincident nodes in bounded-depth leaves instead
+  of subdividing without limit when more nodes than a leaf holds share a
+  position.
+- `CsrSimulation` numeric setters (`set_charge`, `set_link_distance`,
+  `set_link_strength`, `set_damping`, `set_center_gravity`, `set_theta` and the
+  rest) ignore non-finite values instead of storing them.
+- `WebVowl.loadOntology` clears pins and restarts the simulation, so a reload
+  no longer inherits the previous graph's pinned nodes and cooled alpha.
+
+### Changed
+
+- The release workflow reuses a checksum-verified existing GitHub release
+  bundle when re-run for a registry retry, rather than rebuilding or replacing
+  the immutable asset.
 
 ## [0.2.2] - 2026-10-30
 
@@ -237,6 +286,11 @@ Additive only: every 0.1.0 name and signature is unchanged.
   JavaScript surface, plus the zero-copy `NggExplorer` worker binding under the
   `ngg1` feature.
 
+[Unreleased]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.3...v0.3.0
+[0.2.3]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/DreamLab-AI/vowl-wasm/compare/v0.1.0...v0.1.1
