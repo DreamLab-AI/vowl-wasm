@@ -168,3 +168,63 @@ test('encoder rejects every mismatched field length and invalid CSR', () => {
     assert.throws(() => encodeNgg1(...bad), /NGG1:/);
   }
 });
+
+// The consumer graph for one ontology fixture: classes seeded on a radius-300
+// circle, each property between two distinct classes stored in both directions
+// (as tests/ngg_explorer_layout_test.rs builds it natively).
+function fixtureGraph(name) {
+  const g = JSON.parse(readFileSync(new URL(`./fixtures/ontologies/${name}.json`, import.meta.url), 'utf8'));
+  const index = new Map(g.class.map((c, i) => [c.id, i]));
+  const n = g.class.length;
+  const adj = Array.from({ length: n }, () => []);
+  for (const p of g.property ?? []) {
+    const a = index.get(p.domain), b = index.get(p.range);
+    if (a === undefined || b === undefined || a === b) continue;
+    adj[a].push(b);
+    adj[b].push(a);
+  }
+  const seed = new Float32Array(2 * n);
+  for (let i = 0; i < n; i++) {
+    const t = (2 * Math.PI * i) / n;
+    seed[2 * i] = 300 * Math.cos(t);
+    seed[2 * i + 1] = 300 * Math.sin(t);
+  }
+  const edgeA = Uint32Array.from(adj.flatMap((row, i) => row.map(() => i)));
+  const edgeB = Uint32Array.from(adj.flat());
+  return { n, seed, edgeA, edgeB, edgeType: new Uint8Array(edgeA.length) };
+}
+
+function settle(explorer, n, params = {}) {
+  for (const [k, v] of Object.entries(params)) explorer.setParam(k, v);
+  for (let t = 0; t < 600; t++) explorer.tick();
+  const out = new Float32Array(2 * n);
+  explorer.writePositionsInto(out);
+  return out;
+}
+
+test('default NggExplorer layouts are byte-identical to 0.3.0 through WASM', () => {
+  for (const name of ['muto', 'sioc']) {
+    const { n, seed, edgeA, edgeB, edgeType } = fixtureGraph(name);
+    const explorer = new NggExplorer();
+    explorer.loadArrays(seed, edgeA, edgeB, edgeType);
+    // Setting the readability keys to their defaults must change nothing either.
+    const got = settle(explorer, n, { collideRadius: 0, collideStrength: 1, collideIterations: 1, componentGravity: 0 });
+    explorer.free();
+    const want = readFileSync(new URL(`./fixtures/ngg-golden/${name}.t600.f32le`, import.meta.url));
+    assert.deepEqual(Buffer.from(got.buffer), want, `${name}: layout moved from the 0.3.0 golden`);
+  }
+});
+
+test('collideRadius keeps every pair of nodes at least two radii apart through WASM', () => {
+  const { n, seed, edgeA, edgeB, edgeType } = fixtureGraph('goodrelations');
+  const explorer = new NggExplorer();
+  explorer.loadArrays(seed, edgeA, edgeB, edgeType);
+  const p = settle(explorer, n, { collideRadius: 21, collideStrength: 0.7, collideIterations: 3, componentGravity: 0.1 });
+  assert.equal(explorer.isFinished(), true);
+  explorer.free();
+  let min = Infinity;
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) min = Math.min(min, Math.hypot(p[2 * i] - p[2 * j], p[2 * i + 1] - p[2 * j + 1]));
+  }
+  assert.ok(Number.isFinite(min) && min >= 0.95 * 42, `min pair distance ${min}`);
+});
