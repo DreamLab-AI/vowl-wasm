@@ -31,6 +31,10 @@ use nalgebra::Vector2;
 /// Minimum distance squared to prevent division by zero
 const MIN_DISTANCE_SQ: f32 = 0.0001;
 
+/// Squared distance below which the force magnitude stops growing (d3-force
+/// `distanceMin²`); the same softening as the scalar kernels in `force`.
+const SOFTENING_SQ: f32 = super::force::MIN_DISTANCE_SQ as f32;
+
 /// SIMD-optimized position data for batch processing
 /// Uses f32 for SIMD compatibility (WASM SIMD128 = 4x f32)
 #[derive(Debug, Clone)]
@@ -164,9 +168,9 @@ pub unsafe fn calculate_repulsion_simd(positions: &SimdPositions, strength: f32)
                 positions.y[base_j + 3],
             );
 
-            // Calculate deltas
-            let dx = f32x4_sub(xi_v, xj_v);
-            let dy = f32x4_sub(yi_v, yj_v);
+            // Deltas from i towards j: a negative strength pushes i away
+            let dx = f32x4_sub(xj_v, xi_v);
+            let dy = f32x4_sub(yj_v, yi_v);
 
             // Calculate distance squared
             let dx_sq = f32x4_mul(dx, dx);
@@ -177,9 +181,9 @@ pub unsafe fn calculate_repulsion_simd(positions: &SimdPositions, strength: f32)
             let min_dist = f32x4_splat(MIN_DISTANCE_SQ);
             let dist_sq_clamped = f32x4_pmax(dist_sq, min_dist);
 
-            // Calculate force magnitude: strength / dist_sq
+            // Calculate force magnitude: strength / dist_sq, softened
             let strength_v = f32x4_splat(strength);
-            let force_mag = f32x4_div(strength_v, dist_sq_clamped);
+            let force_mag = f32x4_div(strength_v, f32x4_pmax(dist_sq, f32x4_splat(SOFTENING_SQ)));
 
             // Calculate distance (for normalization)
             let dist = f32x4_sqrt(dist_sq_clamped);
@@ -218,11 +222,11 @@ pub unsafe fn calculate_repulsion_simd(positions: &SimdPositions, strength: f32)
         // Handle remaining nodes (not divisible by 4)
         let remainder_start = i + 1 + chunks * 4;
         for j in remainder_start..n {
-            let dx = xi - positions.x[j];
-            let dy = yi - positions.y[j];
-            let dist_sq = (dx * dx + dy * dy).max(MIN_DISTANCE_SQ);
-            let dist = dist_sq.sqrt();
-            let force_mag = strength / dist_sq;
+            let dx = positions.x[j] - xi;
+            let dy = positions.y[j] - yi;
+            let dist_sq = dx * dx + dy * dy;
+            let dist = dist_sq.max(MIN_DISTANCE_SQ).sqrt();
+            let force_mag = strength / dist_sq.max(SOFTENING_SQ);
             let fx = (dx / dist) * force_mag;
             let fy = (dy / dist) * force_mag;
 
@@ -252,11 +256,11 @@ pub fn calculate_repulsion_scalar(positions: &SimdPositions, strength: f32) -> S
         let yi = positions.y[i];
 
         for j in (i + 1)..n {
-            let dx = xi - positions.x[j];
-            let dy = yi - positions.y[j];
-            let dist_sq = (dx * dx + dy * dy).max(MIN_DISTANCE_SQ);
-            let dist = dist_sq.sqrt();
-            let force_mag = strength / dist_sq;
+            let dx = positions.x[j] - xi;
+            let dy = positions.y[j] - yi;
+            let dist_sq = dx * dx + dy * dy;
+            let dist = dist_sq.max(MIN_DISTANCE_SQ).sqrt();
+            let force_mag = strength / dist_sq.max(SOFTENING_SQ);
             let fx = (dx / dist) * force_mag;
             let fy = (dy / dist) * force_mag;
 
@@ -427,16 +431,19 @@ pub unsafe fn calculate_leaf_force_simd(
             sources.mass[base + 3],
         );
 
-        // Calculate delta: target - source
-        let dx = f32x4_sub(tx_v, sx_v);
-        let dy = f32x4_sub(ty_v, sy_v);
+        // Delta from target towards source: a negative strength pushes away
+        let dx = f32x4_sub(sx_v, tx_v);
+        let dy = f32x4_sub(sy_v, ty_v);
 
         // Distance squared
         let dist_sq = f32x4_add(f32x4_mul(dx, dx), f32x4_mul(dy, dy));
         let dist_sq_clamped = f32x4_pmax(dist_sq, min_dist_v);
 
-        // Force magnitude: strength * mass / dist_sq
-        let force_mag = f32x4_div(f32x4_mul(strength_v, mass_v), dist_sq_clamped);
+        // Force magnitude: strength * mass / dist_sq, softened
+        let force_mag = f32x4_div(
+            f32x4_mul(strength_v, mass_v),
+            f32x4_pmax(dist_sq, f32x4_splat(SOFTENING_SQ)),
+        );
 
         // Normalize
         let dist = f32x4_sqrt(dist_sq_clamped);
@@ -462,11 +469,11 @@ pub unsafe fn calculate_leaf_force_simd(
 
     // Handle remainder
     for i in (chunks * 4)..n {
-        let dx = target_x - sources.x[i];
-        let dy = target_y - sources.y[i];
-        let dist_sq = (dx * dx + dy * dy).max(MIN_DISTANCE_SQ);
-        let dist = dist_sq.sqrt();
-        let force_mag = strength * sources.mass[i] / dist_sq;
+        let dx = sources.x[i] - target_x;
+        let dy = sources.y[i] - target_y;
+        let dist_sq = dx * dx + dy * dy;
+        let dist = dist_sq.max(MIN_DISTANCE_SQ).sqrt();
+        let force_mag = strength * sources.mass[i] / dist_sq.max(SOFTENING_SQ);
         total_fx += (dx / dist) * force_mag;
         total_fy += (dy / dist) * force_mag;
     }
@@ -496,11 +503,11 @@ pub fn calculate_leaf_force_scalar(
     let mut fy = 0.0f32;
 
     for i in 0..sources.len {
-        let dx = target_x - sources.x[i];
-        let dy = target_y - sources.y[i];
-        let dist_sq = (dx * dx + dy * dy).max(MIN_DISTANCE_SQ);
-        let dist = dist_sq.sqrt();
-        let force_mag = strength * sources.mass[i] / dist_sq;
+        let dx = sources.x[i] - target_x;
+        let dy = sources.y[i] - target_y;
+        let dist_sq = dx * dx + dy * dy;
+        let dist = dist_sq.max(MIN_DISTANCE_SQ).sqrt();
+        let force_mag = strength * sources.mass[i] / dist_sq.max(SOFTENING_SQ);
         fx += (dx / dist) * force_mag;
         fy += (dy / dist) * force_mag;
     }
@@ -709,12 +716,13 @@ mod tests {
 
         let forces = calculate_repulsion_scalar(&simd_pos, -100.0);
 
-        // With negative strength (repulsion), delta is (0-10, 0) = (-10, 0)
-        // The force magnitude is negative, so the force points from 0 toward 1
-        // Node 0 at (0,0) is pushed away from node 1 at (10,0)
-        // Force direction: delta.normalize() * (strength / dist_sq) = (-1,0) * (-100/100) = (1, 0)
-        // So forces.fx[0] should be positive (pushed right, away from repelling force)
-        assert!(forces.fx[0] != 0.0, "Force on node 0 should be non-zero");
+        // Negative strength repels: node 0 at (0,0) is pushed left, away from
+        // node 1 at (10,0), with magnitude 100 / 10².
+        assert!(
+            (forces.fx[0] + 1.0).abs() < 1e-6,
+            "fx[0] = {}",
+            forces.fx[0]
+        );
         // Force on node 1 should be opposite of force on node 0
         assert!(
             (forces.fx[0] + forces.fx[1]).abs() < 0.001,
@@ -745,34 +753,11 @@ mod tests {
         let sources = SimdPositions::from_positions(&[(10.0, 0.0), (0.0, 10.0)]);
         let (fx, fy) = calculate_leaf_force_scalar(0.0, 0.0, &sources, -100.0);
 
-        // With target at (0,0) and sources at (10,0) and (0,10):
-        // Delta to source 1: (0-10, 0-0) = (-10, 0), normalized = (-1, 0)
-        // Delta to source 2: (0-0, 0-10) = (0, -10), normalized = (0, -1)
-        // With strength=-100 and dist_sq=100: force_mag = -100/100 = -1
-        // Force from source 1: (-1, 0) * -1 = (1, 0) [repelled rightward]
-        // Force from source 2: (0, -1) * -1 = (0, 1) [repelled upward]
-        // Total: (1, 1) - both positive (pushed away from sources)
-        // But wait, the calculation is target - source, so:
-        // delta1 = (0-10, 0) = (-10, 0), force points left (negative x)
-        // Actually let me trace through: delta = target - source
-        // For source at (10,0): delta = (0-10, 0-0) = (-10, 0)
-        // dist = 10, force_mag = -100 * 1 / 100 = -1
-        // force = (-10/10) * -1 = 1 (positive x, pushed away from source on right)
-        // So fx should be positive, fy should be positive
-        assert!(fx != 0.0, "fx should be non-zero");
-        assert!(fy != 0.0, "fy should be non-zero");
-        // Forces should have same sign since sources are in positive quadrant
-        // and repulsion pushes toward negative quadrant
-        // Actually, force = delta.normalize() * force_mag
-        // delta for (10,0) = (-10,0), normalized = (-1,0), force_mag = -1, so (-1)*(-1) = 1
-        // delta for (0,10) = (0,-10), normalized = (0,-1), force_mag = -1, so (-1)*(-1) = 1
-        // So both forces are positive (pushed away from sources toward negative)
-        // Wait no - if sources are at positive coords, repulsion pushes target toward negative
-        // Let me just check they're non-zero and consistent
-        assert!(
-            (fx.abs() - fy.abs()).abs() < 0.001,
-            "Forces should be symmetric"
-        );
+        // Negative strength repels: the target at the origin is pushed away
+        // from both sources, i.e. towards negative x and negative y, with
+        // magnitude 100 / 10² from each.
+        assert!((fx + 1.0).abs() < 1e-6, "fx = {fx}");
+        assert!((fy + 1.0).abs() < 1e-6, "fy = {fy}");
     }
 
     #[test]

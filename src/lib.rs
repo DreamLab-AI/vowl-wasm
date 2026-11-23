@@ -91,7 +91,7 @@
 //! | `getAlpha()` | [`get_alpha`](bindings::WebVowl::get_alpha) | Annealing temperature |
 //! | `setCenter(x, y)` | [`set_center`](bindings::WebVowl::set_center) | Move the layout centre |
 //! | `setLinkDistance(d)` | [`set_link_distance`](bindings::WebVowl::set_link_distance) | Spring rest length |
-//! | `setChargeStrength(s)` | [`set_charge_strength`](bindings::WebVowl::set_charge_strength) | Repulsion strength |
+//! | `setChargeStrength(s)` | [`set_charge_strength`](bindings::WebVowl::set_charge_strength) | Many-body charge; negative repels |
 //! | `getNodeCount()` | [`get_node_count`](bindings::WebVowl::get_node_count) | Node count |
 //! | `getEdgeCount()` | [`get_edge_count`](bindings::WebVowl::get_edge_count) | Edge count |
 //! | `getNodeIds()` | [`get_node_ids`](bindings::WebVowl::get_node_ids) | Node ids, in index order |

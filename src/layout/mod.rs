@@ -43,19 +43,35 @@ pub struct LayoutConfig {
     /// Minimum alpha before stopping
     pub alpha_min: f64,
 
-    /// Velocity decay (damping)
+    /// Velocity retained per tick: `v = (v + alpha * F) * velocity_decay`.
+    ///
+    /// Note this is the retained fraction, so `0.6` here is d3-force's
+    /// `velocityDecay(0.4)`.
     pub velocity_decay: f64,
 
     /// Link distance
     pub link_distance: f64,
 
-    /// Link strength
+    /// Link strength, before degree normalisation.
+    ///
+    /// Each edge's stiffness is `link_strength / min(degree(source),
+    /// degree(target))`, shared between its ends by degree (d3-force's
+    /// `forceLink` default), so a hub or a bundle of parallel edges does not
+    /// stack stiffness. Values above about 5 make the explicit integrator
+    /// unstable.
     pub link_strength: f64,
 
-    /// Charge strength (repulsion)
+    /// Many-body charge, d3-force sign convention: **negative repels**,
+    /// positive attracts. The magnitude is `|charge_strength| / d²`, held
+    /// constant below a distance of one unit.
     pub charge_strength: f64,
 
-    /// Center force strength
+    /// Fraction of the centroid's offset from [`center`](Self::center)
+    /// removed each tick, in `[0, 1]` (d3-force's `forceCenter` strength).
+    ///
+    /// The correction translates every movable node by the same amount, so
+    /// it positions the layout without compressing it. `1.0` keeps the
+    /// centroid exactly on the centre; `0.0` lets it drift.
     pub center_strength: f64,
 
     /// Center position
@@ -91,9 +107,9 @@ pub struct LayoutConfig {
 impl Default for LayoutConfig {
     /// General-purpose defaults, suitable for graphs of any size.
     ///
-    /// The force constants are the conventional force-directed values (a 30-unit
-    /// rest length, unit link strength, `-30` charge and full centre pull), which
-    /// behave sensibly from a handful of nodes upward. For graphs in the
+    /// The force constants are d3-force's defaults (a 30-unit rest length,
+    /// degree-normalised unit link strength, `-30` charge, and a centroid held
+    /// on the centre), which behave sensibly from a handful of nodes upward. For graphs in the
     /// thousands these settle into a dense hairball; use
     /// [`LayoutConfig::large_graph`] there instead.
     fn default() -> Self {
@@ -120,8 +136,8 @@ impl LayoutConfig {
     ///
     /// These are the values the DreamLab corpus explorer runs at, arrived at
     /// empirically on a 1,155-node ontology: a long rest length and a strong
-    /// charge to force the graph open, weak links so it can expand, and almost
-    /// no centre pull so clusters are not crushed together. They deliberately
+    /// charge to force the graph open, weak links so it can expand, and a
+    /// centroid left almost free to drift. They deliberately
     /// over-spread a small graph, which is why they are a named preset rather
     /// than the default.
     ///

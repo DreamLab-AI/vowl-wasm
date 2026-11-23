@@ -1,0 +1,1129 @@
+{
+ "header": {
+  "iri": "http://rdfs.org/sioc/ns#"
+ },
+ "class": [
+  {
+   "id": "6",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "7",
+   "type": "owl:Class",
+   "label": "Forum"
+  },
+  {
+   "id": "9",
+   "type": "owl:Class",
+   "label": "Agent"
+  },
+  {
+   "id": "26",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "27",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "28",
+   "type": "owl:Class",
+   "label": "Thread"
+  },
+  {
+   "id": "32",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "33",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "34",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "37",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "46",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "49",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "78",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "79",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "80",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "48",
+   "type": "owl:equivalentClass",
+   "label": "User"
+  },
+  {
+   "id": "25",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "19",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "57",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "54",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "93",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "94",
+   "type": "rdfs:Datatype",
+   "label": "nonNegativeInteger"
+  },
+  {
+   "id": "95",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "96",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "104",
+   "type": "rdfs:Datatype",
+   "label": "nonNegativeInteger"
+  },
+  {
+   "id": "106",
+   "type": "rdfs:Datatype",
+   "label": "nonNegativeInteger"
+  },
+  {
+   "id": "1",
+   "type": "owl:Class",
+   "label": "Item"
+  },
+  {
+   "id": "103",
+   "type": "rdfs:Datatype",
+   "label": "nonNegativeInteger"
+  },
+  {
+   "id": "111",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "112",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "113",
+   "type": "rdfs:Datatype",
+   "label": "nonNegativeInteger"
+  },
+  {
+   "id": "91",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "82",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "100",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "108",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "116",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "8",
+   "type": "owl:Class",
+   "label": "Container"
+  },
+  {
+   "id": "66",
+   "type": "owl:Class",
+   "label": "Role"
+  },
+  {
+   "id": "85",
+   "type": "owl:Class",
+   "label": "OnlineAccount"
+  },
+  {
+   "id": "39",
+   "type": "owl:Class",
+   "label": "Usergroup"
+  },
+  {
+   "id": "130",
+   "type": "owl:Class",
+   "label": "Community"
+  },
+  {
+   "id": "42",
+   "type": "owl:equivalentClass",
+   "label": "User Account"
+  },
+  {
+   "id": "63",
+   "type": "owl:Class",
+   "label": "Graph"
+  },
+  {
+   "id": "67",
+   "type": "owl:Class",
+   "label": "Site"
+  },
+  {
+   "id": "11",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "147",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "12",
+   "type": "owl:Class",
+   "label": "Space"
+  },
+  {
+   "id": "45",
+   "type": "owl:Class",
+   "label": "Post"
+  },
+  {
+   "id": "127",
+   "type": "owl:Class",
+   "label": "Document"
+  }
+ ],
+ "property": [
+  {
+   "id": "0",
+   "type": "owl:ObjectProperty",
+   "label": "previous by date",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "3",
+   "type": "owl:ObjectProperty",
+   "label": "later version",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "10",
+   "type": "owl:ObjectProperty",
+   "label": "has space",
+   "domain": "11",
+   "range": "12"
+  },
+  {
+   "id": "16",
+   "type": "owl:ObjectProperty",
+   "label": "has parent",
+   "domain": "8",
+   "range": "8"
+  },
+  {
+   "id": "18",
+   "type": "owl:ObjectProperty",
+   "label": "part of",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "21",
+   "type": "owl:ObjectProperty",
+   "label": "reply of",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "24",
+   "type": "owl:DatatypeProperty",
+   "label": "date",
+   "domain": "19",
+   "range": "25"
+  },
+  {
+   "id": "22",
+   "type": "owl:ObjectProperty",
+   "label": "has reply",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "14",
+   "type": "owl:ObjectProperty",
+   "label": "partOf",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "30",
+   "type": "owl:ObjectProperty",
+   "label": "subject",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "35",
+   "type": "owl:ObjectProperty",
+   "label": "has group",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "38",
+   "type": "owl:ObjectProperty",
+   "label": "has usergroup",
+   "domain": "12",
+   "range": "39"
+  },
+  {
+   "id": "41",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "39",
+   "range": "42"
+  },
+  {
+   "id": "29",
+   "type": "owl:ObjectProperty",
+   "label": "has container",
+   "domain": "1",
+   "range": "8"
+  },
+  {
+   "id": "44",
+   "type": "owl:DatatypeProperty",
+   "label": "content encoded",
+   "domain": "45",
+   "range": "46"
+  },
+  {
+   "id": "47",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "39",
+   "range": "48"
+  },
+  {
+   "id": "40",
+   "type": "owl:ObjectProperty",
+   "label": "usergroup of",
+   "domain": "39",
+   "range": "12"
+  },
+  {
+   "id": "50",
+   "type": "owl:ObjectProperty",
+   "label": "moderator of",
+   "domain": "42",
+   "range": "7"
+  },
+  {
+   "id": "52",
+   "type": "owl:DatatypeProperty",
+   "label": "id",
+   "domain": "19",
+   "range": "26"
+  },
+  {
+   "id": "53",
+   "type": "owl:ObjectProperty",
+   "label": "avatar",
+   "domain": "42",
+   "range": "54"
+  },
+  {
+   "id": "56",
+   "type": "owl:ObjectProperty",
+   "label": "about",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "58",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "12",
+   "range": "48"
+  },
+  {
+   "id": "59",
+   "type": "owl:ObjectProperty",
+   "label": "has member",
+   "domain": "39",
+   "range": "42"
+  },
+  {
+   "id": "60",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "39",
+   "range": "12"
+  },
+  {
+   "id": "5",
+   "type": "owl:ObjectProperty",
+   "label": "next version",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "62",
+   "type": "owl:ObjectProperty",
+   "label": "embeds knowledge",
+   "domain": "1",
+   "range": "63"
+  },
+  {
+   "id": "64",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "42",
+   "range": "12"
+  },
+  {
+   "id": "65",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "12",
+   "range": "66"
+  },
+  {
+   "id": "15",
+   "type": "owl:ObjectProperty",
+   "label": "has host",
+   "domain": "8",
+   "range": "67"
+  },
+  {
+   "id": "69",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "39",
+   "range": "66"
+  },
+  {
+   "id": "70",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "66",
+   "range": "48"
+  },
+  {
+   "id": "4",
+   "type": "owl:ObjectProperty",
+   "label": "earlier version",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "71",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "42",
+   "range": "66"
+  },
+  {
+   "id": "72",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "39",
+   "range": "1"
+  },
+  {
+   "id": "73",
+   "type": "owl:ObjectProperty",
+   "label": "owner of",
+   "domain": "42",
+   "range": "54"
+  },
+  {
+   "id": "75",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "12",
+   "range": "1"
+  },
+  {
+   "id": "76",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "66",
+   "range": "1"
+  },
+  {
+   "id": "77",
+   "type": "owl:ObjectProperty",
+   "label": "shared by",
+   "domain": "1",
+   "range": "42"
+  },
+  {
+   "id": "81",
+   "type": "owl:DatatypeProperty",
+   "label": "last item date",
+   "domain": "8",
+   "range": "82"
+  },
+  {
+   "id": "83",
+   "type": "owl:ObjectProperty",
+   "label": "delivered at",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "84",
+   "type": "owl:ObjectProperty",
+   "label": "attachment",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "86",
+   "type": "owl:DatatypeProperty",
+   "label": "description",
+   "domain": "45",
+   "range": "37"
+  },
+  {
+   "id": "87",
+   "type": "owl:ObjectProperty",
+   "label": "link",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "88",
+   "type": "owl:ObjectProperty",
+   "label": "has administrator",
+   "domain": "67",
+   "range": "42"
+  },
+  {
+   "id": "89",
+   "type": "owl:DatatypeProperty",
+   "label": "content",
+   "domain": "1",
+   "range": "49"
+  },
+  {
+   "id": "90",
+   "type": "owl:DatatypeProperty",
+   "label": "note",
+   "domain": "19",
+   "range": "91"
+  },
+  {
+   "id": "92",
+   "type": "owl:DatatypeProperty",
+   "label": "email sha1",
+   "domain": "42",
+   "range": "34"
+  },
+  {
+   "id": "55",
+   "type": "owl:ObjectProperty",
+   "label": "depiction",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "97",
+   "type": "owl:ObjectProperty",
+   "label": "has modifier",
+   "domain": "54",
+   "range": "42"
+  },
+  {
+   "id": "99",
+   "type": "owl:DatatypeProperty",
+   "label": "last activity date",
+   "domain": "19",
+   "range": "100"
+  },
+  {
+   "id": "101",
+   "type": "owl:ObjectProperty",
+   "label": "follows",
+   "domain": "42",
+   "range": "42"
+  },
+  {
+   "id": "102",
+   "type": "owl:DatatypeProperty",
+   "label": "num items",
+   "domain": "8",
+   "range": "103"
+  },
+  {
+   "id": "105",
+   "type": "owl:ObjectProperty",
+   "label": "has function",
+   "domain": "78",
+   "range": "66"
+  },
+  {
+   "id": "107",
+   "type": "owl:DatatypeProperty",
+   "label": "last reply date",
+   "domain": "19",
+   "range": "108"
+  },
+  {
+   "id": "109",
+   "type": "owl:ObjectProperty",
+   "label": "email",
+   "domain": "42",
+   "range": "54"
+  },
+  {
+   "id": "110",
+   "type": "owl:ObjectProperty",
+   "label": "account",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "98",
+   "type": "owl:ObjectProperty",
+   "label": "modifier of",
+   "domain": "42",
+   "range": "54"
+  },
+  {
+   "id": "68",
+   "type": "owl:ObjectProperty",
+   "label": "host of",
+   "domain": "67",
+   "range": "8"
+  },
+  {
+   "id": "114",
+   "type": "owl:DatatypeProperty",
+   "label": "title",
+   "domain": "19",
+   "range": "80"
+  },
+  {
+   "id": "115",
+   "type": "owl:ObjectProperty",
+   "label": "account of",
+   "domain": "42",
+   "range": "9"
+  },
+  {
+   "id": "117",
+   "type": "owl:ObjectProperty",
+   "label": "has subscriber",
+   "domain": "8",
+   "range": "42"
+  },
+  {
+   "id": "119",
+   "type": "owl:DatatypeProperty",
+   "label": "modified at",
+   "domain": "45",
+   "range": "112"
+  },
+  {
+   "id": "23",
+   "type": "owl:ObjectProperty",
+   "label": "related to",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "120",
+   "type": "owl:ObjectProperty",
+   "label": "administrator of",
+   "domain": "42",
+   "range": "67"
+  },
+  {
+   "id": "121",
+   "type": "owl:DatatypeProperty",
+   "label": "subject",
+   "domain": "45",
+   "range": "96"
+  },
+  {
+   "id": "122",
+   "type": "owl:ObjectProperty",
+   "label": "references",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "124",
+   "type": "owl:ObjectProperty",
+   "label": "reference",
+   "domain": "45",
+   "range": "79"
+  },
+  {
+   "id": "125",
+   "type": "owl:DatatypeProperty",
+   "label": "last name",
+   "domain": "42",
+   "range": "116"
+  },
+  {
+   "id": "126",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "45",
+   "range": "127"
+  },
+  {
+   "id": "128",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "67",
+   "range": "12"
+  },
+  {
+   "id": "129",
+   "type": "owl:DatatypeProperty",
+   "label": "first name",
+   "domain": "42",
+   "range": "27"
+  },
+  {
+   "id": "131",
+   "type": "owl:ObjectProperty",
+   "label": "creator of",
+   "domain": "42",
+   "range": "54"
+  },
+  {
+   "id": "133",
+   "type": "owl:ObjectProperty",
+   "label": "member of",
+   "domain": "42",
+   "range": "39"
+  },
+  {
+   "id": "134",
+   "type": "owl:DatatypeProperty",
+   "label": "num authors",
+   "domain": "19",
+   "range": "113"
+  },
+  {
+   "id": "135",
+   "type": "owl:ObjectProperty",
+   "label": "has discussion",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "137",
+   "type": "owl:DatatypeProperty",
+   "label": "num views",
+   "domain": "19",
+   "range": "94"
+  },
+  {
+   "id": "138",
+   "type": "owl:ObjectProperty",
+   "label": "sibling",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "139",
+   "type": "owl:ObjectProperty",
+   "label": "function of",
+   "domain": "66",
+   "range": "78"
+  },
+  {
+   "id": "140",
+   "type": "owl:DatatypeProperty",
+   "label": "num replies",
+   "domain": "19",
+   "range": "106"
+  },
+  {
+   "id": "141",
+   "type": "owl:DatatypeProperty",
+   "label": "created at",
+   "domain": "45",
+   "range": "33"
+  },
+  {
+   "id": "123",
+   "type": "owl:ObjectProperty",
+   "label": "links to",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "142",
+   "type": "owl:DatatypeProperty",
+   "label": "ip address",
+   "domain": "19",
+   "range": "6"
+  },
+  {
+   "id": "143",
+   "type": "owl:ObjectProperty",
+   "label": "hasPart",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "144",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "42",
+   "range": "85"
+  },
+  {
+   "id": "145",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "28",
+   "range": "8"
+  },
+  {
+   "id": "146",
+   "type": "owl:DatatypeProperty",
+   "label": "description",
+   "domain": "19",
+   "range": "147"
+  },
+  {
+   "id": "148",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "48",
+   "range": "85"
+  },
+  {
+   "id": "149",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "7",
+   "range": "8"
+  },
+  {
+   "id": "150",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "45",
+   "range": "1"
+  },
+  {
+   "id": "2",
+   "type": "owl:ObjectProperty",
+   "label": "next by date",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "151",
+   "type": "owl:ObjectProperty",
+   "label": "generator",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "152",
+   "type": "owl:ObjectProperty",
+   "label": "scope of",
+   "domain": "78",
+   "range": "66"
+  },
+  {
+   "id": "154",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "130",
+   "range": "1"
+  },
+  {
+   "id": "43",
+   "type": "owl:ObjectProperty",
+   "label": "container of",
+   "domain": "8",
+   "range": "1"
+  },
+  {
+   "id": "155",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "42",
+   "range": "8"
+  },
+  {
+   "id": "156",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "39",
+   "range": "8"
+  },
+  {
+   "id": "157",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "66",
+   "range": "8"
+  },
+  {
+   "id": "158",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "48"
+  },
+  {
+   "id": "159",
+   "type": "owl:ObjectProperty",
+   "label": "latest version",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "160",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "1"
+  },
+  {
+   "id": "161",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "48",
+   "range": "1"
+  },
+  {
+   "id": "162",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "42",
+   "range": "1"
+  },
+  {
+   "id": "163",
+   "type": "owl:DatatypeProperty",
+   "label": "title",
+   "domain": "45",
+   "range": "95"
+  },
+  {
+   "id": "17",
+   "type": "owl:ObjectProperty",
+   "label": "parent of",
+   "domain": "8",
+   "range": "8"
+  },
+  {
+   "id": "153",
+   "type": "owl:ObjectProperty",
+   "label": "has scope",
+   "domain": "66",
+   "range": "78"
+  },
+  {
+   "id": "164",
+   "type": "owl:ObjectProperty",
+   "label": "respond to",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "165",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "130",
+   "range": "66"
+  },
+  {
+   "id": "166",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "42",
+   "range": "130"
+  },
+  {
+   "id": "132",
+   "type": "owl:ObjectProperty",
+   "label": "has creator",
+   "domain": "54",
+   "range": "42"
+  },
+  {
+   "id": "167",
+   "type": "owl:ObjectProperty",
+   "label": "read at",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "20",
+   "type": "owl:ObjectProperty",
+   "label": "has part",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "51",
+   "type": "owl:ObjectProperty",
+   "label": "has moderator",
+   "domain": "7",
+   "range": "42"
+  },
+  {
+   "id": "168",
+   "type": "owl:ObjectProperty",
+   "label": "likes",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "169",
+   "type": "owl:DatatypeProperty",
+   "label": "name",
+   "domain": "19",
+   "range": "111"
+  },
+  {
+   "id": "61",
+   "type": "owl:ObjectProperty",
+   "label": "previous version",
+   "domain": "1",
+   "range": "1"
+  },
+  {
+   "id": "170",
+   "type": "owl:ObjectProperty",
+   "label": "addressed to",
+   "domain": "1",
+   "range": "57"
+  },
+  {
+   "id": "13",
+   "type": "owl:ObjectProperty",
+   "label": "space of",
+   "domain": "12",
+   "range": "11"
+  },
+  {
+   "id": "171",
+   "type": "owl:DatatypeProperty",
+   "label": "num threads",
+   "domain": "7",
+   "range": "104"
+  },
+  {
+   "id": "136",
+   "type": "owl:ObjectProperty",
+   "label": "discussion of",
+   "domain": "57",
+   "range": "1"
+  },
+  {
+   "id": "118",
+   "type": "owl:ObjectProperty",
+   "label": "subscriber of",
+   "domain": "42",
+   "range": "8"
+  },
+  {
+   "id": "172",
+   "type": "owl:ObjectProperty",
+   "label": "feed",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "74",
+   "type": "owl:ObjectProperty",
+   "label": "has owner",
+   "domain": "54",
+   "range": "42"
+  },
+  {
+   "id": "173",
+   "type": "owl:ObjectProperty",
+   "label": "mentions",
+   "domain": "1",
+   "range": "42"
+  },
+  {
+   "id": "36",
+   "type": "owl:ObjectProperty",
+   "label": "group of",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "31",
+   "type": "owl:ObjectProperty",
+   "label": "topic",
+   "domain": "19",
+   "range": "19"
+  }
+ ]
+}
