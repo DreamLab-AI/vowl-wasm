@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Release workflow: the check after `npm publish` now polls the registry with
+  the cache bypassed for up to about three minutes, and fails only if the
+  version is still not served or its `dist.integrity` differs from the tarball
+  attached to the GitHub release. The v0.3.0 run was marked failed because a
+  single immediate `npm view` met registry propagation lag (E404) after the
+  publish had been accepted.
+
 ## [0.3.0] - 2026-11-23
+
+Released to GitHub (browser tarball and notices, with `.sha256` files) and to
+npm as `@dreamlab-ai/vowl-wasm@0.3.0`, the first version published to npm
+through trusted publishing, with a provenance attestation. The npm tarball is
+byte-identical to the release asset `vowl-wasm-0.3.0-pkg.tgz` (sha256
+`d2af7e506b3ca5c1d1071aeef3c521ef90a41c699f2d82d27292615a3e86d305`). Not
+published to crates.io. The Release run reports failure only because its
+post-publish check ran before the registry served the new version (see
+Unreleased).
 
 A minor (breaking) release: the layout fix below changes the force sign and
 the centring semantics that direct Rust callers of `vowl_wasm::layout` see.

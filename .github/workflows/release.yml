@@ -18,9 +18,13 @@ on:
 
 # `id-token: write` lets the runner mint an OIDC token that npm exchanges for a
 # short-lived publish credential (npm trusted publishing). No long-lived npm
-# token is stored anywhere: the trusted-publisher entry on npmjs.com for
-# @dreamlab-ai/vowl-wasm names this repository and this workflow file, and
-# provenance attestations are generated automatically.
+# token is stored anywhere, and provenance attestations are generated
+# automatically. The exchange needs the Trusted Publisher entry on npmjs.com for
+# @dreamlab-ai/vowl-wasm. That entry did not exist for v0.1.1 to v0.2.3 (see the
+# npm-trust job below); it was set on 2026-11-23 as: GitHub Actions,
+# DreamLab-AI/vowl-wasm, workflow file release.yml, no environment, allowed
+# actions publish and stage publish. v0.3.0 was the first version published
+# through it.
 permissions:
   contents: write
   id-token: write
@@ -248,7 +252,40 @@ jobs:
           fi
           # Verbose logging records whether npm used the OIDC exchange.
           npm publish "vowl-wasm-${VERSION}-pkg.tgz" --access public --loglevel verbose
-          npm view "@dreamlab-ai/vowl-wasm@${VERSION}" version dist.integrity
+
+      # The registry can answer E404 for a version for a while after the PUT
+      # was accepted (v0.3.0's run failed here seconds after a 202). Poll the
+      # packument with the cache bypassed for up to about three minutes, and
+      # check that what it serves is the tarball attached to the release.
+      - name: Verify the version is served by the registry
+        run: |
+          set -euo pipefail
+          expected="sha512-$(openssl dgst -sha512 -binary "vowl-wasm-${VERSION}-pkg.tgz" | base64 -w0)"
+          url="https://registry.npmjs.org/@dreamlab-ai%2fvowl-wasm"
+          delay=5
+          deadline=$((SECONDS + 180))
+          while :; do
+            integrity=$(curl --silent --show-error --fail \
+                -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
+                -H 'Accept: application/json' \
+                "${url}?t=$(date +%s%N)" 2>/dev/null \
+              | jq -r --arg v "$VERSION" '.versions[$v].dist.integrity // empty' || true)
+            if [ -n "$integrity" ]; then
+              echo "registry serves @dreamlab-ai/vowl-wasm@${VERSION}: ${integrity}"
+              if [ "$integrity" != "$expected" ]; then
+                echo "::error::registry integrity ${integrity} does not match the release tarball (${expected})"
+                exit 1
+              fi
+              exit 0
+            fi
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error::@dreamlab-ai/vowl-wasm@${VERSION} not served by the registry after 180s"
+              exit 1
+            fi
+            echo "not served yet; retrying in ${delay}s"
+            sleep "$delay"
+            delay=$(( delay * 2 > 40 ? 40 : delay * 2 ))
+          done
 
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
