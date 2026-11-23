@@ -102,6 +102,38 @@ pub struct LayoutConfig {
     /// positions a caller placed deliberately: nodes still at the origin are
     /// seeded as usual, and every other node is left where it is.
     pub preserve_seeded_positions: bool,
+
+    /// Collision radius given to every node, in layout units (d3-force's
+    /// `forceCollide` radius). `0.0`, the default, turns collision off.
+    ///
+    /// Overlapping pairs are pushed apart along the line between them until
+    /// they are at least `r_i + r_j` apart; the larger node moves less, in
+    /// proportion to `r_j² / (r_i² + r_j²)`. Like d3-force, collision acts on
+    /// velocities and is **not** scaled by alpha, so it keeps resolving
+    /// overlaps while the other forces cool. A per-node radius set with
+    /// [`ForceSimulation::set_node_radii`](simulation::ForceSimulation::set_node_radii)
+    /// takes precedence.
+    pub collision_radius: f64,
+
+    /// Fraction of an overlap removed per collision pass, in `[0, 1]`
+    /// (d3-force's `forceCollide.strength`, default `1.0`).
+    pub collision_strength: f64,
+
+    /// Collision passes per tick (d3-force's `forceCollide.iterations`,
+    /// default `1`). More passes resolve dense clusters faster.
+    pub collision_iterations: usize,
+
+    /// Strength of a per-node pull towards [`center`](Self::center), in
+    /// `[0, 1]` (d3-force's `forceX` and `forceY` with that target). `0.0`,
+    /// the default, turns it off.
+    ///
+    /// Unlike the centroid correction of
+    /// [`center_strength`](Self::center_strength), this acts on each node,
+    /// so a disconnected component that charge would push away is drawn back
+    /// towards the rest of the graph. Keep it weak (about `0.02`-`0.1`): it
+    /// is a spring towards the centre, so a strong value compresses the
+    /// layout.
+    pub gravity_strength: f64,
 }
 
 impl Default for LayoutConfig {
@@ -127,6 +159,10 @@ impl Default for LayoutConfig {
             use_barnes_hut: true,
             seed_radius: 300.0,
             preserve_seeded_positions: false,
+            collision_radius: 0.0,
+            collision_strength: 1.0,
+            collision_iterations: 1,
+            gravity_strength: 0.0,
         }
     }
 }

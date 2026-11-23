@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Readability forces for the `WebVowl` simulation, all off (or at their 0.3.0
+  values) by default, so a caller that does not use them gets the 0.3.0 layout
+  bit for bit (`tests/layout_compat_test.rs` compares every fixture against
+  positions recorded from the 0.3.0 commit):
+  - Collision (d3-force `forceCollide`): `setCollisionRadius(r)` for every
+    node, `setNodeRadii(Float64Array)` per node in `getNodeIds()` order,
+    `setCollisionStrength(s)` and `setCollisionIterations(n)`. Acts on
+    velocities, unscaled by alpha, with a uniform grid for candidate pairs; a
+    pinned node is not moved and its partner takes the whole correction.
+  - Positional gravity (d3-force `forceX`/`forceY` towards the centre):
+    `setGravityStrength(s)`. Draws disconnected components in around the main
+    one instead of leaving them where the seed circle and the charge put them.
+  - Annealing schedule: `setAlphaDecay(d)`, `setAlphaMin(a)` and
+    `setVelocityDecay(v)` (fraction kept), so a run can last longer than the
+    default 300 ticks.
+  - The same setters on the Rust `ForceSimulation`, plus `config()` and
+    `clear_node_radii()`; new `LayoutConfig` fields `collision_radius`,
+    `collision_strength`, `collision_iterations` and `gravity_strength`.
+  - On the seven fixtures at link distance 100, charge -300 and radius 20,
+    collision lifts the smallest pair distance from 9.2 to 25.2 units to at
+    least 38.3 (0.96 of `2r`), and gravity 0.05 brings the farthest
+    disconnected component from up to 446 units beyond the main component's
+    radius to within 37 (`tests/readability_test.rs`).
+
+### Changed for Rust callers
+
+- `LayoutConfig` has four more public fields. A struct literal that lists
+  every field without `..LayoutConfig::default()` no longer compiles; add the
+  new fields or the default spread.
+
 ### Fixed
 
 - Release workflow: the check after `npm publish` now polls the registry with

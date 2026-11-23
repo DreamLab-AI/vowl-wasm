@@ -32,9 +32,12 @@ use syn::visit::Visit;
 
 /// Raw size of `pkg/vowl_wasm_bg.wasm` built from `main` (see the module docs).
 const MAIN_BUNDLE_BYTES: u64 = 232_764;
-/// The 0.2.0 owned decoder, encoder and constants add browser APIs over 0.1.2.
-/// Measured at 264,158 B; allow ~6% toolchain head-room without losing a size gate.
-const BUNDLE_BUDGET_BYTES: u64 = 280_000;
+/// The 0.2.0 owned decoder, encoder and constants add browser APIs over 0.1.2
+/// (measured at 264,158 B). The 0.3.0 release measured 273,469 B; the collision,
+/// gravity and annealing setters that followed add about 9.4 kB (282,860 B,
+/// wasm-pack 0.15.0, wasm-bindgen 0.2.128). Allow ~4% toolchain head-room over
+/// that without losing a size gate.
+const BUNDLE_BUDGET_BYTES: u64 = 295_000;
 /// A real vowl-wasm module is hundreds of kilobytes; anything below this is a stub.
 const BUNDLE_FLOOR_BYTES: u64 = 100_000;
 
@@ -99,7 +102,15 @@ const FROZEN_JS_EXPORTS: &[&str] = &[
     "WebVowl.reheat",
     "WebVowl.resetVisibility",
     "WebVowl.runSimulation",
+    "WebVowl.setAlphaDecay",
+    "WebVowl.setAlphaMin",
     "WebVowl.setCenter",
+    "WebVowl.setCollisionIterations",
+    "WebVowl.setCollisionRadius",
+    "WebVowl.setCollisionStrength",
+    "WebVowl.setGravityStrength",
+    "WebVowl.setNodeRadii",
+    "WebVowl.setVelocityDecay",
     "WebVowl.setChargeStrength",
     "WebVowl.setLinkDistance",
     "WebVowl.tick",

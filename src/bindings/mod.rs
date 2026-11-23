@@ -74,6 +74,9 @@ impl WebVowl {
 
         self.metadata = Some(ontology_data.metadata.clone());
         self.pin_manager = PinManager::new();
+        // Per-node radii describe the previous graph's nodes; the uniform
+        // collision radius and every other setting carry over.
+        self.simulation.clear_node_radii();
         // Restart the simulation for the new graph but keep its settings:
         // `setLinkDistance` / `setChargeStrength` / `setCenter` made before
         // this call still apply.
@@ -162,6 +165,81 @@ impl WebVowl {
     #[wasm_bindgen(js_name = setChargeStrength)]
     pub fn set_charge_strength(&mut self, strength: f64) {
         self.simulation.set_charge_strength(strength);
+    }
+
+    /// Give every node a collision radius, in layout units (d3-force
+    /// `forceCollide`). `0`, the default, turns collision off; a negative or
+    /// non-finite value is ignored. Kept across `loadOntology`.
+    ///
+    /// With collision on, no two nodes settle closer than the sum of their
+    /// radii (less a few percent where other forces push back). Per-node radii
+    /// from [`set_node_radii`](Self::set_node_radii) take precedence.
+    #[wasm_bindgen(js_name = setCollisionRadius)]
+    pub fn set_collision_radius(&mut self, radius: f64) {
+        self.simulation.set_collision_radius(radius);
+    }
+
+    /// Give each node its own collision radius, in node index order (the order
+    /// of [`get_node_ids`](Self::get_node_ids)), for example from its drawn
+    /// size or type. An empty array clears them. Cleared by `loadOntology`.
+    ///
+    /// Throws when no graph is loaded, when the length is not the node count,
+    /// or when a radius is negative or not finite; the previous radii are then
+    /// kept.
+    #[wasm_bindgen(js_name = setNodeRadii)]
+    pub fn set_node_radii(&mut self, radii: &[f64]) -> std::result::Result<(), JsValue> {
+        let Some(graph) = self.graph.as_ref() else {
+            return Err(JsValue::from_str("No graph loaded"));
+        };
+        self.simulation
+            .set_node_radii(radii, graph.node_count())
+            .map_err(|e| JsValue::from_str(&e))
+    }
+
+    /// Fraction of an overlap removed per collision pass, clamped to `[0, 1]`
+    /// (d3-force `forceCollide.strength`; default `1`).
+    #[wasm_bindgen(js_name = setCollisionStrength)]
+    pub fn set_collision_strength(&mut self, strength: f64) {
+        self.simulation.set_collision_strength(strength);
+    }
+
+    /// Collision passes per tick (d3-force `forceCollide.iterations`; default
+    /// `1`). Zero is ignored.
+    #[wasm_bindgen(js_name = setCollisionIterations)]
+    pub fn set_collision_iterations(&mut self, iterations: u32) {
+        self.simulation
+            .set_collision_iterations(iterations as usize);
+    }
+
+    /// Per-node pull towards the centre (d3-force `forceX` / `forceY`),
+    /// clamped to `[0, 1]`. `0`, the default, turns it off. A weak value such
+    /// as `0.05` draws disconnected components in around the main one.
+    #[wasm_bindgen(js_name = setGravityStrength)]
+    pub fn set_gravity_strength(&mut self, strength: f64) {
+        self.simulation.set_gravity_strength(strength);
+    }
+
+    /// Fraction of alpha lost per tick, in `(0, 1)` (default `0.0228`, about
+    /// 300 ticks). A smaller value anneals longer. Out-of-range values are
+    /// ignored.
+    #[wasm_bindgen(js_name = setAlphaDecay)]
+    pub fn set_alpha_decay(&mut self, decay: f64) {
+        self.simulation.set_alpha_decay(decay);
+    }
+
+    /// Alpha below which `isFinished` turns true, in `(0, 1)` (default
+    /// `0.001`). Out-of-range values are ignored.
+    #[wasm_bindgen(js_name = setAlphaMin)]
+    pub fn set_alpha_min(&mut self, alpha_min: f64) {
+        self.simulation.set_alpha_min(alpha_min);
+    }
+
+    /// Fraction of velocity **kept** per tick, in `[0, 1]` (default `0.6`,
+    /// which is d3-force's `velocityDecay(0.4)`). Out-of-range values are
+    /// ignored.
+    #[wasm_bindgen(js_name = setVelocityDecay)]
+    pub fn set_velocity_decay(&mut self, retained: f64) {
+        self.simulation.set_velocity_decay(retained);
     }
 
     /// Filter hierarchy by depth

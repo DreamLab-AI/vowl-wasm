@@ -56,8 +56,10 @@
 //!
 //! Every method below is exported to JavaScript under the `js_name` shown. This
 //! is the **frozen 0.1.0 surface**: names and signatures will not change without
-//! a major version bump. Later 0.1.x releases only add to it — `getNodeIds`,
-//! `getNodePositions` and `writePositionsInto` arrived in 0.1.1.
+//! a major version bump. Later releases only add to it — `getNodeIds`,
+//! `getNodePositions` and `writePositionsInto` arrived in 0.1.1; the collision,
+//! gravity and annealing setters (`setCollisionRadius` to `setVelocityDecay`
+//! below) are unreleased additions, all off or at their old values by default.
 //!
 //! ## Reading positions
 //!
@@ -92,6 +94,14 @@
 //! | `setCenter(x, y)` | [`set_center`](bindings::WebVowl::set_center) | Move the layout centre |
 //! | `setLinkDistance(d)` | [`set_link_distance`](bindings::WebVowl::set_link_distance) | Spring rest length |
 //! | `setChargeStrength(s)` | [`set_charge_strength`](bindings::WebVowl::set_charge_strength) | Many-body charge; negative repels |
+//! | `setCollisionRadius(r)` | [`set_collision_radius`](bindings::WebVowl::set_collision_radius) | Collision radius for every node; `0` (default) is off |
+//! | `setNodeRadii(radii)` | [`set_node_radii`](bindings::WebVowl::set_node_radii) | Per-node collision radii, index order |
+//! | `setCollisionStrength(s)` | [`set_collision_strength`](bindings::WebVowl::set_collision_strength) | Overlap removed per pass |
+//! | `setCollisionIterations(n)` | [`set_collision_iterations`](bindings::WebVowl::set_collision_iterations) | Collision passes per tick |
+//! | `setGravityStrength(s)` | [`set_gravity_strength`](bindings::WebVowl::set_gravity_strength) | Per-node pull to the centre; `0` (default) is off |
+//! | `setAlphaDecay(d)` | [`set_alpha_decay`](bindings::WebVowl::set_alpha_decay) | Annealing rate (run length) |
+//! | `setAlphaMin(a)` | [`set_alpha_min`](bindings::WebVowl::set_alpha_min) | Alpha at which the run finishes |
+//! | `setVelocityDecay(v)` | [`set_velocity_decay`](bindings::WebVowl::set_velocity_decay) | Velocity kept per tick |
 //! | `getNodeCount()` | [`get_node_count`](bindings::WebVowl::get_node_count) | Node count |
 //! | `getEdgeCount()` | [`get_edge_count`](bindings::WebVowl::get_edge_count) | Edge count |
 //! | `getNodeIds()` | [`get_node_ids`](bindings::WebVowl::get_node_ids) | Node ids, in index order |

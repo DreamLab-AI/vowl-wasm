@@ -152,7 +152,7 @@ load. Invalid input throws instead of aborting the instance.
 ## Public API
 
 This is the **frozen 0.1.0 surface**. Names and signatures will not change
-without a major version bump; later 0.1.x releases only add to it.
+without a major version bump; later releases only add to it.
 
 ### `WebVowl` — always available
 
@@ -168,6 +168,12 @@ without a major version bump; later 0.1.x releases only add to it.
 | `setCenter(x, y)` | Move the layout centre |
 | `setLinkDistance(d)` | Spring rest length |
 | `setChargeStrength(s)` | Many-body charge; negative repels (d3 convention, default `-30`) |
+| `setCollisionRadius(r)` | Collision radius for every node (d3 `forceCollide`); `0`, the default, is off |
+| `setNodeRadii(radii)` | Per-node collision radii as a `Float64Array` in `getNodeIds()` order; cleared by `loadOntology` |
+| `setCollisionStrength(s)` / `setCollisionIterations(n)` | Overlap removed per pass (default `1`) / passes per tick (default `1`) |
+| `setGravityStrength(s)` | Per-node pull to the centre (d3 `forceX`/`forceY`); `0`, the default, is off. About `0.05` packs disconnected components around the main one |
+| `setAlphaDecay(d)` / `setAlphaMin(a)` | Annealing schedule (defaults `0.0228` / `0.001`, about 300 ticks); a smaller decay runs longer |
+| `setVelocityDecay(v)` | Fraction of velocity **kept** per tick (default `0.6`, i.e. d3 `velocityDecay(0.4)`) |
 | `getNodeCount()` / `getEdgeCount()` | Graph size |
 | `getNodeIds()` | Node ids, in index order |
 | `getNodePositions()` | Live `x, y` per node as a `Float32Array` |
