@@ -303,6 +303,20 @@ impl VowlGraph {
         self.graph.node_weights().collect()
     }
 
+    /// Mutable access to every node, in the same index order as [`nodes`](Self::nodes).
+    pub(crate) fn nodes_mut(&mut self) -> impl Iterator<Item = &mut Node> {
+        self.graph.node_weights_mut()
+    }
+
+    /// `(source, target)` node indices of every edge, parallel edges and
+    /// self-loops included. Indices are positions in [`nodes`](Self::nodes).
+    pub(crate) fn edge_index_pairs(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
+        self.graph
+            .raw_edges()
+            .iter()
+            .map(|e| (e.source().index(), e.target().index()))
+    }
+
     /// Get all edges
     pub fn edges(&self) -> Vec<&Edge> {
         self.graph.edge_weights().collect()

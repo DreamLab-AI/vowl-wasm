@@ -9,9 +9,24 @@ use nalgebra::Vector2;
 #[cfg(feature = "simd")]
 use super::simd::{calculate_center_force_simd, calculate_repulsion_simd, SimdPositions};
 
-/// Calculate repulsive force between two nodes (Coulomb's law)
+/// Squared distance below which the many-body force stops growing: d3-force's
+/// `distanceMin²`.
+///
+/// `strength / d²` is unbounded as `d → 0`, so two nodes that land almost on
+/// top of each other would throw one another across the layout in one tick.
+/// Below a distance of one unit the magnitude is held at `|strength|`; the
+/// direction still follows the true offset.
+pub(crate) const MIN_DISTANCE_SQ: f64 = 1.0;
+
+/// Many-body force on the node at `pos1` from the node at `pos2`
+/// (inverse-square, Coulomb's law).
+///
+/// `strength` follows the d3-force sign convention used throughout
+/// [`LayoutConfig`](super::LayoutConfig): **negative repels**, positive
+/// attracts. The magnitude is `|strength| / d²`.
 pub fn calculate_repulsion(pos1: Vector2<f64>, pos2: Vector2<f64>, strength: f64) -> Vector2<f64> {
-    let delta = pos1 - pos2;
+    // Points from pos1 towards pos2, so a negative strength pushes pos1 away.
+    let delta = pos2 - pos1;
     let distance_sq = delta.norm_squared();
 
     // Handle case where nodes are at same position or very close
@@ -22,8 +37,7 @@ pub fn calculate_repulsion(pos1: Vector2<f64>, pos2: Vector2<f64>, strength: f64
         return Vector2::new(offset_x, offset_y);
     }
 
-    // Normal repulsion force
-    let force_magnitude = strength / distance_sq;
+    let force_magnitude = strength / distance_sq.max(MIN_DISTANCE_SQ);
     delta.normalize() * force_magnitude
 }
 
@@ -178,10 +192,10 @@ mod tests {
 
         let force = calculate_repulsion(pos1, pos2, strength);
 
-        // Force should point away from pos2 (negative strength means pos1 repels from pos2)
-        // So force.x should be negative (pointing left, away from pos2)
-        assert!(force.x < 0.0 || force.x.abs() > 0.0); // Has meaningful force
-        assert!(force.y.abs() < 0.01); // Nearly zero in Y direction
+        // Negative strength repels: pos1 is pushed left, away from pos2, with
+        // magnitude |strength| / d² = 30 / 100.
+        assert!((force.x + 0.3).abs() < 1e-12, "force {force:?}");
+        assert!(force.y.abs() < 1e-12);
     }
 
     #[test]
@@ -251,6 +265,31 @@ mod tests {
         for force in &forces {
             assert!(force.norm() > 0.0);
         }
+    }
+
+    #[test]
+    fn positive_strength_attracts() {
+        let force = calculate_repulsion(Vector2::new(0.0, 0.0), Vector2::new(10.0, 0.0), 30.0);
+        assert!(force.x > 0.0, "force {force:?}");
+    }
+
+    #[test]
+    fn repulsion_is_softened_below_unit_distance() {
+        // Below d = 1 the magnitude stays at |strength| instead of blowing up.
+        let near = calculate_repulsion(Vector2::new(0.0, 0.0), Vector2::new(0.05, 0.0), -30.0);
+        assert!((near.norm() - 30.0).abs() < 1e-9, "near {near:?}");
+        assert!(near.x < 0.0);
+    }
+
+    #[test]
+    fn batch_repulsion_pushes_nodes_apart() {
+        let forces = calculate_batch_repulsion(&[(0.0, 0.0), (10.0, 0.0)], -100.0);
+        assert!(forces[0].x < 0.0, "left node pushed left: {:?}", forces[0]);
+        assert!(
+            forces[1].x > 0.0,
+            "right node pushed right: {:?}",
+            forces[1]
+        );
     }
 
     #[test]

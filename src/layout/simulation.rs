@@ -14,7 +14,17 @@ use crate::debug::{log_distribution, DebugFlags};
 use crate::graph::VowlGraph;
 use crate::Result;
 use nalgebra::Vector2;
-use std::collections::HashMap;
+
+/// Per-tick displacement cap, as a multiple of the larger of `link_distance`
+/// and `seed_radius`.
+///
+/// A guard, not part of the physics. The largest legitimate step is the first
+/// contraction from the seed circle, which moves a node by up to about one
+/// seed radius; the real ontology fixtures peak at 0.55 of this cap and never
+/// reach it. It exists so that a caller-chosen stiffness the explicit
+/// integrator cannot carry grows the layout linearly instead of
+/// geometrically.
+const MAX_STEP_FACTOR: f64 = 2.0;
 
 /// Force-directed layout simulation
 pub struct ForceSimulation {
@@ -72,6 +82,17 @@ impl ForceSimulation {
         if alpha.is_finite() && alpha > 0.0 {
             self.alpha = alpha.min(1.0);
         }
+    }
+
+    /// Return to the unstarted state for a newly loaded graph.
+    ///
+    /// Alpha goes back to `config.alpha` and the iteration count to zero. The
+    /// configuration (link distance, charge, centre and the rest) and the
+    /// debug flags are kept, so settings made before a graph is loaded stay in
+    /// force for it.
+    pub fn reset(&mut self) {
+        self.alpha = self.config.alpha;
+        self.iteration = 0;
     }
 
     /// Set charge strength
@@ -132,19 +153,15 @@ impl ForceSimulation {
         }
     }
 
-    /// Calculate all forces for one simulation step
+    /// Calculate the force on every node for one simulation step, in node
+    /// index order.
     ///
     /// When the `simd` feature is enabled, uses SIMD-accelerated batch
     /// calculations for repulsion and centering forces.
-    fn calculate_forces(&self, graph: &VowlGraph) -> HashMap<String, Vector2<f64>> {
-        let mut forces: HashMap<String, Vector2<f64>> = HashMap::new();
+    fn calculate_forces(&self, graph: &VowlGraph) -> Vec<Vector2<f64>> {
         let nodes = graph.nodes();
         let n = nodes.len();
-
-        // Initialize forces
-        for node in &nodes {
-            forces.insert(node.id.clone(), Vector2::zeros());
-        }
+        let positions: Vec<(f64, f64)> = nodes.iter().map(|n| (n.visual.x, n.visual.y)).collect();
 
         // Log SIMD status on first iteration
         #[cfg(all(target_arch = "wasm32", feature = "simd"))]
@@ -154,112 +171,166 @@ impl ForceSimulation {
             }
         }
 
-        // Apply repulsion between all nodes
-        if self.config.use_barnes_hut && n > 50 {
-            // Use Barnes-Hut approximation for large graphs
-            // Barnes-Hut leaf nodes use SIMD when feature is enabled
+        // Many-body repulsion between all nodes
+        let mut forces = if self.config.use_barnes_hut && n > 50 {
+            // Barnes-Hut approximation for large graphs; its leaf nodes use
+            // SIMD when the feature is enabled.
             use super::quadtree::QuadTree;
 
             let quadtree = QuadTree::build(&nodes);
-
-            for node in &nodes {
-                let pos = Vector2::new(node.visual.x, node.visual.y);
-                let force = quadtree.calculate_force(
-                    pos,
-                    &node.id,
-                    self.config.barnes_hut_theta,
-                    self.config.charge_strength,
-                );
-                *forces.get_mut(&node.id).unwrap() += force;
-            }
+            nodes
+                .iter()
+                .map(|node| {
+                    quadtree.calculate_force(
+                        Vector2::new(node.visual.x, node.visual.y),
+                        &node.id,
+                        self.config.barnes_hut_theta,
+                        self.config.charge_strength,
+                    )
+                })
+                .collect()
         } else {
-            // Use SIMD-optimized batch repulsion for small graphs
-            let positions: Vec<(f64, f64)> =
-                nodes.iter().map(|n| (n.visual.x, n.visual.y)).collect();
+            calculate_batch_repulsion(&positions, self.config.charge_strength)
+        };
 
-            let repulsion_forces =
-                calculate_batch_repulsion(&positions, self.config.charge_strength);
+        let link_count = self.add_link_forces(graph, &positions, &mut forces);
 
-            for (i, node) in nodes.iter().enumerate() {
-                *forces.get_mut(&node.id).unwrap() += repulsion_forces[i];
-            }
-        }
-
-        // Apply attraction along edges
-        #[allow(unused_assignments, unused_variables)]
-        let mut attraction_count = 0;
-        for node in &nodes {
-            if let Ok(neighbors) = graph.neighbors(&node.id) {
-                for neighbor in neighbors {
-                    let pos1 = Vector2::new(node.visual.x, node.visual.y);
-                    let pos2 = Vector2::new(neighbor.visual.x, neighbor.visual.y);
-
-                    let force = calculate_attraction(
-                        pos1,
-                        pos2,
-                        self.config.link_distance,
-                        self.config.link_strength,
-                    );
-
-                    *forces.get_mut(&node.id).unwrap() += force * self.alpha;
-                    attraction_count += 1;
-                }
-            }
-        }
-
-        #[cfg(not(target_arch = "wasm32"))]
-        let _ = attraction_count;
-
-        // Log attraction force count on first iteration only
+        // Log the link count on first iteration only
         #[cfg(target_arch = "wasm32")]
         {
             if self.iteration == 0 {
                 web_sys::console::log_1(
                     &format!(
-                        "[Force] Applied {} attraction forces between {} nodes ({} edges in graph)",
-                        attraction_count,
-                        nodes.len(),
+                        "[Force] Applied {} link forces between {} nodes ({} edges in graph)",
+                        link_count,
+                        n,
                         graph.edge_count()
                     )
                     .into(),
                 );
             }
         }
-
-        // Apply centering force using SIMD batch operation
-        let positions: Vec<(f64, f64)> = nodes.iter().map(|n| (n.visual.x, n.visual.y)).collect();
-
-        let center_forces = calculate_batch_center_force(
-            &positions,
-            self.config.center,
-            self.config.center_strength,
-        );
-
-        for (i, node) in nodes.iter().enumerate() {
-            *forces.get_mut(&node.id).unwrap() += center_forces[i];
-        }
+        #[cfg(not(target_arch = "wasm32"))]
+        let _ = link_count;
 
         forces
     }
 
-    /// Apply forces to update node positions
-    fn apply_forces(&self, graph: &mut VowlGraph, forces: &HashMap<String, Vector2<f64>>) {
-        for (node_id, force) in forces {
-            if let Some(node) = graph.get_node_mut(node_id) {
-                if !node.visual.fixed {
-                    // Update velocity
-                    node.visual.vx += force.x * self.alpha;
-                    node.visual.vy += force.y * self.alpha;
+    /// Translate the movable nodes so their centroid moves `center_strength`
+    /// of the way to `center` (d3-force's `forceCenter`).
+    ///
+    /// This acts on positions, not velocities, and moves every node by the same
+    /// offset, so it keeps the layout where the caller wants it without
+    /// squeezing it: unlike a per-node pull towards the centre, it adds no
+    /// stiffness and cannot destabilise the integrator.
+    fn recenter(&self, graph: &mut VowlGraph) {
+        let (mut sum_x, mut sum_y, mut movable) = (0.0, 0.0, 0usize);
+        for node in graph.nodes().iter().filter(|n| !n.visual.fixed) {
+            sum_x += node.visual.x;
+            sum_y += node.visual.y;
+            movable += 1;
+        }
+        if movable == 0 {
+            return;
+        }
+        let strength = self.config.center_strength;
+        let shift_x = (self.config.center.0 - sum_x / movable as f64) * strength;
+        let shift_y = (self.config.center.1 - sum_y / movable as f64) * strength;
+        if !(shift_x.is_finite() && shift_y.is_finite()) {
+            return;
+        }
+        for node in graph.nodes_mut().filter(|n| !n.visual.fixed) {
+            node.visual.x += shift_x;
+            node.visual.y += shift_y;
+        }
+    }
 
-                    // Apply damping
-                    node.visual.vx *= self.config.velocity_decay;
-                    node.visual.vy *= self.config.velocity_decay;
+    /// Add the spring force of every edge to `forces` and return how many
+    /// edges pulled.
+    ///
+    /// This is d3-force's `forceLink` with its default strength and bias. Each
+    /// edge is visited once and acts on both ends. Its stiffness is
+    /// `link_strength / min(degree(source), degree(target))`, and the correction
+    /// is shared by degree: the target takes `degree(source) / (degree(source) +
+    /// degree(target))` of it and the source the rest. Summed over a node's
+    /// edges, that keeps every node's total stiffness below `link_strength`
+    /// however many edges (parallel ones included) it carries, which is what
+    /// keeps the explicit integrator stable on a hub.
+    ///
+    /// Self-loops exert no force and are left out of the degree count, so they
+    /// do not weaken a node's other links.
+    fn add_link_forces(
+        &self,
+        graph: &VowlGraph,
+        positions: &[(f64, f64)],
+        forces: &mut [Vector2<f64>],
+    ) -> usize {
+        let links: Vec<(usize, usize)> = graph
+            .edge_index_pairs()
+            .filter(|(source, target)| source != target)
+            .collect();
 
-                    // Update position
-                    node.visual.x += node.visual.vx;
-                    node.visual.y += node.visual.vy;
-                }
+        let mut degree = vec![0usize; positions.len()];
+        for &(source, target) in &links {
+            degree[source] += 1;
+            degree[target] += 1;
+        }
+
+        let mut pulled = 0;
+        for &(source, target) in &links {
+            let (sx, sy) = positions[source];
+            let (tx, ty) = positions[target];
+            let delta = Vector2::new(tx - sx, ty - sy);
+            let distance = delta.norm();
+            // Coincident ends have no direction to pull along; repulsion
+            // separates them first.
+            if distance < 1e-4 {
+                continue;
             }
+
+            let source_degree = degree[source] as f64;
+            let target_degree = degree[target] as f64;
+            let stiffness = self.config.link_strength / source_degree.min(target_degree);
+            let pull = delta * ((distance - self.config.link_distance) / distance * stiffness);
+            let target_share = source_degree / (source_degree + target_degree);
+
+            forces[target] -= pull * target_share;
+            forces[source] += pull * (1.0 - target_share);
+            pulled += 1;
+        }
+        pulled
+    }
+
+    /// Integrate one step: `v = (v + alpha * F) * velocity_decay`, `x += v`.
+    ///
+    /// Alpha is applied here and only here. Fixed (pinned) nodes do not move.
+    /// The step length is capped at [`MAX_STEP_FACTOR`] times the larger of
+    /// `link_distance` and `seed_radius`, and a non-finite velocity is
+    /// dropped; both are guards that well-posed input never reaches.
+    fn apply_forces(&self, graph: &mut VowlGraph, forces: &[Vector2<f64>]) {
+        let max_step = MAX_STEP_FACTOR
+            * self
+                .config
+                .link_distance
+                .abs()
+                .max(self.config.seed_radius.abs());
+        for (node, force) in graph.nodes_mut().zip(forces) {
+            if node.visual.fixed {
+                continue;
+            }
+            let mut velocity = (Vector2::new(node.visual.vx, node.visual.vy) + force * self.alpha)
+                * self.config.velocity_decay;
+            let speed = velocity.norm();
+            if !speed.is_finite() {
+                velocity = Vector2::zeros();
+            } else if speed > max_step {
+                velocity *= max_step / speed;
+            }
+
+            node.visual.vx = velocity.x;
+            node.visual.vy = velocity.y;
+            node.visual.x += velocity.x;
+            node.visual.y += velocity.y;
         }
     }
 }
@@ -289,6 +360,7 @@ impl LayoutAlgorithm for ForceSimulation {
 
         let forces = self.calculate_forces(graph);
         self.apply_forces(graph, &forces);
+        self.recenter(graph);
 
         // Decay alpha
         self.alpha *= 1.0 - self.config.alpha_decay;
@@ -486,6 +558,137 @@ mod tests {
 
         assert_eq!(sim.config.link_distance, 50.0);
         assert_eq!(sim.config.charge_strength, -100.0);
+    }
+
+    fn class(id: &str) -> NodeBuilder {
+        NodeBuilder::new(id).node_type(NodeType::Class)
+    }
+
+    fn link(graph: &mut VowlGraph, id: &str, from: &str, to: &str) {
+        graph
+            .add_edge(from, to, crate::graph::EdgeBuilder::new(id).build())
+            .unwrap();
+    }
+
+    fn settle(graph: &mut VowlGraph, sim: &mut ForceSimulation) {
+        sim.initialize(graph).unwrap();
+        while !sim.is_finished() {
+            sim.tick(graph).unwrap();
+        }
+    }
+
+    fn distance(graph: &VowlGraph, a: &str, b: &str) -> f64 {
+        let (a, b) = (graph.get_node(a).unwrap(), graph.get_node(b).unwrap());
+        (a.visual.x - b.visual.x).hypot(a.visual.y - b.visual.y)
+    }
+
+    #[test]
+    fn unlinked_nodes_push_apart() {
+        let mut graph = VowlGraph::new();
+        graph
+            .add_node(class("a").position(-1.0, 0.0).build())
+            .unwrap();
+        graph
+            .add_node(class("b").position(1.0, 0.0).build())
+            .unwrap();
+        let mut sim = ForceSimulation::with_config(LayoutConfig {
+            preserve_seeded_positions: true,
+            ..LayoutConfig::default()
+        });
+        sim.initialize(&mut graph).unwrap();
+        sim.tick(&mut graph).unwrap();
+        assert!(distance(&graph, "a", "b") > 2.0, "charge must repel");
+    }
+
+    #[test]
+    fn a_hub_with_many_leaves_stays_bounded() {
+        // The 0.2.3 integrator summed one unit-stiffness spring per out-edge on
+        // the hub, which goes unstable above about five edges.
+        let mut graph = VowlGraph::new();
+        graph.add_node(class("hub").build()).unwrap();
+        for i in 0..40 {
+            graph.add_node(class(&format!("leaf{i}")).build()).unwrap();
+            link(&mut graph, &format!("e{i}"), "hub", &format!("leaf{i}"));
+        }
+        let mut sim = ForceSimulation::new();
+        settle(&mut graph, &mut sim);
+        for node in graph.nodes() {
+            assert!(
+                node.visual.x.abs() < 1_000.0 && node.visual.y.abs() < 1_000.0,
+                "{} at ({}, {})",
+                node.id,
+                node.visual.x,
+                node.visual.y
+            );
+        }
+    }
+
+    #[test]
+    fn parallel_edges_do_not_stack() {
+        // Ten parallel edges between one pair are one spring, not ten.
+        let mut graph = VowlGraph::new();
+        graph.add_node(class("a").build()).unwrap();
+        graph.add_node(class("b").build()).unwrap();
+        for i in 0..10 {
+            link(&mut graph, &format!("p{i}"), "a", "b");
+        }
+        let mut sim = ForceSimulation::new();
+        settle(&mut graph, &mut sim);
+        let d = distance(&graph, "a", "b");
+        let rest = LayoutConfig::default().link_distance;
+        assert!(
+            d.is_finite() && (d - rest).abs() < 0.5 * rest,
+            "settled {d} apart, rest length {rest}"
+        );
+    }
+
+    #[test]
+    fn a_pinned_node_is_not_moved_by_centring() {
+        let mut graph = VowlGraph::new();
+        graph
+            .add_node(class("pinned").position(500.0, 0.0).build())
+            .unwrap();
+        graph.add_node(class("free").build()).unwrap();
+        link(&mut graph, "e", "pinned", "free");
+        graph.get_node_mut("pinned").unwrap().visual.fixed = true;
+        let mut sim = ForceSimulation::with_config(LayoutConfig {
+            preserve_seeded_positions: true,
+            ..LayoutConfig::default()
+        });
+        settle(&mut graph, &mut sim);
+        let pinned = graph.get_node("pinned").unwrap();
+        assert_eq!((pinned.visual.x, pinned.visual.y), (500.0, 0.0));
+    }
+
+    #[test]
+    fn centring_moves_the_centroid_to_the_centre() {
+        let mut graph = create_test_graph();
+        let mut sim = ForceSimulation::new();
+        sim.set_center(100.0, -50.0);
+        settle(&mut graph, &mut sim);
+        let n = graph.node_count() as f64;
+        let cx = graph.nodes().iter().map(|n| n.visual.x).sum::<f64>() / n;
+        let cy = graph.nodes().iter().map(|n| n.visual.y).sum::<f64>() / n;
+        assert!(
+            (cx - 100.0).abs() < 1e-6 && (cy + 50.0).abs() < 1e-6,
+            "centroid ({cx}, {cy})"
+        );
+    }
+
+    #[test]
+    fn reset_keeps_the_configuration() {
+        let mut sim = ForceSimulation::new();
+        sim.set_link_distance(80.0);
+        sim.set_charge_strength(-200.0);
+        sim.set_center(5.0, 6.0);
+        sim.alpha = 0.0;
+        sim.iteration = 42;
+        sim.reset();
+        assert_eq!(sim.alpha, sim.config.alpha);
+        assert_eq!(sim.iteration, 0);
+        assert_eq!(sim.config.link_distance, 80.0);
+        assert_eq!(sim.config.charge_strength, -200.0);
+        assert_eq!(sim.config.center, (5.0, 6.0));
     }
 
     #[test]

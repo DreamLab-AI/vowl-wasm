@@ -1,0 +1,271 @@
+{
+ "header": {
+  "iri": "http://purl.org/muto/core"
+ },
+ "class": [
+  {
+   "id": "4",
+   "type": "owl:Class",
+   "label": "Tag"
+  },
+  {
+   "id": "5",
+   "type": "owl:Class",
+   "label": "Concept"
+  },
+  {
+   "id": "7",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "15",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "2",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "9",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "10",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "18",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "19",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "21",
+   "type": "owl:Class",
+   "label": "Private Tagging"
+  },
+  {
+   "id": "24",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "25",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "6",
+   "type": "owl:Class",
+   "label": "Automatic Tag"
+  },
+  {
+   "id": "32",
+   "type": "owl:Class",
+   "label": "Item"
+  },
+  {
+   "id": "12",
+   "type": "owl:Class",
+   "label": "UserAccount"
+  },
+  {
+   "id": "1",
+   "type": "owl:Class",
+   "label": "Tagging"
+  }
+ ],
+ "property": [
+  {
+   "id": "0",
+   "type": "owl:ObjectProperty",
+   "label": "tagged resource",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "8",
+   "type": "owl:DatatypeProperty",
+   "label": "modified",
+   "domain": "9",
+   "range": "10"
+  },
+  {
+   "id": "11",
+   "type": "owl:ObjectProperty",
+   "label": "creator of",
+   "domain": "12",
+   "range": "1"
+  },
+  {
+   "id": "16",
+   "type": "owl:ObjectProperty",
+   "label": "has access",
+   "domain": "2",
+   "range": "1"
+  },
+  {
+   "id": "20",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "6",
+   "range": "4"
+  },
+  {
+   "id": "22",
+   "type": "owl:ObjectProperty",
+   "label": "meaning of",
+   "domain": "18",
+   "range": "4"
+  },
+  {
+   "id": "26",
+   "type": "owl:ObjectProperty",
+   "label": "has_creator",
+   "domain": "9",
+   "range": "9"
+  },
+  {
+   "id": "27",
+   "type": "owl:ObjectProperty",
+   "label": "tag of",
+   "domain": "4",
+   "range": "1"
+  },
+  {
+   "id": "13",
+   "type": "owl:ObjectProperty",
+   "label": "has creator",
+   "domain": "1",
+   "range": "12"
+  },
+  {
+   "id": "28",
+   "type": "owl:ObjectProperty",
+   "label": "has tag",
+   "domain": "1",
+   "range": "4"
+  },
+  {
+   "id": "17",
+   "type": "owl:ObjectProperty",
+   "label": "grant access",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "29",
+   "type": "owl:ObjectProperty",
+   "label": "previous tag",
+   "domain": "4",
+   "range": "4"
+  },
+  {
+   "id": "31",
+   "type": "owl:DatatypeProperty",
+   "label": "tag label",
+   "domain": "4",
+   "range": "25"
+  },
+  {
+   "id": "14",
+   "type": "owl:ObjectProperty",
+   "label": "creator_of",
+   "domain": "9",
+   "range": "9"
+  },
+  {
+   "id": "23",
+   "type": "owl:ObjectProperty",
+   "label": "tag meaning",
+   "domain": "4",
+   "range": "18"
+  },
+  {
+   "id": "34",
+   "type": "owl:DatatypeProperty",
+   "label": "tagging modified",
+   "domain": "1",
+   "range": "15"
+  },
+  {
+   "id": "33",
+   "type": "owl:ObjectProperty",
+   "label": "automatic tag meaning",
+   "domain": "4",
+   "range": "18"
+  },
+  {
+   "id": "3",
+   "type": "owl:ObjectProperty",
+   "label": "about",
+   "domain": "9",
+   "range": "9"
+  },
+  {
+   "id": "30",
+   "type": "owl:ObjectProperty",
+   "label": "next tag",
+   "domain": "4",
+   "range": "4"
+  },
+  {
+   "id": "35",
+   "type": "owl:DatatypeProperty",
+   "label": "tagging created",
+   "domain": "1",
+   "range": "7"
+  },
+  {
+   "id": "36",
+   "type": "owl:DatatypeProperty",
+   "label": "created",
+   "domain": "9",
+   "range": "19"
+  },
+  {
+   "id": "37",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "4",
+   "range": "5"
+  },
+  {
+   "id": "38",
+   "type": "owl:ObjectProperty",
+   "label": "tagged with",
+   "domain": "2",
+   "range": "1"
+  },
+  {
+   "id": "39",
+   "type": "owl:DatatypeProperty",
+   "label": "tag created",
+   "domain": "4",
+   "range": "24"
+  },
+  {
+   "id": "40",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "21",
+   "range": "1"
+  },
+  {
+   "id": "41",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "1",
+   "range": "32"
+  }
+ ]
+}

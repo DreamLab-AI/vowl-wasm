@@ -1,0 +1,2238 @@
+{
+ "header": {
+  "iri": "http://blankdots.com/open/personasonto.owl"
+ },
+ "class": [
+  {
+   "id": "8",
+   "type": "owl:Class",
+   "label": "Document"
+  },
+  {
+   "id": "13",
+   "type": "owl:Class",
+   "label": "Product"
+  },
+  {
+   "id": "23",
+   "type": "owl:Class",
+   "label": "SupplementalType"
+  },
+  {
+   "id": "25",
+   "type": "owl:Class",
+   "label": "UsabilityTest"
+  },
+  {
+   "id": "29",
+   "type": "owl:Class",
+   "label": "TechnicalGoals"
+  },
+  {
+   "id": "54",
+   "type": "owl:Class",
+   "label": "Participant"
+  },
+  {
+   "id": "55",
+   "type": "owl:Class",
+   "label": "LifeGoals"
+  },
+  {
+   "id": "46",
+   "type": "owl:Class",
+   "label": "Scenario"
+  },
+  {
+   "id": "88",
+   "type": "owl:Class",
+   "label": "Tangible"
+  },
+  {
+   "id": "89",
+   "type": "owl:Class",
+   "label": "EndGoals"
+  },
+  {
+   "id": "33",
+   "type": "owl:Class",
+   "label": "DevelopmentDisability"
+  },
+  {
+   "id": "42",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "30",
+   "type": "owl:Class",
+   "label": "Goals"
+  },
+  {
+   "id": "108",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "66",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "109",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "106",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "117",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "100",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "118",
+   "type": "rdfs:Datatype",
+   "label": "double"
+  },
+  {
+   "id": "79",
+   "type": "owl:Class",
+   "label": "PrimaryType"
+  },
+  {
+   "id": "119",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "120",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "121",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "111",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "122",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "22",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "123",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "9",
+   "type": "owl:Class",
+   "label": "Resource"
+  },
+  {
+   "id": "126",
+   "type": "owl:Class",
+   "label": "MediumBusiness"
+  },
+  {
+   "id": "131",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "75",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "41",
+   "type": "owl:Class",
+   "label": "Task"
+  },
+  {
+   "id": "68",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "134",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "103",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "125",
+   "type": "owl:Class",
+   "label": "Organization"
+  },
+  {
+   "id": "130",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "142",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "1",
+   "type": "owl:Class",
+   "label": "HearingImpairment"
+  },
+  {
+   "id": "143",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "71",
+   "type": "owl:Class",
+   "label": "AffectiveState"
+  },
+  {
+   "id": "147",
+   "type": "rdfs:Datatype",
+   "label": "positiveInteger"
+  },
+  {
+   "id": "86",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "87",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "148",
+   "type": "owl:Class",
+   "label": "Place"
+  },
+  {
+   "id": "139",
+   "type": "owl:Class",
+   "label": "NGO"
+  },
+  {
+   "id": "146",
+   "type": "owl:Class",
+   "label": "Feeling"
+  },
+  {
+   "id": "155",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "156",
+   "type": "owl:Class",
+   "label": "Intangible"
+  },
+  {
+   "id": "157",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "153",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "113",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "158",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "128",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "161",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "163",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "165",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "18",
+   "type": "owl:Class",
+   "label": "BusinessGoals"
+  },
+  {
+   "id": "166",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "167",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "45",
+   "type": "owl:Class",
+   "label": "Context"
+  },
+  {
+   "id": "170",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "37",
+   "type": "owl:Class",
+   "label": "Image"
+  },
+  {
+   "id": "144",
+   "type": "owl:Class",
+   "label": "Mood"
+  },
+  {
+   "id": "4",
+   "type": "owl:Class",
+   "label": "VisualImpairment"
+  },
+  {
+   "id": "60",
+   "type": "owl:Class",
+   "label": "ServedType"
+  },
+  {
+   "id": "190",
+   "type": "owl:Class",
+   "label": "CustomerType"
+  },
+  {
+   "id": "27",
+   "type": "owl:Class",
+   "label": "Person"
+  },
+  {
+   "id": "136",
+   "type": "owl:Class",
+   "label": "EducationalOrganization"
+  },
+  {
+   "id": "137",
+   "type": "owl:Class",
+   "label": "SportsTeam"
+  },
+  {
+   "id": "164",
+   "type": "owl:Class",
+   "label": "Time"
+  },
+  {
+   "id": "24",
+   "type": "owl:Class",
+   "label": "PersonaType"
+  },
+  {
+   "id": "132",
+   "type": "owl:Class",
+   "label": "NonInteractiveTask"
+  },
+  {
+   "id": "7",
+   "type": "owl:Class",
+   "label": "MentalEmotionalDisorder"
+  },
+  {
+   "id": "83",
+   "type": "owl:Class",
+   "label": "Disability"
+  },
+  {
+   "id": "6",
+   "type": "owl:Class",
+   "label": "IntellectualImpairment"
+  },
+  {
+   "id": "97",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "116",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "151",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "138",
+   "type": "owl:Class",
+   "label": "GovermentOrganization"
+  },
+  {
+   "id": "98",
+   "type": "owl:Class",
+   "label": "ExperienceGoals"
+  },
+  {
+   "id": "17",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "36",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "57",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "221",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "73",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "93",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "252",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "133",
+   "type": "owl:Class",
+   "label": "InteractiveTask"
+  },
+  {
+   "id": "140",
+   "type": "owl:Class",
+   "label": "SmallBusiness"
+  },
+  {
+   "id": "2",
+   "type": "owl:Class",
+   "label": "SomatosensoryImpairment"
+  },
+  {
+   "id": "49",
+   "type": "owl:Class",
+   "label": "GustatoryImpairment"
+  },
+  {
+   "id": "135",
+   "type": "owl:Class",
+   "label": "Group"
+  },
+  {
+   "id": "21",
+   "type": "owl:Class",
+   "label": "Persona"
+  },
+  {
+   "id": "141",
+   "type": "owl:Class",
+   "label": "Corporation"
+  },
+  {
+   "id": "70",
+   "type": "owl:Class",
+   "label": "Personality"
+  },
+  {
+   "id": "62",
+   "type": "owl:Class",
+   "label": "SecondaryType"
+  },
+  {
+   "id": "145",
+   "type": "owl:Class",
+   "label": "Emotion"
+  },
+  {
+   "id": "81",
+   "type": "owl:Class",
+   "label": "NegativeType"
+  }
+ ],
+ "property": [
+  {
+   "id": "0",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "3",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "4",
+   "range": "1"
+  },
+  {
+   "id": "5",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "6",
+   "range": "7"
+  },
+  {
+   "id": "10",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "6",
+   "range": "2"
+  },
+  {
+   "id": "11",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "6",
+   "range": "4"
+  },
+  {
+   "id": "12",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "7",
+   "range": "2"
+  },
+  {
+   "id": "14",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "7",
+   "range": "4"
+  },
+  {
+   "id": "15",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "4",
+   "range": "2"
+  },
+  {
+   "id": "16",
+   "type": "owl:ObjectProperty",
+   "label": "hasBusinessGoal",
+   "domain": "17",
+   "range": "18"
+  },
+  {
+   "id": "20",
+   "type": "owl:DatatypeProperty",
+   "label": "minHeight",
+   "domain": "21",
+   "range": "22"
+  },
+  {
+   "id": "26",
+   "type": "owl:ObjectProperty",
+   "label": "hasTopicOfInterest",
+   "domain": "27",
+   "range": "9"
+  },
+  {
+   "id": "28",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "6",
+   "range": "1"
+  },
+  {
+   "id": "31",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "7",
+   "range": "1"
+  },
+  {
+   "id": "32",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "6",
+   "range": "33"
+  },
+  {
+   "id": "34",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "7",
+   "range": "33"
+  },
+  {
+   "id": "35",
+   "type": "owl:ObjectProperty",
+   "label": "depictsImage",
+   "domain": "36",
+   "range": "37"
+  },
+  {
+   "id": "39",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "2"
+  },
+  {
+   "id": "40",
+   "type": "owl:DatatypeProperty",
+   "label": "taskName",
+   "domain": "41",
+   "range": "42"
+  },
+  {
+   "id": "43",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "4",
+   "range": "33"
+  },
+  {
+   "id": "44",
+   "type": "owl:ObjectProperty",
+   "label": "isContextOf",
+   "domain": "45",
+   "range": "46"
+  },
+  {
+   "id": "48",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "49",
+   "range": "1"
+  },
+  {
+   "id": "50",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "6",
+   "range": "49"
+  },
+  {
+   "id": "51",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "7",
+   "range": "49"
+  },
+  {
+   "id": "52",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "49",
+   "range": "2"
+  },
+  {
+   "id": "53",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "4",
+   "range": "49"
+  },
+  {
+   "id": "56",
+   "type": "owl:ObjectProperty",
+   "label": "depictsProduct",
+   "domain": "57",
+   "range": "13"
+  },
+  {
+   "id": "58",
+   "type": "owl:ObjectProperty",
+   "label": "isGoalOf",
+   "domain": "30",
+   "range": "27"
+  },
+  {
+   "id": "59",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "60",
+   "range": "23"
+  },
+  {
+   "id": "61",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "62",
+   "range": "23"
+  },
+  {
+   "id": "63",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "49",
+   "range": "33"
+  },
+  {
+   "id": "64",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "1"
+  },
+  {
+   "id": "65",
+   "type": "owl:DatatypeProperty",
+   "label": "title",
+   "domain": "27",
+   "range": "66"
+  },
+  {
+   "id": "67",
+   "type": "owl:DatatypeProperty",
+   "label": "maxFeetSize",
+   "domain": "21",
+   "range": "68"
+  },
+  {
+   "id": "69",
+   "type": "owl:ObjectProperty",
+   "label": "influences",
+   "domain": "70",
+   "range": "71"
+  },
+  {
+   "id": "72",
+   "type": "owl:ObjectProperty",
+   "label": "depictsDocument",
+   "domain": "73",
+   "range": "8"
+  },
+  {
+   "id": "74",
+   "type": "owl:DatatypeProperty",
+   "label": "maxBustSize",
+   "domain": "21",
+   "range": "75"
+  },
+  {
+   "id": "76",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "24",
+   "range": "21"
+  },
+  {
+   "id": "77",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "23",
+   "range": "24"
+  },
+  {
+   "id": "78",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "79",
+   "range": "24"
+  },
+  {
+   "id": "80",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "81",
+   "range": "24"
+  },
+  {
+   "id": "82",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "2",
+   "range": "83"
+  },
+  {
+   "id": "84",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "4",
+   "range": "83"
+  },
+  {
+   "id": "85",
+   "type": "owl:DatatypeProperty",
+   "label": "location",
+   "domain": "86",
+   "range": "87"
+  },
+  {
+   "id": "90",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "1",
+   "range": "83"
+  },
+  {
+   "id": "91",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "7",
+   "range": "83"
+  },
+  {
+   "id": "92",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "6",
+   "range": "83"
+  },
+  {
+   "id": "38",
+   "type": "owl:ObjectProperty",
+   "label": "depiction",
+   "domain": "93",
+   "range": "9"
+  },
+  {
+   "id": "94",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "49",
+   "range": "83"
+  },
+  {
+   "id": "95",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "33",
+   "range": "83"
+  },
+  {
+   "id": "96",
+   "type": "owl:ObjectProperty",
+   "label": "hasExperienceGoal",
+   "domain": "97",
+   "range": "98"
+  },
+  {
+   "id": "99",
+   "type": "owl:DatatypeProperty",
+   "label": "scenarioName",
+   "domain": "46",
+   "range": "100"
+  },
+  {
+   "id": "101",
+   "type": "owl:ObjectProperty",
+   "label": "influencedBy",
+   "domain": "71",
+   "range": "70"
+  },
+  {
+   "id": "102",
+   "type": "owl:DatatypeProperty",
+   "label": "maxWaistSize",
+   "domain": "21",
+   "range": "103"
+  },
+  {
+   "id": "104",
+   "type": "owl:ObjectProperty",
+   "label": "uses",
+   "domain": "27",
+   "range": "9"
+  },
+  {
+   "id": "105",
+   "type": "owl:DatatypeProperty",
+   "label": "minWeight",
+   "domain": "21",
+   "range": "106"
+  },
+  {
+   "id": "107",
+   "type": "owl:ObjectProperty",
+   "label": "hasAffectiveState",
+   "domain": "27",
+   "range": "71"
+  },
+  {
+   "id": "110",
+   "type": "owl:DatatypeProperty",
+   "label": "minBustSize",
+   "domain": "21",
+   "range": "111"
+  },
+  {
+   "id": "112",
+   "type": "owl:DatatypeProperty",
+   "label": "familyName",
+   "domain": "27",
+   "range": "113"
+  },
+  {
+   "id": "114",
+   "type": "owl:ObjectProperty",
+   "label": "hasInterest",
+   "domain": "27",
+   "range": "9"
+  },
+  {
+   "id": "115",
+   "type": "owl:ObjectProperty",
+   "label": "hasLifeGoal",
+   "domain": "116",
+   "range": "55"
+  },
+  {
+   "id": "124",
+   "type": "owl:ObjectProperty",
+   "label": "isMemberOf",
+   "domain": "27",
+   "range": "125"
+  },
+  {
+   "id": "127",
+   "type": "owl:ObjectProperty",
+   "label": "hasReview",
+   "domain": "128",
+   "range": "8"
+  },
+  {
+   "id": "129",
+   "type": "owl:DatatypeProperty",
+   "label": "firstName",
+   "domain": "27",
+   "range": "130"
+  },
+  {
+   "id": "149",
+   "type": "owl:DatatypeProperty",
+   "label": "frustrationPoint",
+   "domain": "27",
+   "range": "142"
+  },
+  {
+   "id": "150",
+   "type": "owl:ObjectProperty",
+   "label": "hasTechnicalGoal",
+   "domain": "151",
+   "range": "29"
+  },
+  {
+   "id": "152",
+   "type": "owl:DatatypeProperty",
+   "label": "experienceLevel",
+   "domain": "27",
+   "range": "153"
+  },
+  {
+   "id": "154",
+   "type": "owl:DatatypeProperty",
+   "label": "maxHeight",
+   "domain": "21",
+   "range": "134"
+  },
+  {
+   "id": "159",
+   "type": "owl:ObjectProperty",
+   "label": "hasDisability",
+   "domain": "27",
+   "range": "83"
+  },
+  {
+   "id": "160",
+   "type": "owl:ObjectProperty",
+   "label": "dependsOn",
+   "domain": "41",
+   "range": "41"
+  },
+  {
+   "id": "162",
+   "type": "owl:DatatypeProperty",
+   "label": "mainPoint",
+   "domain": "27",
+   "range": "131"
+  },
+  {
+   "id": "47",
+   "type": "owl:ObjectProperty",
+   "label": "hasContext",
+   "domain": "46",
+   "range": "45"
+  },
+  {
+   "id": "168",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "132",
+   "range": "133"
+  },
+  {
+   "id": "169",
+   "type": "owl:ObjectProperty",
+   "label": "influences",
+   "domain": "70",
+   "range": "71"
+  },
+  {
+   "id": "171",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "70",
+   "range": "30"
+  },
+  {
+   "id": "172",
+   "type": "owl:DatatypeProperty",
+   "label": "age",
+   "domain": "27",
+   "range": "167"
+  },
+  {
+   "id": "173",
+   "type": "owl:DatatypeProperty",
+   "label": "minFeetSize",
+   "domain": "21",
+   "range": "122"
+  },
+  {
+   "id": "174",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "30",
+   "range": "27"
+  },
+  {
+   "id": "175",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "30"
+  },
+  {
+   "id": "176",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "146",
+   "range": "71"
+  },
+  {
+   "id": "177",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "88",
+   "range": "45"
+  },
+  {
+   "id": "178",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "83"
+  },
+  {
+   "id": "179",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "164",
+   "range": "45"
+  },
+  {
+   "id": "180",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "9"
+  },
+  {
+   "id": "181",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "156",
+   "range": "45"
+  },
+  {
+   "id": "182",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "25"
+  },
+  {
+   "id": "183",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "148",
+   "range": "45"
+  },
+  {
+   "id": "184",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "41"
+  },
+  {
+   "id": "185",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "21",
+   "range": "27"
+  },
+  {
+   "id": "186",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "83"
+  },
+  {
+   "id": "187",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "54",
+   "range": "27"
+  },
+  {
+   "id": "188",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "30"
+  },
+  {
+   "id": "189",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "190",
+   "range": "24"
+  },
+  {
+   "id": "191",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "70"
+  },
+  {
+   "id": "192",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "62",
+   "range": "24"
+  },
+  {
+   "id": "193",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "27"
+  },
+  {
+   "id": "194",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "60",
+   "range": "24"
+  },
+  {
+   "id": "195",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "145",
+   "range": "71"
+  },
+  {
+   "id": "196",
+   "type": "owl:DatatypeProperty",
+   "label": "status",
+   "domain": "71",
+   "range": "119"
+  },
+  {
+   "id": "197",
+   "type": "owl:ObjectProperty",
+   "label": "knows",
+   "domain": "27",
+   "range": "27"
+  },
+  {
+   "id": "198",
+   "type": "owl:DatatypeProperty",
+   "label": "interactionCount",
+   "domain": "133",
+   "range": "147"
+  },
+  {
+   "id": "199",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "45"
+  },
+  {
+   "id": "200",
+   "type": "owl:DatatypeProperty",
+   "label": "tagline",
+   "domain": "21",
+   "range": "120"
+  },
+  {
+   "id": "201",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "45"
+  },
+  {
+   "id": "202",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "25",
+   "range": "45"
+  },
+  {
+   "id": "203",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "135",
+   "range": "125"
+  },
+  {
+   "id": "204",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "45",
+   "range": "27"
+  },
+  {
+   "id": "205",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "136",
+   "range": "125"
+  },
+  {
+   "id": "206",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "45"
+  },
+  {
+   "id": "207",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "137",
+   "range": "125"
+  },
+  {
+   "id": "208",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "9",
+   "range": "45"
+  },
+  {
+   "id": "209",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "138",
+   "range": "125"
+  },
+  {
+   "id": "210",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "70",
+   "range": "45"
+  },
+  {
+   "id": "211",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "139",
+   "range": "125"
+  },
+  {
+   "id": "212",
+   "type": "owl:ObjectProperty",
+   "label": "isPartOfTest",
+   "domain": "166",
+   "range": "25"
+  },
+  {
+   "id": "213",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "25"
+  },
+  {
+   "id": "214",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "140",
+   "range": "125"
+  },
+  {
+   "id": "215",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "126",
+   "range": "125"
+  },
+  {
+   "id": "216",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "45",
+   "range": "30"
+  },
+  {
+   "id": "217",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "141",
+   "range": "125"
+  },
+  {
+   "id": "218",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "83",
+   "range": "45"
+  },
+  {
+   "id": "219",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "144",
+   "range": "71"
+  },
+  {
+   "id": "220",
+   "type": "owl:ObjectProperty",
+   "label": "hasEndGoal",
+   "domain": "221",
+   "range": "89"
+  },
+  {
+   "id": "222",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "9"
+  },
+  {
+   "id": "223",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "132",
+   "range": "41"
+  },
+  {
+   "id": "224",
+   "type": "owl:ObjectProperty",
+   "label": "hasPersonality",
+   "domain": "27",
+   "range": "70"
+  },
+  {
+   "id": "225",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "133",
+   "range": "41"
+  },
+  {
+   "id": "226",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "9",
+   "range": "25"
+  },
+  {
+   "id": "227",
+   "type": "owl:DatatypeProperty",
+   "label": "birthday",
+   "domain": "27",
+   "range": "155"
+  },
+  {
+   "id": "228",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "9",
+   "range": "41"
+  },
+  {
+   "id": "229",
+   "type": "owl:ObjectProperty",
+   "label": "hasInfluence",
+   "domain": "83",
+   "range": "170"
+  },
+  {
+   "id": "230",
+   "type": "owl:DatatypeProperty",
+   "label": "gender",
+   "domain": "27",
+   "range": "143"
+  },
+  {
+   "id": "231",
+   "type": "owl:DatatypeProperty",
+   "label": "userRole",
+   "domain": "54",
+   "range": "109"
+  },
+  {
+   "id": "232",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "70"
+  },
+  {
+   "id": "233",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "18",
+   "range": "30"
+  },
+  {
+   "id": "234",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "9",
+   "range": "70"
+  },
+  {
+   "id": "235",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "89",
+   "range": "30"
+  },
+  {
+   "id": "236",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "70",
+   "range": "25"
+  },
+  {
+   "id": "237",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "98",
+   "range": "30"
+  },
+  {
+   "id": "238",
+   "type": "owl:ObjectProperty",
+   "label": "involvedIn",
+   "domain": "54",
+   "range": "165"
+  },
+  {
+   "id": "239",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "70",
+   "range": "41"
+  },
+  {
+   "id": "240",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "55",
+   "range": "30"
+  },
+  {
+   "id": "241",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "27"
+  },
+  {
+   "id": "242",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "29",
+   "range": "30"
+  },
+  {
+   "id": "243",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "9",
+   "range": "27"
+  },
+  {
+   "id": "244",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "8",
+   "range": "9"
+  },
+  {
+   "id": "245",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "25",
+   "range": "27"
+  },
+  {
+   "id": "246",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "37",
+   "range": "9"
+  },
+  {
+   "id": "247",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "27"
+  },
+  {
+   "id": "248",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "13",
+   "range": "9"
+  },
+  {
+   "id": "249",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "70",
+   "range": "27"
+  },
+  {
+   "id": "250",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "25"
+  },
+  {
+   "id": "251",
+   "type": "owl:DatatypeProperty",
+   "label": "details",
+   "domain": "252",
+   "range": "157"
+  },
+  {
+   "id": "253",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "41"
+  },
+  {
+   "id": "254",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "70"
+  },
+  {
+   "id": "255",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "27"
+  },
+  {
+   "id": "256",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "46"
+  },
+  {
+   "id": "257",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "125",
+   "range": "9"
+  },
+  {
+   "id": "258",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "30"
+  },
+  {
+   "id": "259",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "9",
+   "range": "30"
+  },
+  {
+   "id": "260",
+   "type": "owl:ObjectProperty",
+   "label": "hasPublications",
+   "domain": "27",
+   "range": "8"
+  },
+  {
+   "id": "261",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "25",
+   "range": "30"
+  },
+  {
+   "id": "262",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "30"
+  },
+  {
+   "id": "263",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "138",
+   "range": "140"
+  },
+  {
+   "id": "264",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "138",
+   "range": "139"
+  },
+  {
+   "id": "265",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "126"
+  },
+  {
+   "id": "266",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "138",
+   "range": "137"
+  },
+  {
+   "id": "267",
+   "type": "owl:ObjectProperty",
+   "label": "performs",
+   "domain": "27",
+   "range": "41"
+  },
+  {
+   "id": "268",
+   "type": "owl:DatatypeProperty",
+   "label": "myerBriggs",
+   "domain": "70",
+   "range": "117"
+  },
+  {
+   "id": "269",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "138",
+   "range": "126"
+  },
+  {
+   "id": "270",
+   "type": "owl:DatatypeProperty",
+   "label": "sensorData",
+   "domain": "45",
+   "range": "118"
+  },
+  {
+   "id": "271",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "138"
+  },
+  {
+   "id": "272",
+   "type": "owl:ObjectProperty",
+   "label": "includes",
+   "domain": "161",
+   "range": "163"
+  },
+  {
+   "id": "273",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "137",
+   "range": "136"
+  },
+  {
+   "id": "274",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "126",
+   "range": "136"
+  },
+  {
+   "id": "275",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "136"
+  },
+  {
+   "id": "276",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "140",
+   "range": "136"
+  },
+  {
+   "id": "277",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "139",
+   "range": "136"
+  },
+  {
+   "id": "278",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "141",
+   "range": "140"
+  },
+  {
+   "id": "279",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "141",
+   "range": "139"
+  },
+  {
+   "id": "280",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "138",
+   "range": "136"
+  },
+  {
+   "id": "281",
+   "type": "owl:ObjectProperty",
+   "label": "hasPersonaType",
+   "domain": "158",
+   "range": "24"
+  },
+  {
+   "id": "282",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "141",
+   "range": "137"
+  },
+  {
+   "id": "283",
+   "type": "owl:DatatypeProperty",
+   "label": "minWaistSize",
+   "domain": "21",
+   "range": "123"
+  },
+  {
+   "id": "284",
+   "type": "owl:ObjectProperty",
+   "label": "hasTask",
+   "domain": "46",
+   "range": "41"
+  },
+  {
+   "id": "285",
+   "type": "owl:ObjectProperty",
+   "label": "hasAffiliation",
+   "domain": "27",
+   "range": "125"
+  },
+  {
+   "id": "286",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "141"
+  },
+  {
+   "id": "287",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "138",
+   "range": "141"
+  },
+  {
+   "id": "19",
+   "type": "owl:ObjectProperty",
+   "label": "hasGoal",
+   "domain": "27",
+   "range": "30"
+  },
+  {
+   "id": "288",
+   "type": "owl:ObjectProperty",
+   "label": "isTaskFor",
+   "domain": "41",
+   "range": "46"
+  },
+  {
+   "id": "289",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "141",
+   "range": "126"
+  },
+  {
+   "id": "290",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "25"
+  },
+  {
+   "id": "291",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "46",
+   "range": "41"
+  },
+  {
+   "id": "292",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "141",
+   "range": "136"
+  },
+  {
+   "id": "293",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "25",
+   "range": "41"
+  },
+  {
+   "id": "294",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "60",
+   "range": "79"
+  },
+  {
+   "id": "295",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "62",
+   "range": "79"
+  },
+  {
+   "id": "296",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "62",
+   "range": "60"
+  },
+  {
+   "id": "297",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "23"
+  },
+  {
+   "id": "298",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "62",
+   "range": "81"
+  },
+  {
+   "id": "299",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "23",
+   "range": "81"
+  },
+  {
+   "id": "300",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "60",
+   "range": "81"
+  },
+  {
+   "id": "301",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "83"
+  },
+  {
+   "id": "302",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "30"
+  },
+  {
+   "id": "303",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "125"
+  },
+  {
+   "id": "304",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "27"
+  },
+  {
+   "id": "305",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "70"
+  },
+  {
+   "id": "306",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "9"
+  },
+  {
+   "id": "307",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "46"
+  },
+  {
+   "id": "308",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "41"
+  },
+  {
+   "id": "309",
+   "type": "owl:ObjectProperty",
+   "label": "influencedBy",
+   "domain": "71",
+   "range": "70"
+  },
+  {
+   "id": "310",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "71",
+   "range": "45"
+  },
+  {
+   "id": "311",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "60",
+   "range": "190"
+  },
+  {
+   "id": "312",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "62",
+   "range": "190"
+  },
+  {
+   "id": "313",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "81"
+  },
+  {
+   "id": "314",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "23",
+   "range": "190"
+  },
+  {
+   "id": "315",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "137",
+   "range": "140"
+  },
+  {
+   "id": "316",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "139",
+   "range": "137"
+  },
+  {
+   "id": "317",
+   "type": "owl:DatatypeProperty",
+   "label": "maxWeight",
+   "domain": "21",
+   "range": "121"
+  },
+  {
+   "id": "318",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "190"
+  },
+  {
+   "id": "319",
+   "type": "owl:ObjectProperty",
+   "label": "hasAward",
+   "domain": "27",
+   "range": "9"
+  },
+  {
+   "id": "320",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "81",
+   "range": "190"
+  },
+  {
+   "id": "321",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "139",
+   "range": "140"
+  },
+  {
+   "id": "322",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "137",
+   "range": "126"
+  },
+  {
+   "id": "323",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "140",
+   "range": "126"
+  },
+  {
+   "id": "324",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "140"
+  },
+  {
+   "id": "325",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "139"
+  },
+  {
+   "id": "326",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "139",
+   "range": "126"
+  },
+  {
+   "id": "327",
+   "type": "owl:DatatypeProperty",
+   "label": "technicalLevel",
+   "domain": "27",
+   "range": "108"
+  },
+  {
+   "id": "328",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "135",
+   "range": "137"
+  },
+  {
+   "id": "GENERATED-UNION-86-125-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-86-125-0",
+   "domain": "86",
+   "range": "125"
+  },
+  {
+   "id": "GENERATED-UNION-86-148-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-86-148-1",
+   "domain": "86",
+   "range": "148"
+  },
+  {
+   "id": "GENERATED-UNION-158-54-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-158-54-0",
+   "domain": "158",
+   "range": "54"
+  },
+  {
+   "id": "GENERATED-UNION-158-27-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-158-27-1",
+   "domain": "158",
+   "range": "27"
+  },
+  {
+   "id": "GENERATED-UNION-128-9-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-128-9-0",
+   "domain": "128",
+   "range": "9"
+  },
+  {
+   "id": "GENERATED-UNION-128-25-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-128-25-1",
+   "domain": "128",
+   "range": "25"
+  },
+  {
+   "id": "GENERATED-UNION-128-46-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-128-46-2",
+   "domain": "128",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-161-88-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-161-88-0",
+   "domain": "161",
+   "range": "88"
+  },
+  {
+   "id": "GENERATED-UNION-161-156-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-161-156-1",
+   "domain": "161",
+   "range": "156"
+  },
+  {
+   "id": "GENERATED-UNION-163-164-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-163-164-0",
+   "domain": "163",
+   "range": "164"
+  },
+  {
+   "id": "GENERATED-UNION-163-148-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-163-148-1",
+   "domain": "163",
+   "range": "148"
+  },
+  {
+   "id": "GENERATED-UNION-165-25-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-165-25-0",
+   "domain": "165",
+   "range": "25"
+  },
+  {
+   "id": "GENERATED-UNION-165-46-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-165-46-1",
+   "domain": "165",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-166-54-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-166-54-0",
+   "domain": "166",
+   "range": "54"
+  },
+  {
+   "id": "GENERATED-UNION-166-41-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-166-41-1",
+   "domain": "166",
+   "range": "41"
+  },
+  {
+   "id": "GENERATED-UNION-166-46-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-166-46-2",
+   "domain": "166",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-170-71-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-170-71-0",
+   "domain": "170",
+   "range": "71"
+  },
+  {
+   "id": "GENERATED-UNION-170-70-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-170-70-1",
+   "domain": "170",
+   "range": "70"
+  }
+ ]
+}

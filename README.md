@@ -159,7 +159,7 @@ without a major version bump; later 0.1.x releases only add to it.
 | JavaScript | Purpose |
 |---|---|
 | `new WebVowl()` | Construct an empty instance |
-| `loadOntology(json)` | Parse the ontology and build the graph |
+| `loadOntology(json)` | Parse the ontology and build the graph; keeps the simulation settings |
 | `initSimulation()` | Seed the force simulation |
 | `runSimulation(n)` | Advance `n` steps |
 | `tick()` | Advance one step |
@@ -167,7 +167,7 @@ without a major version bump; later 0.1.x releases only add to it.
 | `getAlpha()` | Current annealing temperature |
 | `setCenter(x, y)` | Move the layout centre |
 | `setLinkDistance(d)` | Spring rest length |
-| `setChargeStrength(s)` | Repulsion strength |
+| `setChargeStrength(s)` | Many-body charge; negative repels (d3 convention, default `-30`) |
 | `getNodeCount()` / `getEdgeCount()` | Graph size |
 | `getNodeIds()` | Node ids, in index order |
 | `getNodePositions()` | Live `x, y` per node as a `Float32Array` |

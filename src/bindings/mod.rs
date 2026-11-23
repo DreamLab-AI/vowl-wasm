@@ -52,6 +52,12 @@ impl WebVowl {
     }
 
     /// Load ontology from JSON string
+    ///
+    /// Replaces the current graph, clears pins and restarts the simulation
+    /// (alpha back to its starting value). Simulation settings made earlier
+    /// with [`set_link_distance`](Self::set_link_distance),
+    /// [`set_charge_strength`](Self::set_charge_strength) and
+    /// [`set_center`](Self::set_center) are kept.
     #[wasm_bindgen(js_name = loadOntology)]
     pub fn load_ontology(&mut self, json: &str) -> std::result::Result<(), JsValue> {
         let parser = StandardParser::new();
@@ -68,7 +74,10 @@ impl WebVowl {
 
         self.metadata = Some(ontology_data.metadata.clone());
         self.pin_manager = PinManager::new();
-        self.simulation = ForceSimulation::new();
+        // Restart the simulation for the new graph but keep its settings:
+        // `setLinkDistance` / `setChargeStrength` / `setCenter` made before
+        // this call still apply.
+        self.simulation.reset();
         self.graph = Some(graph);
         Ok(())
     }

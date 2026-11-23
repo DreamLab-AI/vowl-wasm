@@ -1,0 +1,871 @@
+{
+ "header": {
+  "iri": "#"
+ },
+ "class": [
+  {
+   "id": "MultiLink2",
+   "type": "owl:Class",
+   "label": "MultiLink2"
+  },
+  {
+   "id": "MultiLink3",
+   "type": "owl:Class",
+   "label": "MultiLink3"
+  },
+  {
+   "id": "MultiLink4",
+   "type": "owl:Class",
+   "label": "MultiLink4"
+  },
+  {
+   "id": "MultiLink5",
+   "type": "owl:Class",
+   "label": "MultiLink5"
+  },
+  {
+   "id": "MultiLinkEnd",
+   "type": "owl:Class",
+   "label": "MultiLinkEnd"
+  },
+  {
+   "id": "DisjointTest0",
+   "type": "owl:Class",
+   "label": "DisjointTest0"
+  },
+  {
+   "id": "DisjointTestUri",
+   "type": "owl:Class",
+   "label": "DisjointTestUri"
+  },
+  {
+   "id": "DisjointTest2",
+   "type": "owl:Class",
+   "label": "DisjointTest2"
+  },
+  {
+   "id": "SetOperatorTest",
+   "type": "owl:Class",
+   "label": "SetOperatorTest"
+  },
+  {
+   "id": "IntersectionTest",
+   "type": "owl:intersectionOf",
+   "label": "Intersection"
+  },
+  {
+   "id": "UnionTest",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "DisjointUnionTest",
+   "type": "owl:disjointUnionOf",
+   "label": "DisjointUnion"
+  },
+  {
+   "id": "ComplementTest",
+   "type": "owl:complementOf",
+   "label": "Complement"
+  },
+  {
+   "id": "NodeTest",
+   "type": "owl:Class",
+   "label": "NodeTest"
+  },
+  {
+   "id": "ExternalClass",
+   "type": "ExternalClass",
+   "label": "ExternalClass"
+  },
+  {
+   "id": "OwlClass",
+   "type": "owl:Class",
+   "label": "OwlClass"
+  },
+  {
+   "id": "OwlEquivalentClass",
+   "type": "owl:equivalentClass",
+   "label": "EquivalentClass"
+  },
+  {
+   "id": "EquivalentClassA",
+   "type": "owl:Class",
+   "label": "EC A"
+  },
+  {
+   "id": "EquivalentClassB",
+   "type": "owl:Class",
+   "label": "EC B"
+  },
+  {
+   "id": "OwlThing",
+   "type": "owl:Thing",
+   "label": "OwlThing"
+  },
+  {
+   "id": "OwlNothing",
+   "type": "owl:Nothing",
+   "label": "OwlNothing"
+  },
+  {
+   "id": "RdfsResource",
+   "type": "rdfs:Resource",
+   "label": "RdfsResource"
+  },
+  {
+   "id": "RdfsClass",
+   "type": "rdfs:Class",
+   "label": "RdfsClass"
+  },
+  {
+   "id": "OwlDeprecatedClass",
+   "type": "owl:DeprecatedClass",
+   "label": "OwlDeprecatedClass"
+  },
+  {
+   "id": "PropertyTest",
+   "type": "owl:Class",
+   "label": "PropertyTest"
+  },
+  {
+   "id": "ExternalPropertyTest",
+   "type": "owl:Class",
+   "label": "ExternalProperty"
+  },
+  {
+   "id": "DatatypePropertyTest",
+   "type": "owl:Class",
+   "label": "DatatypeProperty"
+  },
+  {
+   "id": "RdfPropertyTest",
+   "type": "owl:Class",
+   "label": "RdfProperty"
+  },
+  {
+   "id": "ObjectPropertyTest",
+   "type": "owl:Class",
+   "label": "ObjectProperty"
+  },
+  {
+   "id": "InverseObjectPropertyTest",
+   "type": "owl:Class",
+   "label": "InverseObjectProperty"
+  },
+  {
+   "id": "DeprecatedPropertyTest",
+   "type": "owl:Class",
+   "label": "DeprecatedProperty"
+  },
+  {
+   "id": "SubClassOfPropertyTest",
+   "type": "owl:Class",
+   "label": "SubClassOfProperty"
+  },
+  {
+   "id": "SomeValuesFromPropertyTest",
+   "type": "owl:Class",
+   "label": "SomeValuesFromProperty"
+  },
+  {
+   "id": "AllValuesFromPropertyTest",
+   "type": "owl:Class",
+   "label": "AllValuesFromProperty"
+  },
+  {
+   "id": "HoverTest1",
+   "type": "owl:Class",
+   "label": "HoverTest1"
+  },
+  {
+   "id": "HoverTest2",
+   "type": "owl:Class",
+   "label": "HoverTest2"
+  },
+  {
+   "id": "EightSymmetric",
+   "type": "owl:Class",
+   "label": "EightSymmetric"
+  },
+  {
+   "id": "FiveSymmetric",
+   "type": "owl:Class",
+   "label": "FiveSymmetric"
+  },
+  {
+   "id": "UriPropertyTest1",
+   "type": "owl:Class",
+   "label": "VOWL-Spec URL"
+  },
+  {
+   "id": "UriPropertyTest2",
+   "type": "owl:Class",
+   "label": "UriPropertyTest2"
+  },
+  {
+   "id": "DatatypeTest",
+   "type": "owl:Class",
+   "label": "DatatypeTest"
+  },
+  {
+   "id": "IndicationTest1",
+   "type": "owl:Class",
+   "label": "IndicationTest1"
+  },
+  {
+   "id": "IndicationTest2",
+   "type": "owl:Class",
+   "label": "IndicationTest2"
+  },
+  {
+   "id": "ClassFeatureTest",
+   "type": "owl:Class",
+   "label": "Class Feature Test"
+  },
+  {
+   "id": "cardinalityTest1",
+   "type": "owl:Class",
+   "label": "cardinalityTest1"
+  },
+  {
+   "id": "cardinalityTest2",
+   "type": "owl:Class",
+   "label": "cardinalityTest2"
+  },
+  {
+   "id": "cardinalityTest3",
+   "type": "owl:Class",
+   "label": "cardinalityTest3"
+  },
+  {
+   "id": "equivalentPropertyTest",
+   "type": "owl:Class",
+   "label": "VISIBLE OR NOT?"
+  },
+  {
+   "id": "AnonymousClass",
+   "type": "owl:Class",
+   "label": "Anonymous Class"
+  },
+  {
+   "id": "DatatypeDatatype",
+   "type": "rdfs:Datatype",
+   "label": "e.g. String"
+  },
+  {
+   "id": "LiteralDatatype",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "DatatypeFeatureTest",
+   "type": "rdfs:Datatype",
+   "label": "Datatype Feature Test"
+  }
+ ],
+ "property": [
+  {
+   "id": "21to",
+   "type": "owl:ObjectProperty",
+   "label": "21to",
+   "domain": "MultiLink2",
+   "range": "MultiLink3"
+  },
+  {
+   "id": "21from",
+   "type": "owl:ObjectProperty",
+   "label": "21from",
+   "domain": "MultiLink3",
+   "range": "MultiLink2"
+  },
+  {
+   "id": "22to",
+   "type": "owl:ObjectProperty",
+   "label": "22to",
+   "domain": "MultiLink2",
+   "range": "MultiLink3"
+  },
+  {
+   "id": "22from",
+   "type": "owl:ObjectProperty",
+   "label": "22from",
+   "domain": "MultiLink3",
+   "range": "MultiLink2"
+  },
+  {
+   "id": "31to",
+   "type": "owl:ObjectProperty",
+   "label": "31to",
+   "domain": "MultiLink3",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "31from",
+   "type": "owl:ObjectProperty",
+   "label": "31from",
+   "domain": "MultiLink4",
+   "range": "MultiLink3"
+  },
+  {
+   "id": "32to",
+   "type": "owl:ObjectProperty",
+   "label": "32to",
+   "domain": "MultiLink3",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "32from",
+   "type": "owl:ObjectProperty",
+   "label": "32from",
+   "domain": "MultiLink4",
+   "range": "MultiLink3"
+  },
+  {
+   "id": "33to",
+   "type": "owl:ObjectProperty",
+   "label": "33to",
+   "domain": "MultiLink3",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "33from",
+   "type": "owl:ObjectProperty",
+   "label": "33from",
+   "domain": "MultiLink4",
+   "range": "MultiLink3"
+  },
+  {
+   "id": "41to",
+   "type": "owl:ObjectProperty",
+   "label": "41to",
+   "domain": "MultiLink4",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "41from",
+   "type": "owl:ObjectProperty",
+   "label": "41from",
+   "domain": "MultiLink5",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "42to",
+   "type": "owl:ObjectProperty",
+   "label": "42to",
+   "domain": "MultiLink4",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "42from",
+   "type": "owl:ObjectProperty",
+   "label": "42from",
+   "domain": "MultiLink5",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "43to",
+   "type": "owl:ObjectProperty",
+   "label": "43to",
+   "domain": "MultiLink4",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "43from",
+   "type": "owl:ObjectProperty",
+   "label": "43from",
+   "domain": "MultiLink5",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "44to",
+   "type": "owl:ObjectProperty",
+   "label": "44to",
+   "domain": "MultiLink4",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "44from",
+   "type": "owl:ObjectProperty",
+   "label": "44from",
+   "domain": "MultiLink5",
+   "range": "MultiLink4"
+  },
+  {
+   "id": "51to",
+   "type": "owl:ObjectProperty",
+   "label": "51to",
+   "domain": "MultiLink5",
+   "range": "MultiLinkEnd"
+  },
+  {
+   "id": "51from",
+   "type": "owl:ObjectProperty",
+   "label": "51from",
+   "domain": "MultiLinkEnd",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "52to",
+   "type": "owl:ObjectProperty",
+   "label": "52to",
+   "domain": "MultiLink5",
+   "range": "MultiLinkEnd"
+  },
+  {
+   "id": "52from",
+   "type": "owl:ObjectProperty",
+   "label": "52from",
+   "domain": "MultiLinkEnd",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "53to",
+   "type": "owl:ObjectProperty",
+   "label": "53to",
+   "domain": "MultiLink5",
+   "range": "MultiLinkEnd"
+  },
+  {
+   "id": "53from",
+   "type": "owl:ObjectProperty",
+   "label": "53from",
+   "domain": "MultiLinkEnd",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "54to",
+   "type": "owl:ObjectProperty",
+   "label": "54to",
+   "domain": "MultiLink5",
+   "range": "MultiLinkEnd"
+  },
+  {
+   "id": "54from",
+   "type": "owl:ObjectProperty",
+   "label": "54from",
+   "domain": "MultiLinkEnd",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "55to",
+   "type": "owl:ObjectProperty",
+   "label": "55to",
+   "domain": "MultiLink5",
+   "range": "MultiLinkEnd"
+  },
+  {
+   "id": "55from",
+   "type": "owl:ObjectProperty",
+   "label": "55from",
+   "domain": "MultiLinkEnd",
+   "range": "MultiLink5"
+  },
+  {
+   "id": "disjoint0Uri",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "DisjointTest0",
+   "range": "DisjointTestUri"
+  },
+  {
+   "id": "disjoint02",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "DisjointTest0",
+   "range": "DisjointTest2"
+  },
+  {
+   "id": "disjointBridge1",
+   "type": "owl:ObjectProperty",
+   "label": "disjointBridge1",
+   "domain": "DisjointTest0",
+   "range": "DisjointTestUri"
+  },
+  {
+   "id": "disjointBridge2",
+   "type": "owl:ObjectProperty",
+   "label": "disjointBridge2",
+   "domain": "DisjointTestUri",
+   "range": "DisjointTest2"
+  },
+  {
+   "id": "testOwlClass",
+   "type": "owl:ObjectProperty",
+   "label": "testOwlClass",
+   "domain": "NodeTest",
+   "range": "OwlClass"
+  },
+  {
+   "id": "testOwlEquivalentClass",
+   "type": "owl:ObjectProperty",
+   "label": "testOwlEquivalentClass",
+   "domain": "NodeTest",
+   "range": "OwlEquivalentClass"
+  },
+  {
+   "id": "testOwlThing",
+   "type": "owl:ObjectProperty",
+   "label": "testOwlThing",
+   "domain": "NodeTest",
+   "range": "OwlThing"
+  },
+  {
+   "id": "testOwlNothing",
+   "type": "owl:ObjectProperty",
+   "label": "testOwlNothing",
+   "domain": "NodeTest",
+   "range": "OwlNothing"
+  },
+  {
+   "id": "testRdfsResource",
+   "type": "owl:ObjectProperty",
+   "label": "testRdfsResource",
+   "domain": "NodeTest",
+   "range": "RdfsResource"
+  },
+  {
+   "id": "testOwlDeprecatedClass",
+   "type": "owl:ObjectProperty",
+   "label": "testOwlDeprecatedClass",
+   "domain": "NodeTest",
+   "range": "OwlDeprecatedClass"
+  },
+  {
+   "id": "testRdfsClass",
+   "type": "owl:ObjectProperty",
+   "label": "testRdfsClass",
+   "domain": "NodeTest",
+   "range": "RdfsClass"
+  },
+  {
+   "id": "testExternalClass",
+   "type": "owl:ObjectProperty",
+   "label": "testExternalClass",
+   "domain": "NodeTest",
+   "range": "ExternalClass"
+  },
+  {
+   "id": "testObjectProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Object",
+   "domain": "PropertyTest",
+   "range": "ObjectPropertyTest"
+  },
+  {
+   "id": "testInverseObjectProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Object to",
+   "domain": "PropertyTest",
+   "range": "InverseObjectPropertyTest"
+  },
+  {
+   "id": "testInverseObjectPropertyInverse",
+   "type": "owl:ObjectProperty",
+   "label": "Object from",
+   "domain": "InverseObjectPropertyTest",
+   "range": "PropertyTest"
+  },
+  {
+   "id": "testExternalProperty",
+   "type": "owl:ObjectProperty",
+   "label": "External",
+   "domain": "PropertyTest",
+   "range": "ExternalPropertyTest"
+  },
+  {
+   "id": "testDatatypeProperty",
+   "type": "owl:DatatypeProperty",
+   "label": "Datatype",
+   "domain": "PropertyTest",
+   "range": "DatatypePropertyTest"
+  },
+  {
+   "id": "testRdfProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Rdf",
+   "domain": "PropertyTest",
+   "range": "RdfPropertyTest"
+  },
+  {
+   "id": "testDeprecatedProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Deprecated",
+   "domain": "PropertyTest",
+   "range": "DeprecatedPropertyTest"
+  },
+  {
+   "id": "testSubClassOfProperty",
+   "type": "subclass",
+   "label": "SubClassOf",
+   "domain": "SubClassOfPropertyTest",
+   "range": "PropertyTest"
+  },
+  {
+   "id": "testSomeValuesFromProperty",
+   "type": "owl:ObjectProperty",
+   "label": "someValuesFrom",
+   "domain": "PropertyTest",
+   "range": "SomeValuesFromPropertyTest"
+  },
+  {
+   "id": "testAllValuesFromProperty",
+   "type": "owl:ObjectProperty",
+   "label": "allValuesFrom",
+   "domain": "PropertyTest",
+   "range": "AllValuesFromPropertyTest"
+  },
+  {
+   "id": "hoverMeProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Hover me",
+   "domain": "HoverTest1",
+   "range": "HoverTest2"
+  },
+  {
+   "id": "highlightedProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Highlighted",
+   "domain": "HoverTest2",
+   "range": "HoverTest1"
+  },
+  {
+   "id": "SymmetricFiveEight",
+   "type": "owl:ObjectProperty",
+   "label": "SymmetricFiveEight",
+   "domain": "EightSymmetric",
+   "range": "FiveSymmetric"
+  },
+  {
+   "id": "EightSymmetric1",
+   "type": "owl:ObjectProperty",
+   "label": "1",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric2",
+   "type": "owl:ObjectProperty",
+   "label": "2",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric3",
+   "type": "owl:ObjectProperty",
+   "label": "3",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric4",
+   "type": "owl:ObjectProperty",
+   "label": "4",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric5",
+   "type": "owl:ObjectProperty",
+   "label": "5",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric6",
+   "type": "owl:ObjectProperty",
+   "label": "6",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric7",
+   "type": "owl:ObjectProperty",
+   "label": "7",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "EightSymmetric8",
+   "type": "owl:ObjectProperty",
+   "label": "8",
+   "domain": "EightSymmetric",
+   "range": "EightSymmetric"
+  },
+  {
+   "id": "FiveSymmetric1",
+   "type": "owl:ObjectProperty",
+   "label": "1",
+   "domain": "FiveSymmetric",
+   "range": "FiveSymmetric"
+  },
+  {
+   "id": "FiveSymmetric2",
+   "type": "owl:ObjectProperty",
+   "label": "2",
+   "domain": "FiveSymmetric",
+   "range": "FiveSymmetric"
+  },
+  {
+   "id": "FiveSymmetric3",
+   "type": "owl:ObjectProperty",
+   "label": "3",
+   "domain": "FiveSymmetric",
+   "range": "FiveSymmetric"
+  },
+  {
+   "id": "FiveSymmetric4",
+   "type": "owl:ObjectProperty",
+   "label": "4",
+   "domain": "FiveSymmetric",
+   "range": "FiveSymmetric"
+  },
+  {
+   "id": "FiveSymmetric5",
+   "type": "owl:ObjectProperty",
+   "label": "5",
+   "domain": "FiveSymmetric",
+   "range": "FiveSymmetric"
+  },
+  {
+   "id": "UriProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Uri Property",
+   "domain": "UriPropertyTest1",
+   "range": "UriPropertyTest2"
+  },
+  {
+   "id": "DatatypeTestProperty",
+   "type": "owl:ObjectProperty",
+   "label": "DatatypeTestProperty",
+   "domain": "DatatypeTest",
+   "range": "DatatypeDatatype"
+  },
+  {
+   "id": "LiteralTestProperty",
+   "type": "owl:ObjectProperty",
+   "label": "LiteralTestProperty",
+   "domain": "DatatypeTest",
+   "range": "LiteralDatatype"
+  },
+  {
+   "id": "FunctionalProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Functional",
+   "domain": "IndicationTest1",
+   "range": "IndicationTest2"
+  },
+  {
+   "id": "InverseFunctionalProperty",
+   "type": "owl:ObjectProperty",
+   "label": "InverseFunctional",
+   "domain": "IndicationTest1",
+   "range": "IndicationTest2"
+  },
+  {
+   "id": "KeyProperty",
+   "type": "owl:ObjectProperty",
+   "label": "hasKey",
+   "domain": "IndicationTest1",
+   "range": "IndicationTest2"
+  },
+  {
+   "id": "TransitiveProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Transitive",
+   "domain": "IndicationTest1",
+   "range": "IndicationTest2"
+  },
+  {
+   "id": "SymmetricProperty",
+   "type": "owl:ObjectProperty",
+   "label": "Symmetric",
+   "domain": "IndicationTest1",
+   "range": "IndicationTest1"
+  },
+  {
+   "id": "EquivalentBaseProperty",
+   "type": "owl:ObjectProperty",
+   "label": "EquivalentBase",
+   "domain": "IndicationTest1",
+   "range": "IndicationTest2"
+  },
+  {
+   "id": "EquivalentProperty",
+   "type": "owl:ObjectProperty",
+   "label": "AnEquivalentProperty",
+   "domain": "IndicationTest1",
+   "range": "equivalentPropertyTest"
+  },
+  {
+   "id": "PropertyFeatureTest",
+   "type": "owl:ObjectProperty",
+   "label": "Property Feature Test",
+   "domain": "ClassFeatureTest",
+   "range": "DatatypeFeatureTest"
+  },
+  {
+   "id": "cardinalityLink1",
+   "type": "owl:ObjectProperty",
+   "label": "card1",
+   "domain": "cardinalityTest1",
+   "range": "cardinalityTest2"
+  },
+  {
+   "id": "cardinalityLink2",
+   "type": "owl:ObjectProperty",
+   "label": "card2",
+   "domain": "cardinalityTest2",
+   "range": "cardinalityTest1"
+  },
+  {
+   "id": "cardinalityLink3",
+   "type": "owl:ObjectProperty",
+   "label": "card3",
+   "domain": "cardinalityTest1",
+   "range": "cardinalityTest3"
+  },
+  {
+   "id": "cardinalityLink4",
+   "type": "owl:ObjectProperty",
+   "label": "card4",
+   "domain": "cardinalityTest3",
+   "range": "cardinalityTest1"
+  },
+  {
+   "id": "anonymousClassProperty",
+   "type": "owl:ObjectProperty",
+   "label": "anonymousClassProperty",
+   "domain": "NodeTest",
+   "range": "AnonymousClass"
+  },
+  {
+   "id": "GENERATED-COMPLEMENT-SetOperatorTest-ComplementTest-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-COMPLEMENT-SetOperatorTest-ComplementTest-0",
+   "domain": "SetOperatorTest",
+   "range": "ComplementTest"
+  },
+  {
+   "id": "GENERATED-INTERSECTION-SetOperatorTest-IntersectionTest-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-INTERSECTION-SetOperatorTest-IntersectionTest-0",
+   "domain": "SetOperatorTest",
+   "range": "IntersectionTest"
+  },
+  {
+   "id": "GENERATED-UNION-SetOperatorTest-UnionTest-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-SetOperatorTest-UnionTest-0",
+   "domain": "SetOperatorTest",
+   "range": "UnionTest"
+  },
+  {
+   "id": "GENERATED-DISJOINTUNION-SetOperatorTest-DisjointUnionTest-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-DISJOINTUNION-SetOperatorTest-DisjointUnionTest-0",
+   "domain": "SetOperatorTest",
+   "range": "DisjointUnionTest"
+  }
+ ]
+}

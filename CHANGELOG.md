@@ -18,6 +18,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of aborting the WASM instance. Self-loops are accepted but exert no force;
   duplicate edges pull once per copy. Additive; recorded in the frozen export
   surface.
+- `ForceSimulation::reset`: restart alpha and the iteration count while keeping
+  the configuration.
+- Seven owl2vowl ontologies (FOAF, SIOC, GoodRelations, MUTO, OntoViBe,
+  PersonasOnto and the WebVOWL benchmark), merged into the engine contract, as
+  test fixtures under `tests/fixtures/ontologies/`, and a convergence test
+  (`tests/webvowl_layout_test.rs`) that drives them through the `WebVowl` API.
+
+### Changed
+
+- The many-body kernels follow the d3-force sign convention that
+  `LayoutConfig::charge_strength` documents: a **negative strength repels**.
+  `layout::force::calculate_repulsion` and `calculate_batch_repulsion`, the
+  `layout::simd` repulsion and leaf kernels, and the leaf path of
+  `QuadTree::calculate_force` previously returned the opposite direction (only
+  the Barnes-Hut far field already repelled). A direct caller that passed a
+  positive strength to get repulsion must now pass a negative one. Their
+  magnitude is also held at `|strength|` below a distance of one unit. Callers
+  of `WebVowl.setChargeStrength` with a negative value (the default `-30`, and
+  WasmVOWL's `-300`) need no change.
+- `LayoutConfig::center_strength` is now d3-force's `forceCenter` strength
+  (the fraction of the centroid's offset removed per tick, applied as a
+  translation) instead of a per-node spring towards the centre. The default
+  value is unchanged.
+
+### Fixed
+
+- The `WebVowl` force simulation (`ForceSimulation`) no longer diverges. On the
+  owl2vowl test ontologies the 0.2.3 layout reached peak coordinates of 1e7
+  (MUTO) to 3e30 (GoodRelations); they now peak at 317 to 390 (the nodes are
+  seeded on a circle of radius 300) and motion settles in 19 to 48 ticks.
+  Four causes, all fixed:
+  - Springs were applied per outgoing neighbour, on the source only, at full
+    stiffness per edge, and scaled by alpha twice. A hub with *k* out-edges
+    (17 in FOAF, 28 in GoodRelations) carried stiffness *k*, beyond what the
+    explicit integrator can hold (about 5), so it grew roughly tenfold per
+    tick. Each edge now acts once on both ends with d3-force's `forceLink`
+    default: stiffness `link_strength / min(degree(source), degree(target))`,
+    shared by degree, so no node's total stiffness exceeds `link_strength` and
+    parallel edges no longer stack. Alpha is applied once, in the integrator.
+  - The many-body force attracted at short range: for a negative
+    `charge_strength`, every path except the Barnes-Hut far field pushed
+    towards the other node (see Changed).
+  - The many-body magnitude is softened below a distance of one unit
+    (d3-force's `distanceMin`), so a near-coincident pair no longer throws a
+    node hundreds of units in one tick.
+  - The centre force pulled every node towards the centre at full strength,
+    which crushed the layout to a fraction of one link length. It is now a
+    centroid translation (see Changed). `LayoutConfig::large_graph` keeps
+    `0.001`, which now means the centroid drifts almost freely.
+- `WebVowl.loadOntology` keeps the simulation settings (`setLinkDistance`,
+  `setChargeStrength`, `setCenter`) made before it; it used to replace the
+  simulation with a default one. It still restarts alpha and clears pins.
+- Known limitation: under the centroid-only centring, nodes in small
+  disconnected components (FOAF has 8 isolated nodes, OntoViBe 13) stay near
+  the seed circle (radius 300) while the largest component settles to a
+  radius of 36 to 102. A weak per-node gravity or a seed radius scaled to the
+  graph would pull them in.
+- A per-tick step cap (twice the larger of `link_distance` and `seed_radius`)
+  and a non-finite-velocity reset guard the integrator. Neither is reached on
+  the test ontologies.
 
 ## [0.2.2] - 2026-10-30
 

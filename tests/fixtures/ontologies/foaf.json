@@ -1,0 +1,807 @@
+{
+ "header": {
+  "iri": "http://xmlns.com/foaf/0.1/"
+ },
+ "class": [
+  {
+   "id": "3",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "9",
+   "type": "owl:Class",
+   "label": "Concept"
+  },
+  {
+   "id": "1",
+   "type": "owl:equivalentClass",
+   "label": "Agent"
+  },
+  {
+   "id": "18",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "19",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "5",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "20",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "8",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "11",
+   "type": "owl:Class",
+   "label": "Organization"
+  },
+  {
+   "id": "21",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "22",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "24",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "26",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "27",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "37",
+   "type": "owl:equivalentClass",
+   "label": "CreativeWork"
+  },
+  {
+   "id": "45",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "46",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "53",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "56",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "59",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "60",
+   "type": "owl:Class",
+   "label": "Project"
+  },
+  {
+   "id": "61",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "6",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "62",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "12",
+   "type": "owl:equivalentClass",
+   "label": "Person"
+  },
+  {
+   "id": "55",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "69",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "71",
+   "type": "owl:Class",
+   "label": "PersonalProfileDocument"
+  },
+  {
+   "id": "36",
+   "type": "owl:Class",
+   "label": "SpatialThing"
+  },
+  {
+   "id": "86",
+   "type": "owl:Class",
+   "label": "OnlineChatAccount"
+  },
+  {
+   "id": "83",
+   "type": "owl:Class",
+   "label": "OnlineGamingAccount"
+  },
+  {
+   "id": "94",
+   "type": "owl:Class",
+   "label": "LabelProperty"
+  },
+  {
+   "id": "73",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "68",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "93",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "33",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "49",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "29",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "101",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "39",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "63",
+   "type": "owl:equivalentClass",
+   "label": "Person"
+  },
+  {
+   "id": "64",
+   "type": "owl:equivalentClass",
+   "label": "Person"
+  },
+  {
+   "id": "102",
+   "type": "owl:equivalentClass",
+   "label": "ImageObject"
+  },
+  {
+   "id": "78",
+   "type": "owl:Class",
+   "label": "OnlineAccount"
+  },
+  {
+   "id": "77",
+   "type": "owl:Class",
+   "label": "OnlineEcommerceAccount"
+  },
+  {
+   "id": "13",
+   "type": "owl:equivalentClass",
+   "label": "Agent"
+  },
+  {
+   "id": "58",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "100",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "106",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "52",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "88",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "118",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "126",
+   "type": "owl:Class",
+   "label": "Class"
+  },
+  {
+   "id": "2",
+   "type": "owl:equivalentClass",
+   "label": "Document"
+  },
+  {
+   "id": "32",
+   "type": "owl:equivalentClass",
+   "label": "Image"
+  },
+  {
+   "id": "10",
+   "type": "owl:Class",
+   "label": "Group"
+  }
+ ],
+ "property": [
+  {
+   "id": "0",
+   "type": "owl:ObjectProperty",
+   "label": "interest",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "4",
+   "type": "owl:DatatypeProperty",
+   "label": "mbox_sha1sum",
+   "domain": "5",
+   "range": "6"
+  },
+  {
+   "id": "7",
+   "type": "owl:DatatypeProperty",
+   "label": "nick",
+   "domain": "5",
+   "range": "8"
+  },
+  {
+   "id": "14",
+   "type": "owl:ObjectProperty",
+   "label": "openid",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "16",
+   "type": "owl:ObjectProperty",
+   "label": "workInfoHomepage",
+   "domain": "12",
+   "range": "2"
+  },
+  {
+   "id": "17",
+   "type": "owl:ObjectProperty",
+   "label": "pastProject",
+   "domain": "12",
+   "range": "3"
+  },
+  {
+   "id": "23",
+   "type": "owl:ObjectProperty",
+   "label": "theme",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "25",
+   "type": "owl:ObjectProperty",
+   "label": "knows",
+   "domain": "12",
+   "range": "12"
+  },
+  {
+   "id": "28",
+   "type": "owl:ObjectProperty",
+   "label": "focus",
+   "domain": "9",
+   "range": "29"
+  },
+  {
+   "id": "30",
+   "type": "owl:ObjectProperty",
+   "label": "phone",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "31",
+   "type": "owl:ObjectProperty",
+   "label": "depicts",
+   "domain": "32",
+   "range": "33"
+  },
+  {
+   "id": "35",
+   "type": "owl:ObjectProperty",
+   "label": "based_near",
+   "domain": "36",
+   "range": "36"
+  },
+  {
+   "id": "38",
+   "type": "owl:ObjectProperty",
+   "label": "page",
+   "domain": "39",
+   "range": "2"
+  },
+  {
+   "id": "44",
+   "type": "owl:DatatypeProperty",
+   "label": "geekcode",
+   "domain": "12",
+   "range": "26"
+  },
+  {
+   "id": "47",
+   "type": "owl:ObjectProperty",
+   "label": "primaryTopic",
+   "domain": "2",
+   "range": "39"
+  },
+  {
+   "id": "48",
+   "type": "owl:DatatypeProperty",
+   "label": "givenName",
+   "domain": "19",
+   "range": "49"
+  },
+  {
+   "id": "50",
+   "type": "owl:ObjectProperty",
+   "label": "schoolHomepage",
+   "domain": "12",
+   "range": "2"
+  },
+  {
+   "id": "51",
+   "type": "owl:DatatypeProperty",
+   "label": "gender",
+   "domain": "1",
+   "range": "52"
+  },
+  {
+   "id": "54",
+   "type": "owl:DatatypeProperty",
+   "label": "dnaChecksum",
+   "domain": "19",
+   "range": "55"
+  },
+  {
+   "id": "57",
+   "type": "owl:DatatypeProperty",
+   "label": "lastName",
+   "domain": "12",
+   "range": "58"
+  },
+  {
+   "id": "65",
+   "type": "owl:DatatypeProperty",
+   "label": "status",
+   "domain": "1",
+   "range": "45"
+  },
+  {
+   "id": "66",
+   "type": "owl:DatatypeProperty",
+   "label": "yahooChatID",
+   "domain": "19",
+   "range": "46"
+  },
+  {
+   "id": "67",
+   "type": "owl:DatatypeProperty",
+   "label": "name",
+   "domain": "19",
+   "range": "68"
+  },
+  {
+   "id": "70",
+   "type": "owl:DatatypeProperty",
+   "label": "icqChatID",
+   "domain": "19",
+   "range": "53"
+  },
+  {
+   "id": "72",
+   "type": "owl:DatatypeProperty",
+   "label": "givenname",
+   "domain": "19",
+   "range": "73"
+  },
+  {
+   "id": "15",
+   "type": "owl:ObjectProperty",
+   "label": "isPrimaryTopicOf",
+   "domain": "39",
+   "range": "2"
+  },
+  {
+   "id": "74",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "32",
+   "range": "2"
+  },
+  {
+   "id": "75",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "71",
+   "range": "2"
+  },
+  {
+   "id": "76",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "77",
+   "range": "78"
+  },
+  {
+   "id": "79",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "12",
+   "range": "36"
+  },
+  {
+   "id": "80",
+   "type": "owl:ObjectProperty",
+   "label": "accountServiceHomepage",
+   "domain": "78",
+   "range": "2"
+  },
+  {
+   "id": "81",
+   "type": "owl:ObjectProperty",
+   "label": "logo",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "82",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "83",
+   "range": "78"
+  },
+  {
+   "id": "34",
+   "type": "owl:ObjectProperty",
+   "label": "depiction",
+   "domain": "33",
+   "range": "32"
+  },
+  {
+   "id": "85",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "86",
+   "range": "78"
+  },
+  {
+   "id": "87",
+   "type": "owl:DatatypeProperty",
+   "label": "family_name",
+   "domain": "12",
+   "range": "88"
+  },
+  {
+   "id": "89",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "12",
+   "range": "1"
+  },
+  {
+   "id": "90",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "11",
+   "range": "1"
+  },
+  {
+   "id": "91",
+   "type": "owl:ObjectProperty",
+   "label": "fundedBy",
+   "domain": "19",
+   "range": "19"
+  },
+  {
+   "id": "92",
+   "type": "owl:DatatypeProperty",
+   "label": "title",
+   "domain": "19",
+   "range": "93"
+  },
+  {
+   "id": "95",
+   "type": "owl:DatatypeProperty",
+   "label": "accountName",
+   "domain": "78",
+   "range": "59"
+  },
+  {
+   "id": "96",
+   "type": "owl:ObjectProperty",
+   "label": "account",
+   "domain": "1",
+   "range": "78"
+  },
+  {
+   "id": "97",
+   "type": "owl:DatatypeProperty",
+   "label": "jabberID",
+   "domain": "19",
+   "range": "69"
+  },
+  {
+   "id": "98",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "10",
+   "range": "1"
+  },
+  {
+   "id": "99",
+   "type": "owl:DatatypeProperty",
+   "label": "age",
+   "domain": "1",
+   "range": "100"
+  },
+  {
+   "id": "43",
+   "type": "owl:ObjectProperty",
+   "label": "homepage",
+   "domain": "39",
+   "range": "2"
+  },
+  {
+   "id": "42",
+   "type": "owl:ObjectProperty",
+   "label": "tipjar",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "103",
+   "type": "owl:DatatypeProperty",
+   "label": "msnChatID",
+   "domain": "5",
+   "range": "61"
+  },
+  {
+   "id": "104",
+   "type": "owl:ObjectProperty",
+   "label": "topic_interest",
+   "domain": "1",
+   "range": "18"
+  },
+  {
+   "id": "105",
+   "type": "owl:DatatypeProperty",
+   "label": "aimChatID",
+   "domain": "19",
+   "range": "106"
+  },
+  {
+   "id": "107",
+   "type": "owl:ObjectProperty",
+   "label": "currentProject",
+   "domain": "12",
+   "range": "3"
+  },
+  {
+   "id": "108",
+   "type": "owl:DatatypeProperty",
+   "label": "skypeID",
+   "domain": "1",
+   "range": "20"
+  },
+  {
+   "id": "109",
+   "type": "owl:ObjectProperty",
+   "label": "holdsAccount",
+   "domain": "1",
+   "range": "78"
+  },
+  {
+   "id": "110",
+   "type": "owl:ObjectProperty",
+   "label": "thumbnail",
+   "domain": "32",
+   "range": "32"
+  },
+  {
+   "id": "40",
+   "type": "owl:ObjectProperty",
+   "label": "topic",
+   "domain": "2",
+   "range": "39"
+  },
+  {
+   "id": "41",
+   "type": "owl:ObjectProperty",
+   "label": "weblog",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "84",
+   "type": "owl:ObjectProperty",
+   "label": "img",
+   "domain": "12",
+   "range": "32"
+  },
+  {
+   "id": "111",
+   "type": "owl:DatatypeProperty",
+   "label": "birthday",
+   "domain": "1",
+   "range": "56"
+  },
+  {
+   "id": "112",
+   "type": "owl:DatatypeProperty",
+   "label": "sha1",
+   "domain": "2",
+   "range": "101"
+  },
+  {
+   "id": "113",
+   "type": "owl:DatatypeProperty",
+   "label": "firstName",
+   "domain": "12",
+   "range": "24"
+  },
+  {
+   "id": "114",
+   "type": "owl:ObjectProperty",
+   "label": "made",
+   "domain": "1",
+   "range": "18"
+  },
+  {
+   "id": "116",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "60"
+  },
+  {
+   "id": "117",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "60",
+   "range": "12"
+  },
+  {
+   "id": "119",
+   "type": "owl:DatatypeProperty",
+   "label": "familyName",
+   "domain": "12",
+   "range": "62"
+  },
+  {
+   "id": "120",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "2"
+  },
+  {
+   "id": "121",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "12"
+  },
+  {
+   "id": "122",
+   "type": "owl:ObjectProperty",
+   "label": "member",
+   "domain": "10",
+   "range": "1"
+  },
+  {
+   "id": "123",
+   "type": "owl:DatatypeProperty",
+   "label": "plan",
+   "domain": "12",
+   "range": "27"
+  },
+  {
+   "id": "124",
+   "type": "owl:ObjectProperty",
+   "label": "mbox",
+   "domain": "1",
+   "range": "18"
+  },
+  {
+   "id": "125",
+   "type": "owl:DatatypeProperty",
+   "label": "surname",
+   "domain": "12",
+   "range": "118"
+  },
+  {
+   "id": "127",
+   "type": "owl:DatatypeProperty",
+   "label": "myersBriggs",
+   "domain": "12",
+   "range": "22"
+  },
+  {
+   "id": "115",
+   "type": "owl:ObjectProperty",
+   "label": "maker",
+   "domain": "18",
+   "range": "1"
+  },
+  {
+   "id": "128",
+   "type": "owl:ObjectProperty",
+   "label": "publications",
+   "domain": "12",
+   "range": "2"
+  },
+  {
+   "id": "129",
+   "type": "owl:ObjectProperty",
+   "label": "workplaceHomepage",
+   "domain": "12",
+   "range": "2"
+  }
+ ]
+}

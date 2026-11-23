@@ -1,0 +1,3971 @@
+{
+ "header": {
+  "iri": "http://purl.org/goodrelations/v1"
+ },
+ "class": [
+  {
+   "id": "3",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "9",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "12",
+   "type": "owl:Thing",
+   "label": "Thing"
+  },
+  {
+   "id": "15",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "17",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "19",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "32",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "37",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "39",
+   "type": "rdfs:Datatype",
+   "label": "boolean"
+  },
+  {
+   "id": "31",
+   "type": "rdfs:Datatype",
+   "label": "time"
+  },
+  {
+   "id": "43",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "45",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "51",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "55",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "57",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "60",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "62",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "72",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "84",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "85",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "86",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "87",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "88",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "89",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "8",
+   "type": "owl:Class",
+   "label": "Type and quantity node"
+  },
+  {
+   "id": "66",
+   "type": "rdfs:Datatype",
+   "label": "int"
+  },
+  {
+   "id": "90",
+   "type": "rdfs:Datatype",
+   "label": "boolean"
+  },
+  {
+   "id": "92",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "93",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "14",
+   "type": "owl:equivalentClass",
+   "label": "Product or service"
+  },
+  {
+   "id": "98",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "99",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "100",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "101",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "103",
+   "type": "rdfs:Datatype",
+   "label": "int"
+  },
+  {
+   "id": "104",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "105",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "108",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "28",
+   "type": "owl:Class",
+   "label": "Product or service model"
+  },
+  {
+   "id": "109",
+   "type": "rdfs:Datatype",
+   "label": "int"
+  },
+  {
+   "id": "110",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "111",
+   "type": "rdfs:Datatype",
+   "label": "int"
+  },
+  {
+   "id": "80",
+   "type": "owl:Class",
+   "label": "Day of week"
+  },
+  {
+   "id": "68",
+   "type": "owl:Class",
+   "label": "Qualitative value"
+  },
+  {
+   "id": "117",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "118",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "119",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "120",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "41",
+   "type": "owl:Class",
+   "label": "Payment method"
+  },
+  {
+   "id": "125",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "126",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "129",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "130",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "131",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "113",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "132",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "135",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "136",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "137",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "138",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "1",
+   "type": "owl:Class",
+   "label": "Quantitative value"
+  },
+  {
+   "id": "144",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "145",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "107",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "146",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "147",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "148",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "25",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "122",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "152",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "153",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "154",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "115",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "157",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "124",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "165",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "180",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "82",
+   "type": "owl:Class",
+   "label": "Payment method credit card"
+  },
+  {
+   "id": "5",
+   "type": "owl:unionOf",
+   "label": "Business entity"
+  },
+  {
+   "id": "197",
+   "type": "owl:Class",
+   "label": "N-ary relations (DEPRECATED)"
+  },
+  {
+   "id": "74",
+   "type": "owl:Class",
+   "label": "Delivery charge specification"
+  },
+  {
+   "id": "34",
+   "type": "owl:Class",
+   "label": "Offer"
+  },
+  {
+   "id": "94",
+   "type": "owl:equivalentClass",
+   "label": "Product or services some instances placeholder (DEPRECATED)"
+  },
+  {
+   "id": "46",
+   "type": "owl:equivalentClass",
+   "label": "Product"
+  },
+  {
+   "id": "78",
+   "type": "owl:Class",
+   "label": "Delivery mode parcel service"
+  },
+  {
+   "id": "6",
+   "type": "owl:Class",
+   "label": "Person"
+  },
+  {
+   "id": "75",
+   "type": "owl:Class",
+   "label": "Brand"
+  },
+  {
+   "id": "76",
+   "type": "owl:Class",
+   "label": "Quantitative value float"
+  },
+  {
+   "id": "95",
+   "type": "owl:equivalentClass",
+   "label": "Actual product or service instance (DEPRECATED)"
+  },
+  {
+   "id": "21",
+   "type": "owl:Class",
+   "label": "Warranty scope"
+  },
+  {
+   "id": "331",
+   "type": "owl:equivalentClass",
+   "label": "Location of sales or service provisioning (DEPRECATED)"
+  },
+  {
+   "id": "47",
+   "type": "owl:equivalentClass",
+   "label": "Individual"
+  },
+  {
+   "id": "133",
+   "type": "owl:equivalentClass",
+   "label": "Place"
+  },
+  {
+   "id": "11",
+   "type": "owl:Class",
+   "label": "Warranty promise"
+  },
+  {
+   "id": "50",
+   "type": "owl:Class",
+   "label": "Payment charge specification"
+  },
+  {
+   "id": "23",
+   "type": "owl:equivalentClass",
+   "label": "Some items"
+  },
+  {
+   "id": "65",
+   "type": "owl:Class",
+   "label": "Quantitative value integer"
+  },
+  {
+   "id": "4",
+   "type": "owl:Class",
+   "label": "Organization"
+  },
+  {
+   "id": "81",
+   "type": "owl:Class",
+   "label": "Delivery method"
+  },
+  {
+   "id": "30",
+   "type": "owl:Class",
+   "label": "Opening hours specification"
+  },
+  {
+   "id": "2",
+   "type": "owl:Class",
+   "label": "Price specification"
+  },
+  {
+   "id": "33",
+   "type": "owl:Class",
+   "label": "Offering"
+  },
+  {
+   "id": "183",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "184",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "140",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "73",
+   "type": "owl:Class",
+   "label": "Business entity type"
+  },
+  {
+   "id": "141",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "264",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "265",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "348",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "350",
+   "type": "rdfs:Datatype",
+   "label": "int"
+  },
+  {
+   "id": "317",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "318",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "322",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "79",
+   "type": "owl:Class",
+   "label": "Business function"
+  },
+  {
+   "id": "359",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "128",
+   "type": "rdfs:Datatype",
+   "label": "int"
+  },
+  {
+   "id": "356",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "357",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "343",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "216",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "353",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "354",
+   "type": "rdfs:Datatype",
+   "label": "string"
+  },
+  {
+   "id": "321",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "314",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "361",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "49",
+   "type": "owl:Class",
+   "label": "Unit price specification"
+  },
+  {
+   "id": "200",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "201",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "338",
+   "type": "rdfs:Datatype",
+   "label": "time"
+  },
+  {
+   "id": "364",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "365",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "366",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "367",
+   "type": "rdfs:Literal",
+   "label": "Literal"
+  },
+  {
+   "id": "313",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "368",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "371",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "220",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "377",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "378",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "303",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "311",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "71",
+   "type": "rdfs:Datatype",
+   "label": "float"
+  },
+  {
+   "id": "328",
+   "type": "owl:unionOf",
+   "label": "Union"
+  },
+  {
+   "id": "329",
+   "type": "rdfs:Datatype",
+   "label": "dateTime"
+  },
+  {
+   "id": "77",
+   "type": "owl:equivalentClass",
+   "label": "Location"
+  },
+  {
+   "id": "35",
+   "type": "owl:Class",
+   "label": "License"
+  }
+ ],
+ "property": [
+  {
+   "id": "0",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "2"
+  },
+  {
+   "id": "7",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "2"
+  },
+  {
+   "id": "10",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "2"
+  },
+  {
+   "id": "13",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "14"
+  },
+  {
+   "id": "16",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "14"
+  },
+  {
+   "id": "18",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "14"
+  },
+  {
+   "id": "20",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "14",
+   "range": "21"
+  },
+  {
+   "id": "22",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "23",
+   "range": "14"
+  },
+  {
+   "id": "24",
+   "type": "owl:ObjectProperty",
+   "label": "depth (0..1)",
+   "domain": "25",
+   "range": "1"
+  },
+  {
+   "id": "27",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "28",
+   "range": "23"
+  },
+  {
+   "id": "29",
+   "type": "owl:DatatypeProperty",
+   "label": "opens (1..1)",
+   "domain": "30",
+   "range": "31"
+  },
+  {
+   "id": "36",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "14"
+  },
+  {
+   "id": "38",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "21"
+  },
+  {
+   "id": "40",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "30"
+  },
+  {
+   "id": "42",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "14",
+   "range": "30"
+  },
+  {
+   "id": "44",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "30"
+  },
+  {
+   "id": "48",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "49",
+   "range": "50"
+  },
+  {
+   "id": "52",
+   "type": "owl:ObjectProperty",
+   "label": "successor of (0..*)",
+   "domain": "28",
+   "range": "28"
+  },
+  {
+   "id": "54",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "41"
+  },
+  {
+   "id": "56",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "2"
+  },
+  {
+   "id": "58",
+   "type": "owl:DatatypeProperty",
+   "label": "description",
+   "domain": "12",
+   "range": "15"
+  },
+  {
+   "id": "59",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "41"
+  },
+  {
+   "id": "61",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "21"
+  },
+  {
+   "id": "63",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "8"
+  },
+  {
+   "id": "64",
+   "type": "owl:DatatypeProperty",
+   "label": "has value integer (0..1)",
+   "domain": "65",
+   "range": "66"
+  },
+  {
+   "id": "67",
+   "type": "owl:ObjectProperty",
+   "label": "lesser or equal (0..*)",
+   "domain": "68",
+   "range": "68"
+  },
+  {
+   "id": "70",
+   "type": "owl:DatatypeProperty",
+   "label": "amount of this good (1..1)",
+   "domain": "8",
+   "range": "71"
+  },
+  {
+   "id": "83",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "30"
+  },
+  {
+   "id": "91",
+   "type": "owl:DatatypeProperty",
+   "label": "is list price (DEPRECATED)",
+   "domain": "49",
+   "range": "90"
+  },
+  {
+   "id": "96",
+   "type": "owl:ObjectProperty",
+   "label": "depiction",
+   "domain": "12",
+   "range": "12"
+  },
+  {
+   "id": "102",
+   "type": "owl:ObjectProperty",
+   "label": "equal (0..*)",
+   "domain": "68",
+   "range": "68"
+  },
+  {
+   "id": "106",
+   "type": "owl:ObjectProperty",
+   "label": "has inventory level (0..1)",
+   "domain": "107",
+   "range": "76"
+  },
+  {
+   "id": "53",
+   "type": "owl:ObjectProperty",
+   "label": "predecessor of (0..*)",
+   "domain": "28",
+   "range": "28"
+  },
+  {
+   "id": "112",
+   "type": "owl:ObjectProperty",
+   "label": "owns (0..*)",
+   "domain": "113",
+   "range": "47"
+  },
+  {
+   "id": "114",
+   "type": "owl:ObjectProperty",
+   "label": "add-on (0..*)",
+   "domain": "115",
+   "range": "33"
+  },
+  {
+   "id": "116",
+   "type": "owl:ObjectProperty",
+   "label": "has warranty scope (0..1)",
+   "domain": "11",
+   "range": "21"
+  },
+  {
+   "id": "121",
+   "type": "owl:ObjectProperty",
+   "label": "eligible customer types (0..*)",
+   "domain": "122",
+   "range": "73"
+  },
+  {
+   "id": "123",
+   "type": "owl:ObjectProperty",
+   "label": "available at or from (0..*)",
+   "domain": "124",
+   "range": "77"
+  },
+  {
+   "id": "127",
+   "type": "owl:DatatypeProperty",
+   "label": "duration of warranty in months (0..1)",
+   "domain": "11",
+   "range": "128"
+  },
+  {
+   "id": "134",
+   "type": "owl:ObjectProperty",
+   "label": "has opening hours day of week (1..*)",
+   "domain": "30",
+   "range": "80"
+  },
+  {
+   "id": "139",
+   "type": "owl:DatatypeProperty",
+   "label": "has GTIN-8 (0..*)",
+   "domain": "140",
+   "range": "141"
+  },
+  {
+   "id": "142",
+   "type": "owl:DatatypeProperty",
+   "label": "name",
+   "domain": "12",
+   "range": "19"
+  },
+  {
+   "id": "143",
+   "type": "owl:DatatypeProperty",
+   "label": "has max currency value (1..1)",
+   "domain": "2",
+   "range": "99"
+  },
+  {
+   "id": "149",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "50",
+   "range": "2"
+  },
+  {
+   "id": "150",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "34",
+   "range": "33"
+  },
+  {
+   "id": "151",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "35",
+   "range": "79"
+  },
+  {
+   "id": "155",
+   "type": "owl:ObjectProperty",
+   "label": "eligible transaction volume (0..1)",
+   "domain": "153",
+   "range": "2"
+  },
+  {
+   "id": "156",
+   "type": "owl:ObjectProperty",
+   "label": "advance booking requirement (0..1)",
+   "domain": "157",
+   "range": "65"
+  },
+  {
+   "id": "158",
+   "type": "owl:ObjectProperty",
+   "label": "is variant of (0..1)",
+   "domain": "28",
+   "range": "28"
+  },
+  {
+   "id": "159",
+   "type": "owl:ObjectProperty",
+   "label": "has warranty promise (0..*)",
+   "domain": "137",
+   "range": "11"
+  },
+  {
+   "id": "160",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "47",
+   "range": "46"
+  },
+  {
+   "id": "161",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "28",
+   "range": "46"
+  },
+  {
+   "id": "162",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "78",
+   "range": "81"
+  },
+  {
+   "id": "163",
+   "type": "owl:DatatypeProperty",
+   "label": "has min value (0..1)",
+   "domain": "1",
+   "range": "105"
+  },
+  {
+   "id": "164",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "49",
+   "range": "2"
+  },
+  {
+   "id": "166",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "74",
+   "range": "2"
+  },
+  {
+   "id": "167",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "8"
+  },
+  {
+   "id": "168",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "82",
+   "range": "41"
+  },
+  {
+   "id": "169",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "1"
+  },
+  {
+   "id": "170",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "76",
+   "range": "1"
+  },
+  {
+   "id": "171",
+   "type": "owl:ObjectProperty",
+   "label": "height (0..1)",
+   "domain": "138",
+   "range": "1"
+  },
+  {
+   "id": "172",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "76",
+   "range": "65"
+  },
+  {
+   "id": "173",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "65",
+   "range": "1"
+  },
+  {
+   "id": "174",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "8"
+  },
+  {
+   "id": "175",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "4",
+   "range": "5"
+  },
+  {
+   "id": "176",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "21"
+  },
+  {
+   "id": "177",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "6",
+   "range": "5"
+  },
+  {
+   "id": "178",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "21"
+  },
+  {
+   "id": "179",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "23",
+   "range": "46"
+  },
+  {
+   "id": "181",
+   "type": "owl:ObjectProperty",
+   "label": "is consumable for (0..*)",
+   "domain": "129",
+   "range": "14"
+  },
+  {
+   "id": "182",
+   "type": "owl:DatatypeProperty",
+   "label": "has GTIN-14 (0..*)",
+   "domain": "183",
+   "range": "184"
+  },
+  {
+   "id": "185",
+   "type": "owl:ObjectProperty",
+   "label": "has price specification (0..*)",
+   "domain": "136",
+   "range": "2"
+  },
+  {
+   "id": "186",
+   "type": "owl:ObjectProperty",
+   "label": "includes object (0..*)",
+   "domain": "125",
+   "range": "8"
+  },
+  {
+   "id": "187",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "47",
+   "range": "14"
+  },
+  {
+   "id": "188",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "68"
+  },
+  {
+   "id": "189",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "28",
+   "range": "14"
+  },
+  {
+   "id": "190",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "68"
+  },
+  {
+   "id": "191",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "94",
+   "range": "14"
+  },
+  {
+   "id": "192",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "21"
+  },
+  {
+   "id": "193",
+   "type": "subclass",
+   "label": "Subclass of",
+   "domain": "95",
+   "range": "14"
+  },
+  {
+   "id": "194",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "81"
+  },
+  {
+   "id": "195",
+   "type": "owl:ObjectProperty",
+   "label": "is similar to (0..*)",
+   "domain": "130",
+   "range": "14"
+  },
+  {
+   "id": "196",
+   "type": "owl:DatatypeProperty",
+   "label": "has min value float (1..1)",
+   "domain": "76",
+   "range": "108"
+  },
+  {
+   "id": "198",
+   "type": "owl:ObjectProperty",
+   "label": "non equal (0..*)",
+   "domain": "68",
+   "range": "68"
+  },
+  {
+   "id": "199",
+   "type": "owl:DatatypeProperty",
+   "label": "category (0..*)",
+   "domain": "200",
+   "range": "201"
+  },
+  {
+   "id": "202",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "5"
+  },
+  {
+   "id": "203",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "2"
+  },
+  {
+   "id": "204",
+   "type": "owl:DatatypeProperty",
+   "label": "valid through (0..1)",
+   "domain": "32",
+   "range": "37"
+  },
+  {
+   "id": "205",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "5"
+  },
+  {
+   "id": "206",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "30"
+  },
+  {
+   "id": "207",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "5"
+  },
+  {
+   "id": "208",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "79"
+  },
+  {
+   "id": "209",
+   "type": "owl:ObjectProperty",
+   "label": "has manufacturer (0..1)",
+   "domain": "147",
+   "range": "5"
+  },
+  {
+   "id": "211",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "73"
+  },
+  {
+   "id": "212",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "5"
+  },
+  {
+   "id": "213",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "81"
+  },
+  {
+   "id": "214",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "21"
+  },
+  {
+   "id": "215",
+   "type": "owl:DatatypeProperty",
+   "label": "has currency value (0..1)",
+   "domain": "2",
+   "range": "216"
+  },
+  {
+   "id": "217",
+   "type": "owl:DatatypeProperty",
+   "label": "has value float (0..1)",
+   "domain": "76",
+   "range": "89"
+  },
+  {
+   "id": "218",
+   "type": "owl:DatatypeProperty",
+   "label": "has max value integer (1..1)",
+   "domain": "65",
+   "range": "103"
+  },
+  {
+   "id": "219",
+   "type": "owl:DatatypeProperty",
+   "label": "billing increment (0..1)",
+   "domain": "49",
+   "range": "220"
+  },
+  {
+   "id": "221",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "5"
+  },
+  {
+   "id": "222",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "5"
+  },
+  {
+   "id": "223",
+   "type": "owl:DatatypeProperty",
+   "label": "valid from (0..1)",
+   "domain": "60",
+   "range": "62"
+  },
+  {
+   "id": "224",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "80"
+  },
+  {
+   "id": "225",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "75"
+  },
+  {
+   "id": "226",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "75"
+  },
+  {
+   "id": "227",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "28",
+   "range": "5"
+  },
+  {
+   "id": "228",
+   "type": "owl:ObjectProperty",
+   "label": "has opening hours specification (0..*)",
+   "domain": "132",
+   "range": "30"
+  },
+  {
+   "id": "229",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "5",
+   "range": "75"
+  },
+  {
+   "id": "230",
+   "type": "owl:ObjectProperty",
+   "label": "has previous (0..1)",
+   "domain": "80",
+   "range": "80"
+  },
+  {
+   "id": "231",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "75"
+  },
+  {
+   "id": "232",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "75",
+   "range": "30"
+  },
+  {
+   "id": "233",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "75"
+  },
+  {
+   "id": "234",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "79"
+  },
+  {
+   "id": "235",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "21"
+  },
+  {
+   "id": "236",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "79"
+  },
+  {
+   "id": "237",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "79"
+  },
+  {
+   "id": "238",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "79"
+  },
+  {
+   "id": "239",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "81"
+  },
+  {
+   "id": "240",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "30"
+  },
+  {
+   "id": "241",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "14",
+   "range": "79"
+  },
+  {
+   "id": "242",
+   "type": "owl:DatatypeProperty",
+   "label": "name (0..1)",
+   "domain": "72",
+   "range": "84"
+  },
+  {
+   "id": "243",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "2"
+  },
+  {
+   "id": "244",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "79"
+  },
+  {
+   "id": "245",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "79"
+  },
+  {
+   "id": "246",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "73"
+  },
+  {
+   "id": "247",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "73"
+  },
+  {
+   "id": "248",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "79"
+  },
+  {
+   "id": "249",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "73"
+  },
+  {
+   "id": "250",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "21"
+  },
+  {
+   "id": "251",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "73"
+  },
+  {
+   "id": "252",
+   "type": "owl:ObjectProperty",
+   "label": "has brand (0..*)",
+   "domain": "154",
+   "range": "75"
+  },
+  {
+   "id": "253",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "30"
+  },
+  {
+   "id": "254",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "80"
+  },
+  {
+   "id": "255",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "73"
+  },
+  {
+   "id": "256",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "14"
+  },
+  {
+   "id": "257",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "73"
+  },
+  {
+   "id": "258",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "81"
+  },
+  {
+   "id": "259",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "81"
+  },
+  {
+   "id": "260",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "81"
+  },
+  {
+   "id": "261",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "21",
+   "range": "81"
+  },
+  {
+   "id": "262",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "30",
+   "range": "81"
+  },
+  {
+   "id": "263",
+   "type": "owl:DatatypeProperty",
+   "label": "has Global Location Number (0..1)",
+   "domain": "264",
+   "range": "265"
+  },
+  {
+   "id": "266",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "14",
+   "range": "81"
+  },
+  {
+   "id": "267",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "81"
+  },
+  {
+   "id": "268",
+   "type": "owl:ObjectProperty",
+   "label": "seeks (0..*)",
+   "domain": "119",
+   "range": "33"
+  },
+  {
+   "id": "210",
+   "type": "owl:ObjectProperty",
+   "label": "manufacturer",
+   "domain": "12",
+   "range": "12"
+  },
+  {
+   "id": "269",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "80"
+  },
+  {
+   "id": "270",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "80"
+  },
+  {
+   "id": "271",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "74",
+   "range": "49"
+  },
+  {
+   "id": "272",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "74",
+   "range": "50"
+  },
+  {
+   "id": "273",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "80",
+   "range": "81"
+  },
+  {
+   "id": "274",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "80"
+  },
+  {
+   "id": "275",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "80"
+  },
+  {
+   "id": "276",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "80"
+  },
+  {
+   "id": "277",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "80",
+   "range": "30"
+  },
+  {
+   "id": "278",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "8",
+   "range": "80"
+  },
+  {
+   "id": "279",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "80"
+  },
+  {
+   "id": "280",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "79"
+  },
+  {
+   "id": "281",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "80"
+  },
+  {
+   "id": "282",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "14",
+   "range": "80"
+  },
+  {
+   "id": "283",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "80",
+   "range": "21"
+  },
+  {
+   "id": "284",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "11"
+  },
+  {
+   "id": "285",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "68"
+  },
+  {
+   "id": "286",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "41"
+  },
+  {
+   "id": "287",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "21"
+  },
+  {
+   "id": "288",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "8"
+  },
+  {
+   "id": "289",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "2"
+  },
+  {
+   "id": "290",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "1"
+  },
+  {
+   "id": "291",
+   "type": "owl:ObjectProperty",
+   "label": "has eligible quantity (0..1)",
+   "domain": "145",
+   "range": "1"
+  },
+  {
+   "id": "292",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "8"
+  },
+  {
+   "id": "293",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "30"
+  },
+  {
+   "id": "294",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "30"
+  },
+  {
+   "id": "295",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "14"
+  },
+  {
+   "id": "296",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "11"
+  },
+  {
+   "id": "297",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "2"
+  },
+  {
+   "id": "298",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "41"
+  },
+  {
+   "id": "299",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "21"
+  },
+  {
+   "id": "300",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "1"
+  },
+  {
+   "id": "301",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "33",
+   "range": "77"
+  },
+  {
+   "id": "302",
+   "type": "owl:ObjectProperty",
+   "label": "weight (0..1)",
+   "domain": "303",
+   "range": "1"
+  },
+  {
+   "id": "304",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "47",
+   "range": "23"
+  },
+  {
+   "id": "305",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "81"
+  },
+  {
+   "id": "306",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "81"
+  },
+  {
+   "id": "307",
+   "type": "owl:DatatypeProperty",
+   "label": "serial number (0..*)",
+   "domain": "45",
+   "range": "51"
+  },
+  {
+   "id": "308",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "47",
+   "range": "28"
+  },
+  {
+   "id": "309",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "81"
+  },
+  {
+   "id": "310",
+   "type": "owl:ObjectProperty",
+   "label": "width (0..1)",
+   "domain": "311",
+   "range": "1"
+  },
+  {
+   "id": "312",
+   "type": "owl:DatatypeProperty",
+   "label": "datatype product or service property (0..*)",
+   "domain": "313",
+   "range": "314"
+  },
+  {
+   "id": "315",
+   "type": "owl:ObjectProperty",
+   "label": "has next (0..1)",
+   "domain": "80",
+   "range": "80"
+  },
+  {
+   "id": "316",
+   "type": "owl:DatatypeProperty",
+   "label": "has MPN (0..*)",
+   "domain": "317",
+   "range": "318"
+  },
+  {
+   "id": "319",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "2",
+   "range": "30"
+  },
+  {
+   "id": "320",
+   "type": "owl:DatatypeProperty",
+   "label": "has EAN/UCC-13 (0..*)",
+   "domain": "321",
+   "range": "322"
+  },
+  {
+   "id": "323",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "11",
+   "range": "30"
+  },
+  {
+   "id": "324",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "30",
+   "range": "21"
+  },
+  {
+   "id": "325",
+   "type": "owl:DatatypeProperty",
+   "label": "has max value float (1..1)",
+   "domain": "76",
+   "range": "101"
+  },
+  {
+   "id": "326",
+   "type": "owl:DatatypeProperty",
+   "label": "has unit of measurement (1..1)",
+   "domain": "86",
+   "range": "87"
+  },
+  {
+   "id": "327",
+   "type": "owl:DatatypeProperty",
+   "label": "availability ends (0..1)",
+   "domain": "328",
+   "range": "329"
+  },
+  {
+   "id": "330",
+   "type": "owl:DatatypeProperty",
+   "label": "VAT ID (0..1)",
+   "domain": "3",
+   "range": "9"
+  },
+  {
+   "id": "332",
+   "type": "owl:DatatypeProperty",
+   "label": "productID",
+   "domain": "12",
+   "range": "17"
+  },
+  {
+   "id": "333",
+   "type": "owl:DatatypeProperty",
+   "label": "has value (0..1)",
+   "domain": "1",
+   "range": "88"
+  },
+  {
+   "id": "334",
+   "type": "owl:ObjectProperty",
+   "label": "greater (0..*)",
+   "domain": "68",
+   "range": "68"
+  },
+  {
+   "id": "335",
+   "type": "owl:ObjectProperty",
+   "label": "type of good (1..1)",
+   "domain": "8",
+   "range": "120"
+  },
+  {
+   "id": "336",
+   "type": "owl:ObjectProperty",
+   "label": "delivery lead time (0..1)",
+   "domain": "148",
+   "range": "65"
+  },
+  {
+   "id": "337",
+   "type": "owl:DatatypeProperty",
+   "label": "closes (1..1)",
+   "domain": "30",
+   "range": "338"
+  },
+  {
+   "id": "339",
+   "type": "owl:ObjectProperty",
+   "label": "includes (0..1)",
+   "domain": "33",
+   "range": "14"
+  },
+  {
+   "id": "340",
+   "type": "owl:DatatypeProperty",
+   "label": "Tax ID (0..1)",
+   "domain": "55",
+   "range": "57"
+  },
+  {
+   "id": "69",
+   "type": "owl:ObjectProperty",
+   "label": "greater or equal (0..*)",
+   "domain": "68",
+   "range": "68"
+  },
+  {
+   "id": "341",
+   "type": "owl:ObjectProperty",
+   "label": "applies to payment method (1..*)",
+   "domain": "50",
+   "range": "41"
+  },
+  {
+   "id": "342",
+   "type": "owl:DatatypeProperty",
+   "label": "has currency (1..1)",
+   "domain": "2",
+   "range": "343"
+  },
+  {
+   "id": "344",
+   "type": "owl:ObjectProperty",
+   "label": "has POS (0..*)",
+   "domain": "135",
+   "range": "77"
+  },
+  {
+   "id": "345",
+   "type": "owl:ObjectProperty",
+   "label": "qualitative product or service property (0..*)",
+   "domain": "117",
+   "range": "68"
+  },
+  {
+   "id": "346",
+   "type": "owl:DatatypeProperty",
+   "label": "has max value (0..1)",
+   "domain": "1",
+   "range": "100"
+  },
+  {
+   "id": "347",
+   "type": "owl:DatatypeProperty",
+   "label": "has Stock Keeping Unit (0..*)",
+   "domain": "98",
+   "range": "85"
+  },
+  {
+   "id": "349",
+   "type": "owl:ObjectProperty",
+   "label": "available delivery methods (0..*)",
+   "domain": "165",
+   "range": "81"
+  },
+  {
+   "id": "351",
+   "type": "owl:DatatypeProperty",
+   "label": "value added tax included (0..1)",
+   "domain": "2",
+   "range": "39"
+  },
+  {
+   "id": "352",
+   "type": "owl:DatatypeProperty",
+   "label": "has DUNS (0..1)",
+   "domain": "353",
+   "range": "354"
+  },
+  {
+   "id": "26",
+   "type": "owl:ObjectProperty",
+   "label": "quantitative product or service property (0..*)",
+   "domain": "118",
+   "range": "1"
+  },
+  {
+   "id": "355",
+   "type": "owl:DatatypeProperty",
+   "label": "eligible regions (0..*)",
+   "domain": "356",
+   "range": "357"
+  },
+  {
+   "id": "358",
+   "type": "owl:DatatypeProperty",
+   "label": "has min currency value (1..1)",
+   "domain": "2",
+   "range": "104"
+  },
+  {
+   "id": "360",
+   "type": "owl:ObjectProperty",
+   "label": "lesser (0..*)",
+   "domain": "68",
+   "range": "68"
+  },
+  {
+   "id": "97",
+   "type": "owl:ObjectProperty",
+   "label": "image",
+   "domain": "12",
+   "range": "12"
+  },
+  {
+   "id": "362",
+   "type": "owl:ObjectProperty",
+   "label": "applies to delivery method (0..*)",
+   "domain": "74",
+   "range": "81"
+  },
+  {
+   "id": "363",
+   "type": "owl:DatatypeProperty",
+   "label": "color (0..1)",
+   "domain": "364",
+   "range": "365"
+  },
+  {
+   "id": "369",
+   "type": "owl:ObjectProperty",
+   "label": "has business function (1..*)",
+   "domain": "144",
+   "range": "79"
+  },
+  {
+   "id": "370",
+   "type": "owl:DatatypeProperty",
+   "label": "has NAICS (0..*)",
+   "domain": "110",
+   "range": "111"
+  },
+  {
+   "id": "372",
+   "type": "owl:DatatypeProperty",
+   "label": "legal name (0..1)",
+   "domain": "92",
+   "range": "93"
+  },
+  {
+   "id": "373",
+   "type": "owl:DatatypeProperty",
+   "label": "condition (0..1)",
+   "domain": "366",
+   "range": "367"
+  },
+  {
+   "id": "374",
+   "type": "owl:ObjectProperty",
+   "label": "offers (0..*)",
+   "domain": "131",
+   "range": "33"
+  },
+  {
+   "id": "375",
+   "type": "owl:DatatypeProperty",
+   "label": "has min value integer (1..1)",
+   "domain": "65",
+   "range": "109"
+  },
+  {
+   "id": "376",
+   "type": "owl:ObjectProperty",
+   "label": "accepted payment methods (0..*)",
+   "domain": "180",
+   "range": "41"
+  },
+  {
+   "id": "379",
+   "type": "owl:ObjectProperty",
+   "label": "eligible duration (0..1)",
+   "domain": "152",
+   "range": "1"
+  },
+  {
+   "id": "380",
+   "type": "owl:DatatypeProperty",
+   "label": "has ISIC v4 (0..*)",
+   "domain": "348",
+   "range": "350"
+  },
+  {
+   "id": "381",
+   "type": "owl:DatatypeProperty",
+   "label": "availability starts (0..1)",
+   "domain": "368",
+   "range": "371"
+  },
+  {
+   "id": "382",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "79",
+   "range": "75"
+  },
+  {
+   "id": "383",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "73",
+   "range": "75"
+  },
+  {
+   "id": "384",
+   "type": "owl:DatatypeProperty",
+   "label": "description (0..1)",
+   "domain": "361",
+   "range": "359"
+  },
+  {
+   "id": "385",
+   "type": "owl:DatatypeProperty",
+   "label": "price type (0..1)",
+   "domain": "49",
+   "range": "43"
+  },
+  {
+   "id": "386",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "28",
+   "range": "75"
+  },
+  {
+   "id": "387",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "41",
+   "range": "75"
+  },
+  {
+   "id": "388",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "14",
+   "range": "75"
+  },
+  {
+   "id": "389",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "77",
+   "range": "75"
+  },
+  {
+   "id": "390",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "75",
+   "range": "21"
+  },
+  {
+   "id": "391",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "1",
+   "range": "75"
+  },
+  {
+   "id": "392",
+   "type": "owl:ObjectProperty",
+   "label": "value reference (0..*)",
+   "domain": "377",
+   "range": "378"
+  },
+  {
+   "id": "393",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "75",
+   "range": "81"
+  },
+  {
+   "id": "394",
+   "type": "owl:disjointWith",
+   "label": "Disjoint with",
+   "domain": "75",
+   "range": "80"
+  },
+  {
+   "id": "395",
+   "type": "owl:ObjectProperty",
+   "label": "is accessory or spare part for (0..*)",
+   "domain": "126",
+   "range": "14"
+  },
+  {
+   "id": "396",
+   "type": "owl:ObjectProperty",
+   "label": "has make and model (0..1)",
+   "domain": "146",
+   "range": "28"
+  },
+  {
+   "id": "GENERATED-UNION-3-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-3-4-0",
+   "domain": "3",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-3-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-3-5-1",
+   "domain": "3",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-3-6-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-3-6-2",
+   "domain": "3",
+   "range": "6"
+  },
+  {
+   "id": "GENERATED-UNION-32-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-32-33-0",
+   "domain": "32",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-32-30-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-32-30-1",
+   "domain": "32",
+   "range": "30"
+  },
+  {
+   "id": "GENERATED-UNION-32-34-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-32-34-2",
+   "domain": "32",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-32-35-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-32-35-3",
+   "domain": "32",
+   "range": "35"
+  },
+  {
+   "id": "GENERATED-UNION-32-2-4",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-32-2-4",
+   "domain": "32",
+   "range": "2"
+  },
+  {
+   "id": "GENERATED-UNION-45-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-45-46-0",
+   "domain": "45",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-45-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-45-33-1",
+   "domain": "45",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-45-47-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-45-47-2",
+   "domain": "45",
+   "range": "47"
+  },
+  {
+   "id": "GENERATED-UNION-55-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-55-4-0",
+   "domain": "55",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-55-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-55-5-1",
+   "domain": "55",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-55-6-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-55-6-2",
+   "domain": "55",
+   "range": "6"
+  },
+  {
+   "id": "GENERATED-UNION-60-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-60-33-0",
+   "domain": "60",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-60-30-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-60-30-1",
+   "domain": "60",
+   "range": "30"
+  },
+  {
+   "id": "GENERATED-UNION-60-34-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-60-34-2",
+   "domain": "60",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-60-35-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-60-35-3",
+   "domain": "60",
+   "range": "35"
+  },
+  {
+   "id": "GENERATED-UNION-60-2-4",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-60-2-4",
+   "domain": "60",
+   "range": "2"
+  },
+  {
+   "id": "GENERATED-UNION-72-41-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-41-0",
+   "domain": "72",
+   "range": "41"
+  },
+  {
+   "id": "GENERATED-UNION-72-8-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-8-1",
+   "domain": "72",
+   "range": "8"
+  },
+  {
+   "id": "GENERATED-UNION-72-49-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-49-2",
+   "domain": "72",
+   "range": "49"
+  },
+  {
+   "id": "GENERATED-UNION-72-5-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-5-3",
+   "domain": "72",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-72-14-4",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-14-4",
+   "domain": "72",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-72-50-5",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-50-5",
+   "domain": "72",
+   "range": "50"
+  },
+  {
+   "id": "GENERATED-UNION-72-23-6",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-23-6",
+   "domain": "72",
+   "range": "23"
+  },
+  {
+   "id": "GENERATED-UNION-72-33-7",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-33-7",
+   "domain": "72",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-72-30-8",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-30-8",
+   "domain": "72",
+   "range": "30"
+  },
+  {
+   "id": "GENERATED-UNION-72-73-9",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-73-9",
+   "domain": "72",
+   "range": "73"
+  },
+  {
+   "id": "GENERATED-UNION-72-74-10",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-74-10",
+   "domain": "72",
+   "range": "74"
+  },
+  {
+   "id": "GENERATED-UNION-72-65-11",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-65-11",
+   "domain": "72",
+   "range": "65"
+  },
+  {
+   "id": "GENERATED-UNION-72-21-12",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-21-12",
+   "domain": "72",
+   "range": "21"
+  },
+  {
+   "id": "GENERATED-UNION-72-75-13",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-75-13",
+   "domain": "72",
+   "range": "75"
+  },
+  {
+   "id": "GENERATED-UNION-72-76-14",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-76-14",
+   "domain": "72",
+   "range": "76"
+  },
+  {
+   "id": "GENERATED-UNION-72-77-15",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-77-15",
+   "domain": "72",
+   "range": "77"
+  },
+  {
+   "id": "GENERATED-UNION-72-47-16",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-47-16",
+   "domain": "72",
+   "range": "47"
+  },
+  {
+   "id": "GENERATED-UNION-72-78-17",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-78-17",
+   "domain": "72",
+   "range": "78"
+  },
+  {
+   "id": "GENERATED-UNION-72-28-18",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-28-18",
+   "domain": "72",
+   "range": "28"
+  },
+  {
+   "id": "GENERATED-UNION-72-1-19",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-1-19",
+   "domain": "72",
+   "range": "1"
+  },
+  {
+   "id": "GENERATED-UNION-72-79-20",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-79-20",
+   "domain": "72",
+   "range": "79"
+  },
+  {
+   "id": "GENERATED-UNION-72-80-21",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-80-21",
+   "domain": "72",
+   "range": "80"
+  },
+  {
+   "id": "GENERATED-UNION-72-2-22",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-2-22",
+   "domain": "72",
+   "range": "2"
+  },
+  {
+   "id": "GENERATED-UNION-72-81-23",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-81-23",
+   "domain": "72",
+   "range": "81"
+  },
+  {
+   "id": "GENERATED-UNION-72-11-24",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-11-24",
+   "domain": "72",
+   "range": "11"
+  },
+  {
+   "id": "GENERATED-UNION-72-68-25",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-68-25",
+   "domain": "72",
+   "range": "68"
+  },
+  {
+   "id": "GENERATED-UNION-72-82-26",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-72-82-26",
+   "domain": "72",
+   "range": "82"
+  },
+  {
+   "id": "GENERATED-UNION-86-8-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-86-8-0",
+   "domain": "86",
+   "range": "8"
+  },
+  {
+   "id": "GENERATED-UNION-86-1-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-86-1-1",
+   "domain": "86",
+   "range": "1"
+  },
+  {
+   "id": "GENERATED-UNION-86-49-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-86-49-2",
+   "domain": "86",
+   "range": "49"
+  },
+  {
+   "id": "GENERATED-UNION-92-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-92-4-0",
+   "domain": "92",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-92-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-92-5-1",
+   "domain": "92",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-98-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-98-46-0",
+   "domain": "98",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-98-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-98-33-1",
+   "domain": "98",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-98-34-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-98-34-2",
+   "domain": "98",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-98-14-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-98-14-3",
+   "domain": "98",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-110-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-110-4-0",
+   "domain": "110",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-110-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-110-5-1",
+   "domain": "110",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-117-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-117-46-0",
+   "domain": "117",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-117-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-117-14-1",
+   "domain": "117",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-118-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-118-46-0",
+   "domain": "118",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-118-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-118-14-1",
+   "domain": "118",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-119-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-119-4-0",
+   "domain": "119",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-119-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-119-5-1",
+   "domain": "119",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-119-6-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-119-6-2",
+   "domain": "119",
+   "range": "6"
+  },
+  {
+   "id": "GENERATED-UNION-120-23-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-120-23-0",
+   "domain": "120",
+   "range": "23"
+  },
+  {
+   "id": "GENERATED-UNION-120-47-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-120-47-1",
+   "domain": "120",
+   "range": "47"
+  },
+  {
+   "id": "GENERATED-UNION-125-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-125-33-0",
+   "domain": "125",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-125-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-125-34-1",
+   "domain": "125",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-126-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-126-46-0",
+   "domain": "126",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-126-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-126-14-1",
+   "domain": "126",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-129-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-129-46-0",
+   "domain": "129",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-129-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-129-14-1",
+   "domain": "129",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-130-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-130-46-0",
+   "domain": "130",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-130-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-130-14-1",
+   "domain": "130",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-131-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-131-4-0",
+   "domain": "131",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-131-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-131-5-1",
+   "domain": "131",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-113-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-113-4-0",
+   "domain": "113",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-113-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-113-5-1",
+   "domain": "113",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-113-6-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-113-6-2",
+   "domain": "113",
+   "range": "6"
+  },
+  {
+   "id": "GENERATED-UNION-132-77-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-132-77-0",
+   "domain": "132",
+   "range": "77"
+  },
+  {
+   "id": "GENERATED-UNION-132-133-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-132-133-1",
+   "domain": "132",
+   "range": "133"
+  },
+  {
+   "id": "GENERATED-UNION-135-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-135-4-0",
+   "domain": "135",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-135-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-135-5-1",
+   "domain": "135",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-136-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-136-33-0",
+   "domain": "136",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-136-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-136-34-1",
+   "domain": "136",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-137-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-137-33-0",
+   "domain": "137",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-137-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-137-34-1",
+   "domain": "137",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-138-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-138-46-0",
+   "domain": "138",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-138-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-138-14-1",
+   "domain": "138",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-144-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-144-33-0",
+   "domain": "144",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-144-8-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-144-8-1",
+   "domain": "144",
+   "range": "8"
+  },
+  {
+   "id": "GENERATED-UNION-144-34-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-144-34-2",
+   "domain": "144",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-145-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-145-33-0",
+   "domain": "145",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-145-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-145-34-1",
+   "domain": "145",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-145-2-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-145-2-2",
+   "domain": "145",
+   "range": "2"
+  },
+  {
+   "id": "GENERATED-UNION-107-23-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-107-23-0",
+   "domain": "107",
+   "range": "23"
+  },
+  {
+   "id": "GENERATED-UNION-107-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-107-33-1",
+   "domain": "107",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-107-34-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-107-34-2",
+   "domain": "107",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-146-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-146-46-0",
+   "domain": "146",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-146-23-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-146-23-1",
+   "domain": "146",
+   "range": "23"
+  },
+  {
+   "id": "GENERATED-UNION-146-47-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-146-47-2",
+   "domain": "146",
+   "range": "47"
+  },
+  {
+   "id": "GENERATED-UNION-147-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-147-46-0",
+   "domain": "147",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-147-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-147-14-1",
+   "domain": "147",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-148-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-148-33-0",
+   "domain": "148",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-148-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-148-34-1",
+   "domain": "148",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-25-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-25-46-0",
+   "domain": "25",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-25-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-25-14-1",
+   "domain": "25",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-122-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-122-33-0",
+   "domain": "122",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-122-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-122-34-1",
+   "domain": "122",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-152-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-152-33-0",
+   "domain": "152",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-152-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-152-34-1",
+   "domain": "152",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-152-35-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-152-35-2",
+   "domain": "152",
+   "range": "35"
+  },
+  {
+   "id": "GENERATED-UNION-153-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-153-33-0",
+   "domain": "153",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-153-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-153-34-1",
+   "domain": "153",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-153-2-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-153-2-2",
+   "domain": "153",
+   "range": "2"
+  },
+  {
+   "id": "GENERATED-UNION-154-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-154-46-0",
+   "domain": "154",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-154-4-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-154-4-1",
+   "domain": "154",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-154-5-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-154-5-2",
+   "domain": "154",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-154-14-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-154-14-3",
+   "domain": "154",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-115-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-115-33-0",
+   "domain": "115",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-115-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-115-34-1",
+   "domain": "115",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-157-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-157-33-0",
+   "domain": "157",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-157-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-157-34-1",
+   "domain": "157",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-124-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-124-33-0",
+   "domain": "124",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-124-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-124-34-1",
+   "domain": "124",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-165-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-165-33-0",
+   "domain": "165",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-165-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-165-34-1",
+   "domain": "165",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-180-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-180-33-0",
+   "domain": "180",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-180-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-180-34-1",
+   "domain": "180",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-5-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-5-4-0",
+   "domain": "5",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-5-6-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-5-6-1",
+   "domain": "5",
+   "range": "6"
+  },
+  {
+   "id": "GENERATED-UNION-183-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-183-46-0",
+   "domain": "183",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-183-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-183-33-1",
+   "domain": "183",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-183-14-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-183-14-2",
+   "domain": "183",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-140-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-140-46-0",
+   "domain": "140",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-140-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-140-33-1",
+   "domain": "140",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-140-14-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-140-14-2",
+   "domain": "140",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-264-77-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-264-77-0",
+   "domain": "264",
+   "range": "77"
+  },
+  {
+   "id": "GENERATED-UNION-264-133-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-264-133-1",
+   "domain": "264",
+   "range": "133"
+  },
+  {
+   "id": "GENERATED-UNION-264-4-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-264-4-2",
+   "domain": "264",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-264-5-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-264-5-3",
+   "domain": "264",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-348-77-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-348-77-0",
+   "domain": "348",
+   "range": "77"
+  },
+  {
+   "id": "GENERATED-UNION-348-133-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-348-133-1",
+   "domain": "348",
+   "range": "133"
+  },
+  {
+   "id": "GENERATED-UNION-348-4-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-348-4-2",
+   "domain": "348",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-348-5-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-348-5-3",
+   "domain": "348",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-317-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-317-46-0",
+   "domain": "317",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-317-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-317-33-1",
+   "domain": "317",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-317-14-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-317-14-2",
+   "domain": "317",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-356-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-356-33-0",
+   "domain": "356",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-356-74-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-356-74-1",
+   "domain": "356",
+   "range": "74"
+  },
+  {
+   "id": "GENERATED-UNION-356-34-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-356-34-2",
+   "domain": "356",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-356-35-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-356-35-3",
+   "domain": "356",
+   "range": "35"
+  },
+  {
+   "id": "GENERATED-UNION-353-4-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-353-4-0",
+   "domain": "353",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-353-5-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-353-5-1",
+   "domain": "353",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-321-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-321-46-0",
+   "domain": "321",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-321-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-321-33-1",
+   "domain": "321",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-321-14-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-321-14-2",
+   "domain": "321",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-361-41-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-41-0",
+   "domain": "361",
+   "range": "41"
+  },
+  {
+   "id": "GENERATED-UNION-361-8-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-8-1",
+   "domain": "361",
+   "range": "8"
+  },
+  {
+   "id": "GENERATED-UNION-361-49-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-49-2",
+   "domain": "361",
+   "range": "49"
+  },
+  {
+   "id": "GENERATED-UNION-361-5-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-5-3",
+   "domain": "361",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-361-14-4",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-14-4",
+   "domain": "361",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-361-50-5",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-50-5",
+   "domain": "361",
+   "range": "50"
+  },
+  {
+   "id": "GENERATED-UNION-361-23-6",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-23-6",
+   "domain": "361",
+   "range": "23"
+  },
+  {
+   "id": "GENERATED-UNION-361-33-7",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-33-7",
+   "domain": "361",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-361-30-8",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-30-8",
+   "domain": "361",
+   "range": "30"
+  },
+  {
+   "id": "GENERATED-UNION-361-73-9",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-73-9",
+   "domain": "361",
+   "range": "73"
+  },
+  {
+   "id": "GENERATED-UNION-361-74-10",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-74-10",
+   "domain": "361",
+   "range": "74"
+  },
+  {
+   "id": "GENERATED-UNION-361-65-11",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-65-11",
+   "domain": "361",
+   "range": "65"
+  },
+  {
+   "id": "GENERATED-UNION-361-21-12",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-21-12",
+   "domain": "361",
+   "range": "21"
+  },
+  {
+   "id": "GENERATED-UNION-361-75-13",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-75-13",
+   "domain": "361",
+   "range": "75"
+  },
+  {
+   "id": "GENERATED-UNION-361-76-14",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-76-14",
+   "domain": "361",
+   "range": "76"
+  },
+  {
+   "id": "GENERATED-UNION-361-77-15",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-77-15",
+   "domain": "361",
+   "range": "77"
+  },
+  {
+   "id": "GENERATED-UNION-361-47-16",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-47-16",
+   "domain": "361",
+   "range": "47"
+  },
+  {
+   "id": "GENERATED-UNION-361-78-17",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-78-17",
+   "domain": "361",
+   "range": "78"
+  },
+  {
+   "id": "GENERATED-UNION-361-28-18",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-28-18",
+   "domain": "361",
+   "range": "28"
+  },
+  {
+   "id": "GENERATED-UNION-361-1-19",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-1-19",
+   "domain": "361",
+   "range": "1"
+  },
+  {
+   "id": "GENERATED-UNION-361-79-20",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-79-20",
+   "domain": "361",
+   "range": "79"
+  },
+  {
+   "id": "GENERATED-UNION-361-80-21",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-80-21",
+   "domain": "361",
+   "range": "80"
+  },
+  {
+   "id": "GENERATED-UNION-361-2-22",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-2-22",
+   "domain": "361",
+   "range": "2"
+  },
+  {
+   "id": "GENERATED-UNION-361-81-23",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-81-23",
+   "domain": "361",
+   "range": "81"
+  },
+  {
+   "id": "GENERATED-UNION-361-11-24",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-11-24",
+   "domain": "361",
+   "range": "11"
+  },
+  {
+   "id": "GENERATED-UNION-361-68-25",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-68-25",
+   "domain": "361",
+   "range": "68"
+  },
+  {
+   "id": "GENERATED-UNION-361-82-26",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-361-82-26",
+   "domain": "361",
+   "range": "82"
+  },
+  {
+   "id": "GENERATED-UNION-200-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-46-0",
+   "domain": "200",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-200-77-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-77-1",
+   "domain": "200",
+   "range": "77"
+  },
+  {
+   "id": "GENERATED-UNION-200-33-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-33-2",
+   "domain": "200",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-200-133-3",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-133-3",
+   "domain": "200",
+   "range": "133"
+  },
+  {
+   "id": "GENERATED-UNION-200-4-4",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-4-4",
+   "domain": "200",
+   "range": "4"
+  },
+  {
+   "id": "GENERATED-UNION-200-5-5",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-5-5",
+   "domain": "200",
+   "range": "5"
+  },
+  {
+   "id": "GENERATED-UNION-200-34-6",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-34-6",
+   "domain": "200",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-200-14-7",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-200-14-7",
+   "domain": "200",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-364-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-364-46-0",
+   "domain": "364",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-364-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-364-14-1",
+   "domain": "364",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-366-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-366-46-0",
+   "domain": "366",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-366-33-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-366-33-1",
+   "domain": "366",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-366-14-2",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-366-14-2",
+   "domain": "366",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-313-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-313-46-0",
+   "domain": "313",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-313-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-313-14-1",
+   "domain": "313",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-368-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-368-33-0",
+   "domain": "368",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-368-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-368-34-1",
+   "domain": "368",
+   "range": "34"
+  },
+  {
+   "id": "GENERATED-UNION-377-1-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-377-1-0",
+   "domain": "377",
+   "range": "1"
+  },
+  {
+   "id": "GENERATED-UNION-377-68-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-377-68-1",
+   "domain": "377",
+   "range": "68"
+  },
+  {
+   "id": "GENERATED-UNION-378-1-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-378-1-0",
+   "domain": "378",
+   "range": "1"
+  },
+  {
+   "id": "GENERATED-UNION-378-68-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-378-68-1",
+   "domain": "378",
+   "range": "68"
+  },
+  {
+   "id": "GENERATED-UNION-303-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-303-46-0",
+   "domain": "303",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-303-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-303-14-1",
+   "domain": "303",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-311-46-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-311-46-0",
+   "domain": "311",
+   "range": "46"
+  },
+  {
+   "id": "GENERATED-UNION-311-14-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-311-14-1",
+   "domain": "311",
+   "range": "14"
+  },
+  {
+   "id": "GENERATED-UNION-328-33-0",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-328-33-0",
+   "domain": "328",
+   "range": "33"
+  },
+  {
+   "id": "GENERATED-UNION-328-34-1",
+   "type": "setOperatorProperty",
+   "label": "GENERATED-UNION-328-34-1",
+   "domain": "328",
+   "range": "34"
+  }
+ ]
+}

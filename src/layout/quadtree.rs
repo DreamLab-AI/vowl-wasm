@@ -11,6 +11,7 @@
 //! When the `simd` feature is enabled, leaf node force calculations use
 //! WASM SIMD128 for improved performance on supported browsers.
 
+use super::force::MIN_DISTANCE_SQ;
 #[cfg(feature = "simd")]
 use super::simd::{calculate_leaf_force_simd, SimdPositions};
 use crate::graph::Node;
@@ -306,7 +307,8 @@ impl QuadTree {
         let s = self.bounds.size();
         if s / distance < theta {
             // Region is far enough away - use approximation
-            let force_magnitude = strength * self.total_mass / (distance * distance);
+            let force_magnitude =
+                strength * self.total_mass / (distance * distance).max(MIN_DISTANCE_SQ);
             return delta.normalize() * force_magnitude;
         }
 
@@ -385,7 +387,9 @@ impl QuadTree {
         sources
             .iter()
             .map(|node| {
-                let delta = node_pos - node.position;
+                // Towards the source, matching the far-field branch above, so
+                // a negative strength repels on both paths.
+                let delta = node.position - node_pos;
                 let distance_sq = delta.norm_squared();
 
                 if distance_sq < 0.0001 {
@@ -394,7 +398,7 @@ impl QuadTree {
                     let offset_y = ((node_pos.y + node.position.y) * 11.0).cos() * 0.01;
                     Vector2::new(offset_x, offset_y)
                 } else {
-                    let force_magnitude = strength * node.mass / distance_sq;
+                    let force_magnitude = strength * node.mass / distance_sq.max(MIN_DISTANCE_SQ);
                     delta.normalize() * force_magnitude
                 }
             })
@@ -550,8 +554,61 @@ mod tests {
             -1000.0, // strength
         );
 
-        // Force should be non-zero and repulsive (pointing away from cluster)
-        assert!(force.norm() > 0.0);
+        // Repulsive: pointing away from the cluster, towards negative x and y.
+        assert!(force.x < 0.0 && force.y < 0.0, "force {force:?}");
+    }
+
+    #[test]
+    fn leaf_and_far_field_agree_on_direction() {
+        // A neighbour near enough to be summed exactly (leaf path) and a
+        // distant cluster summed as one body (far-field path) must both repel.
+        let nodes = [
+            create_test_node("target", 0.0, 0.0),
+            create_test_node("near", 5.0, 0.0),
+        ];
+        let node_refs: Vec<&Node> = nodes.iter().collect();
+        let tree = QuadTree::build(&node_refs);
+        let force = tree.calculate_force(Vector2::new(0.0, 0.0), "target", 0.9, -100.0);
+        assert!(
+            force.x < 0.0,
+            "pushed away from the near neighbour: {force:?}"
+        );
+    }
+
+    #[test]
+    fn barnes_hut_matches_the_exact_sum() {
+        use crate::layout::force::calculate_batch_repulsion;
+
+        // A deterministic, irregular cloud of 200 nodes.
+        let mut seed: u32 = 0x9e37_79b9;
+        let mut next = move || {
+            seed ^= seed << 13;
+            seed ^= seed >> 17;
+            seed ^= seed << 5;
+            f64::from(seed % 10_000) / 10.0
+        };
+        let nodes: Vec<Node> = (0..200)
+            .map(|i| create_test_node(&format!("n{i}"), next(), next()))
+            .collect();
+        let node_refs: Vec<&Node> = nodes.iter().collect();
+        let positions: Vec<(f64, f64)> = nodes.iter().map(|n| (n.visual.x, n.visual.y)).collect();
+        let exact = calculate_batch_repulsion(&positions, -30.0);
+        let tree = QuadTree::build(&node_refs);
+
+        let (mut err, mut total) = (0.0, 0.0);
+        for (node, want) in nodes.iter().zip(&exact) {
+            let got = tree.calculate_force(
+                Vector2::new(node.visual.x, node.visual.y),
+                &node.id,
+                0.5,
+                -30.0,
+            );
+            err += (got - want).norm();
+            total += want.norm();
+        }
+        // Barnes-Hut at theta 0.5 is an approximation, but a close one; a sign
+        // disagreement between its two paths would put this near 100%.
+        assert!(err / total < 0.05, "relative error {:.3}", err / total);
     }
 
     #[test]
